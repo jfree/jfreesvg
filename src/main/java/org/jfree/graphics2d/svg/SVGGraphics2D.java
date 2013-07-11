@@ -859,12 +859,14 @@ public class SVGGraphics2D extends Graphics2D {
         StringBuilder b = new StringBuilder("<lineargradient id=\"").append(id).append("\" ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        b.append("x1=\"").append(p1.getX()).append("\" ");
-        b.append("y1=\"").append(p1.getY()).append("\" ");
-        b.append("x2=\"").append(p2.getX()).append("\" ");
-        b.append("y2=\"").append(p2.getY()).append("\">");
-        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(getSVGColor(paint.getColor1())).append("\"/>");
-        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(getSVGColor(paint.getColor2())).append("\"/>");
+        boolean h = p1.getX() != p2.getX();
+        boolean v = p1.getY() != p2.getY();
+        b.append("x1=\"").append(h ? "0%" : "50%").append("\" ");
+        b.append("y1=\"").append(v ? "0%" : "50%").append("\" ");
+        b.append("x2=\"").append(h ? "100%" : "50%").append("\" ");
+        b.append("y2=\"").append(v ? "100%" : "50%").append("\">");
+        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(getSVGColor(paint.getColor1())).append(";\"/>");
+        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(getSVGColor(paint.getColor2())).append(";\"/>");
         return b.append("</lineargradient>").toString();
     }
     
