@@ -482,8 +482,8 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public void transform(AffineTransform t) {
-        this.transform.concatenate(t);
-        System.out.println("transform(" + t + ")");
+        t.concatenate(this.transform);
+        setTransform(t);
     }
 
     @Override
@@ -491,10 +491,19 @@ public class SVGGraphics2D extends Graphics2D {
         return this.transform;
     }
 
+    /**
+     * Sets the transform.
+     * 
+     * @param t  the new transform (<code>null</code> permitted, resets to the
+     *     identity transform).
+     */
     @Override
-    public void setTransform(AffineTransform transform) {
-        this.transform = transform;
-        System.out.println("transform(" + transform + ")");
+    public void setTransform(AffineTransform t) {
+        if (t == null) {
+            this.transform = new AffineTransform();
+        } else {
+            this.transform = new AffineTransform(t);
+        }
     }
 
     @Override

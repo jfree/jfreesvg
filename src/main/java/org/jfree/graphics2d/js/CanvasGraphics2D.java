@@ -506,14 +506,16 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void transform(AffineTransform transform) {
+    public void transform(AffineTransform t) {
+        t.concatenate(this.transform);
+        setTransform(t);
         this.sb.append("ctx.transform(");
-        this.sb.append(transform.getScaleX()).append(","); // m00
-        this.sb.append(transform.getShearY()).append(","); // m10
-        this.sb.append(transform.getShearX()).append(","); // m01
-        this.sb.append(transform.getScaleY()).append(",");  // m11
-        this.sb.append(transform.getTranslateX()).append(","); // m02
-        this.sb.append(transform.getTranslateY()); // m12
+        this.sb.append(t.getScaleX()).append(","); // m00
+        this.sb.append(t.getShearY()).append(","); // m10
+        this.sb.append(t.getShearX()).append(","); // m01
+        this.sb.append(t.getScaleY()).append(",");  // m11
+        this.sb.append(t.getTranslateX()).append(","); // m02
+        this.sb.append(t.getTranslateY()); // m12
         this.sb.append(");");
     }
 
@@ -522,9 +524,19 @@ public class CanvasGraphics2D extends Graphics2D {
         return this.transform;
     }
 
+    /**
+     * Sets the transform.
+     * 
+     * @param t  the new transform (<code>null</code> permitted, resets to the
+     *     identity transform).
+     */
     @Override
-    public void setTransform(AffineTransform transform) {
-        this.transform = transform;
+    public void setTransform(AffineTransform t) {
+        if (t == null) {
+            this.transform = new AffineTransform();
+        } else {
+            this.transform = new AffineTransform(t);
+        }
         this.sb.append("ctx.setTransform(");
         this.sb.append(transform.getScaleX()).append(","); // m00
         this.sb.append(transform.getShearY()).append(","); // m10
