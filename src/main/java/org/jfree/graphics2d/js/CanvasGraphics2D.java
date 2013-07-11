@@ -574,7 +574,7 @@ public class CanvasGraphics2D extends Graphics2D {
 
     @Override
     public Rectangle getClipBounds() {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        return this.clip.getBounds();
     }
 
     @Override
