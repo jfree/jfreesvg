@@ -122,8 +122,8 @@ public class CanvasGraphics2D extends Graphics2D {
             Point2D p1 = gp.getPoint1();
             Point2D p2 = gp.getPoint2();
             this.sb.append("var g = ctx.createLinearGradient(").append(p1.getX()).append(",").append(p1.getY()).append(",").append(p2.getX()).append(",").append(p2.getY()).append(");");
-            this.sb.append("g.addColorStop(0,").append(toCSSColorValue(gp.getColor1())).append(");");
-            this.sb.append("g.addColorStop(1,").append(toCSSColorValue(gp.getColor2())).append(");");
+            this.sb.append("g.addColorStop(0,'").append(toCSSColorValue(gp.getColor1())).append("');");
+            this.sb.append("g.addColorStop(1,'").append(toCSSColorValue(gp.getColor2())).append("');");
             this.sb.append("ctx.fillStyle=g;");
         } else {
             System.err.println("setPaint(" + paint + ")");
@@ -157,7 +157,7 @@ public class CanvasGraphics2D extends Graphics2D {
      */
     private String toCSSColorValue(Color c) {
         return "rgba(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue()
-                + "," + c.getAlpha() + ")";
+                + "," + c.getAlpha() / 255.0f + ")";
     }
 
     /**
@@ -443,7 +443,7 @@ public class CanvasGraphics2D extends Graphics2D {
     public void drawString(String str, float x, float y) {
         sb.append("ctx.save();");
         if (this.paint instanceof Color) {
-            this.sb.append("ctx.fillStyle=").append(toCSSColorValue((Color) this.paint)).append(";");
+            this.sb.append("ctx.fillStyle=\"").append(toCSSColorValue((Color) this.paint)).append("\";");
         } else {
             setPaint(this.paint);
         }
@@ -507,8 +507,6 @@ public class CanvasGraphics2D extends Graphics2D {
 
     @Override
     public void transform(AffineTransform t) {
-        t.concatenate(this.transform);
-        setTransform(t);
         this.sb.append("ctx.transform(");
         this.sb.append(t.getScaleX()).append(","); // m00
         this.sb.append(t.getShearY()).append(","); // m10
@@ -517,6 +515,8 @@ public class CanvasGraphics2D extends Graphics2D {
         this.sb.append(t.getTranslateX()).append(","); // m02
         this.sb.append(t.getTranslateY()); // m12
         this.sb.append(");");
+        t.concatenate(this.transform);
+        setTransform(t);
     }
 
     @Override
