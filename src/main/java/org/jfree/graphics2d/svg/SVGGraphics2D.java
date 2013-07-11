@@ -282,7 +282,8 @@ public class SVGGraphics2D extends Graphics2D {
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
         } else {
-            System.out.println("draw(" + s + ")");
+            System.out.println("*draw(" + s + ")");
+            draw(new GeneralPath(s));
         }
     }
 
