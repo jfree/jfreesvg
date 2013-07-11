@@ -87,9 +87,24 @@ public class CanvasGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Creates a new graphics object that is a copy of this graphics object.
+     * 
+     * @return A new graphics object.
+     */
     @Override
     public Graphics create() {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        CanvasGraphics2D copy = new CanvasGraphics2D(this.canvasID);
+        copy.setRenderingHints(getRenderingHints());
+        copy.setClip(getClip());
+        copy.setPaint(getPaint());
+        copy.setColor(getColor());
+        copy.setComposite(getComposite());
+        copy.setStroke(getStroke());
+        copy.setFont(getFont());
+        copy.setTransform(getTransform());
+        copy.setBackground(getBackground());
+        return copy;
     }
 
     @Override

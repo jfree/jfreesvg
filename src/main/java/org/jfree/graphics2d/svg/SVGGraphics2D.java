@@ -62,6 +62,10 @@ public class SVGGraphics2D extends Graphics2D {
     /** The background color, presently ignored. */
     private Color background = Color.BLACK;
 
+    private int width;
+    
+    private int height;
+    
     /** A hidden image used for font metrics. */
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
     
@@ -69,6 +73,8 @@ public class SVGGraphics2D extends Graphics2D {
      * Creates a new instance.
      */
     public SVGGraphics2D(int width, int height) {
+        this.width = width;
+        this.height = height;
         this.sb = new StringBuilder("<svg width=\"").append(width).append("\" height=\"").append(height).append("\">\n");
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
@@ -78,9 +84,24 @@ public class SVGGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Creates a new graphics object that is a copy of this graphics object.
+     * 
+     * @return A new graphics object.
+     */
     @Override
     public Graphics create() {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        SVGGraphics2D copy = new SVGGraphics2D(this.width, this.height);
+        copy.setRenderingHints(getRenderingHints());
+        copy.setClip(getClip());
+        copy.setPaint(getPaint());
+        copy.setColor(getColor());
+        copy.setComposite(getComposite());
+        copy.setStroke(getStroke());
+        copy.setFont(getFont());
+        copy.setTransform(getTransform());
+        copy.setBackground(getBackground());
+        return copy;
     }
 
     @Override
