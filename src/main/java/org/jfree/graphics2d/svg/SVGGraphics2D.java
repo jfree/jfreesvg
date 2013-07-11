@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -25,6 +26,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -32,6 +34,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -69,13 +72,14 @@ public class SVGGraphics2D extends Graphics2D {
     /** A hidden image used for font metrics. */
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
     
+    private Map<GradientPaintKey, String> gradientPaints = new HashMap<GradientPaintKey, String>();
     /**
      * Creates a new instance.
      */
     public SVGGraphics2D(int width, int height) {
         this.width = width;
         this.height = height;
-        this.sb = new StringBuilder("<svg width=\"").append(width).append("\" height=\"").append(height).append("\">\n");
+        this.sb = new StringBuilder();
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
@@ -109,11 +113,25 @@ public class SVGGraphics2D extends Graphics2D {
         return this.paint;
     }
 
+    private String gradientPaintRef = null;
+    
     @Override
     public void setPaint(Paint paint) {
         this.paint = paint;
+        this.gradientPaintRef = null;
         if (paint instanceof Color) {
             setColor((Color) paint);
+        } else if (paint instanceof GradientPaint) {
+            GradientPaint gp = (GradientPaint) paint;
+            GradientPaintKey key = new GradientPaintKey(gp);
+            String ref = this.gradientPaints.get(key);
+            if (ref == null) {
+                int count = this.gradientPaints.keySet().size();
+                this.gradientPaints.put(key, "gp" + count);
+                this.gradientPaintRef = "gp" + count;
+            } else {
+                this.gradientPaintRef = ref;
+            }
         }
     }
 
@@ -321,10 +339,15 @@ public class SVGGraphics2D extends Graphics2D {
     private String getSVGColor() {
         String result = "black;";
         if (this.paint instanceof Color) {
-            Color c = (Color) this.paint;
-            result = "rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ")";
+            return getSVGColor((Color) this.paint);
+        } else if (this.paint instanceof GradientPaint) {
+            return "url(#" + this.gradientPaintRef + ")";
         }
         return result;
+    }
+    
+    private String getSVGColor(Color c) {
+        return "rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ")";
     }
     
     private String strokeStyle() {
@@ -810,9 +833,32 @@ public class SVGGraphics2D extends Graphics2D {
      * @return The script.
      */
     public String getSVG() {
-        StringBuilder builder = new StringBuilder(sb);
-        builder.append("</svg>");
-        return builder.toString();
+        StringBuilder svg = new StringBuilder("<svg width=\"").append(width).append("\" height=\"").append(height).append("\">\n");
+        StringBuilder defs = new StringBuilder("<defs>");
+        for (GradientPaintKey key : this.gradientPaints.keySet()) {
+            defs.append(getLinearGradientElement(this.gradientPaints.get(key), key.getPaint()));
+            defs.append("\n");
+        }
+        defs.append("</defs>");
+        //System.out.println(defs.toString());
+        //StringBuilder builder = new StringBuilder(sb);
+        svg.append(defs);
+        svg.append(sb);
+        svg.append("</svg>");
+        return svg.toString();
+    }
+    
+    private String getLinearGradientElement(String id, GradientPaint paint) {
+        StringBuilder b = new StringBuilder("<lineargradient id=\"").append(id).append("\" ");
+        Point2D p1 = paint.getPoint1();
+        Point2D p2 = paint.getPoint2();
+        b.append("x1=\"").append(p1.getX()).append("\" ");
+        b.append("y1=\"").append(p1.getY()).append("\" ");
+        b.append("x2=\"").append(p2.getX()).append("\" ");
+        b.append("y2=\"").append(p2.getY()).append("\">");
+        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(getSVGColor(paint.getColor1())).append("\"/>");
+        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(getSVGColor(paint.getColor2())).append("\"/>");
+        return b.append("</lineargradient>").toString();
     }
     
 }
