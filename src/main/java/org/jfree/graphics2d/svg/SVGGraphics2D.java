@@ -419,6 +419,12 @@ public class SVGGraphics2D extends Graphics2D {
          b.append("fill: ").append(getSVGColor()).append("; ");
          b.append("font-family: ").append(this.font.getFamily()).append("; ");
          b.append("font-size: ").append(this.font.getSize()).append(";");
+         if (this.font.isBold()) {
+             b.append("font-weight: bold; ");
+         }
+         if (this.font.isItalic()) {
+             b.append("font-style: italic; ");
+         }
          return b.toString();
     }
 
