@@ -147,8 +147,11 @@ public class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Returns the background color.  The default value is Color.BLACK.
+     * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
      * @return The background color. 
+     * 
+     * @see #setBackground(java.awt.Color) 
      */
     @Override
     public Color getBackground() {
@@ -157,12 +160,15 @@ public class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Sets the background color (for now, this is ignored).
-     * @param color 
+     * 
+     * @param color  the color (<code>null</code> not permitted).
      */
     @Override
     public void setBackground(Color color) {
-        this.background = color;  // TODO this is ignored at present, what is 
-                                  // it used for (clearRect?)
+        if (color == null) {
+            throw new IllegalArgumentException("Null 'color' argument.");
+        }
+        this.background = color;
     }
 
     /**
@@ -580,9 +586,22 @@ public class CanvasGraphics2D extends Graphics2D {
         fill(new Rectangle2D.Float(x, y, width, height));
     }
 
+    /**
+     * Fills the specified rectangle with the current background color.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * 
+     * @see #getBackground() 
+     */
     @Override
     public void clearRect(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        Paint saved = getPaint();
+        setPaint(getBackground());
+        fillRect(x, y, width, height);
+        setPaint(saved);
     }
 
     @Override
