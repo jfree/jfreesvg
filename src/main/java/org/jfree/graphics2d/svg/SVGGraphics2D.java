@@ -42,6 +42,10 @@ import java.util.Map;
  */
 public class SVGGraphics2D extends Graphics2D {
     
+    private int width;
+    
+    private int height;
+    
     /** The buffer for all the SVG output. */
     private StringBuilder sb;
     
@@ -65,14 +69,19 @@ public class SVGGraphics2D extends Graphics2D {
     /** The background color, presently ignored. */
     private Color background = Color.BLACK;
 
-    private int width;
-    
-    private int height;
-    
     /** A hidden image used for font metrics. */
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
-    
+
+    /** A map of all the gradients used, and the corresponding id. */
     private Map<GradientPaintKey, String> gradientPaints = new HashMap<GradientPaintKey, String>();
+
+    /** 
+     * If the current paint is an instance of {@link GradientPaint}, this
+     * field will contain the reference id that is used in the DEFS element
+     * for that linear gradient.
+     */
+    private String gradientPaintRef = null;
+
     /**
      * Creates a new instance.
      */
@@ -108,13 +117,21 @@ public class SVGGraphics2D extends Graphics2D {
         return copy;
     }
 
+    /**
+     * Returns the paint.  The default value is {@link Color#BLACK}.
+     * 
+     * @return The paint (never <code>null</code>). 
+     */
     @Override
     public Paint getPaint() {
         return this.paint;
     }
-
-    private String gradientPaintRef = null;
     
+    /**
+     * Sets the paint.
+     * 
+     * @param paint  the paint (<code>null</code> not permitted). 
+     */
     @Override
     public void setPaint(Paint paint) {
         this.paint = paint;
@@ -135,11 +152,23 @@ public class SVGGraphics2D extends Graphics2D {
         }
     }
 
+    /**
+     * Returns the foreground color. 
+     * 
+     * @return The foreground color. 
+     */
     @Override
     public Color getColor() {
         return this.color;
     }
 
+    /**
+     * Sets the foreground color.  This method exists for backwards 
+     * compatibility, you should use the {@link #setPaint(java.awt.Paint)}
+     * method.
+     * 
+     * @param c  the color. 
+     */
     @Override
     public void setColor(Color c) {
         if (this.color.equals(c)) {
@@ -162,7 +191,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the background color (for now, this is ignored).
+     * Sets the background color.  This is used by the 
+     * {@link #clearRect(int, int, int, int)} method.
      * 
      * @param color  the color (<code>null</code> not permitted).
      */
@@ -194,6 +224,11 @@ public class SVGGraphics2D extends Graphics2D {
         this.composite = comp;
     }
 
+    /**
+     * Returns the current stroke.
+     * 
+     * @return The current stroke. 
+     */
     @Override
     public Stroke getStroke() {
         return this.stroke;
@@ -270,23 +305,36 @@ public class SVGGraphics2D extends Graphics2D {
     public void draw(Shape s) {
         if (s instanceof Line2D) {
             Line2D line = (Line2D) s;
-            this.sb.append("<line x1=\"").append(line.getX1()).append("\" y1=\"").append(line.getY1()).append("\" x2=\"").append(line.getX2()).append("\" y2=\"").append(line.getY2()).append("\"");
+            this.sb.append("<line x1=\"").append(line.getX1())
+                    .append("\" y1=\"").append(line.getY1()).append("\" x2=\"")
+                    .append(line.getX2()).append("\" y2=\"")
+                    .append(line.getY2()).append("\"");
             this.sb.append(" style=\"").append(strokeStyle()).append("\"/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"").append(r.getY()).append("\" width=\"").append(r.getWidth()).append("\" height=\"").append(r.getHeight()).append("\"");
-            this.sb.append(" style=\"").append(strokeStyle()).append("; fill: none").append("\"/>");
+            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
+                    .append(r.getY()).append("\" width=\"").append(r.getWidth())
+                    .append("\" height=\"").append(r.getHeight()).append("\"");
+            this.sb.append(" style=\"").append(strokeStyle())
+                    .append("; fill: none").append("\"/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g style=\"").append(strokeStyle()).append("; fill: none").append("\">");
+            this.sb.append("<g style=\"").append(strokeStyle())
+                    .append("; fill: none").append("\">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
         } else {
-            System.out.println("*draw(" + s + ")");
             draw(new GeneralPath(s));
         }
     }
 
+    /**
+     * Creates an SVG path string for the supplied Java2D path.
+     * 
+     * @param path  the path (<code>null</code> not permitted).
+     * 
+     * @return An SVG path string. 
+     */
     private String getSVGPathData(Path2D path) {
         StringBuilder b = new StringBuilder("d=\"");
         float[] coords = new float[6];
@@ -310,14 +358,23 @@ public class SVGGraphics2D extends Graphics2D {
                 b.append("L ").append(coords[0]).append(" ").append(coords[1]);
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append("Q ").append(coords[0]).append(" ").append(coords[1]).append(" ").append(coords[2]).append(" ").append(coords[3]);
+                b.append("Q ").append(coords[0])
+                        .append(" ").append(coords[1])
+                        .append(" ").append(coords[2])
+                        .append(" ").append(coords[3]);
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append("C ").append(coords[0]).append(" ").append(coords[1]).append(" ").append(coords[2]).append(" ").append(coords[3]).append(" ").append(coords[4]).append(" ").append(coords[5]);
+                b.append("C ").append(coords[0]).append(" ")
+                        .append(coords[1]).append(" ")
+                        .append(coords[2]).append(" ")
+                        .append(coords[3]).append(" ")
+                        .append(coords[4]).append(" ")
+                        .append(coords[5]);
                 break;
             case (PathIterator.SEG_CLOSE):
                 if (closePt != null) {
-                    b.append("M ").append(closePt[0]).append(" ").append(closePt[1]);
+                    b.append("M ").append(closePt[0]).append(" ")
+                            .append(closePt[1]);
                 }
                 break;
             default:
@@ -327,7 +384,14 @@ public class SVGGraphics2D extends Graphics2D {
         }  
         return b.append("\"").toString();
     }
-    
+
+    /**
+     * Returns the current alpha (transparency) in the range 0.0 to 1.0.
+     * If the current composite is an {@link AlphaComposite} we read the alpha
+     * value from there, otherwise this method returns 1.0.
+     * 
+     * @return The current alpha (transparency) in the range 0.0 to 1.0.
+     */
     private float getAlpha() {
        float alpha = 1.0f;
        if (this.composite instanceof AlphaComposite) {
@@ -336,7 +400,14 @@ public class SVGGraphics2D extends Graphics2D {
        }
        return alpha;
     }
-    
+
+    /**
+     * Returns an SVG color string based on the current paint.  To handle
+     * GradientPaint we rely on the setPaint() method having set the 
+     * gradientPaintRef attribute.
+     * 
+     * @return An SVG color string. 
+     */
     private String getSVGColor() {
         String result = "black;";
         if (this.paint instanceof Color) {
@@ -347,10 +418,26 @@ public class SVGGraphics2D extends Graphics2D {
         return result;
     }
     
+    /**
+     * Returns the SVG RGB color string for the specified color.
+     * 
+     * @param c  the color.
+     * 
+     * @return The SVG RGB color string.
+     */
     private String getSVGColor(Color c) {
-        return "rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ")";
+        StringBuilder b = new StringBuilder("rgb(");
+        b.append(c.getRed()).append(",").append(c.getGreen()).append(",")
+                .append(c.getBlue()).append(")");
+        return b.toString();
     }
     
+    /**
+     * Returns a stroke style string based on the current stroke and
+     * alpha settings.
+     * 
+     * @return A stroke style string.
+     */
     private String strokeStyle() {
         float strokeWidth = 1.0f;
         float[] dashArray = new float[0];
@@ -374,6 +461,12 @@ public class SVGGraphics2D extends Graphics2D {
         return b.toString();
     }
     
+    /**
+     * Returns a fill style string based on the current paint and
+     * alpha settings.
+     * 
+     * @return A fill style string.
+     */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
         b.append("fill: ").append(getSVGColor()).append(";");
@@ -385,15 +478,18 @@ public class SVGGraphics2D extends Graphics2D {
     public void fill(Shape s) {
         if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"").append(r.getY()).append("\" width=\"").append(r.getWidth()).append("\" height=\"").append(r.getHeight()).append("\"");
-            this.sb.append(" style=\"").append(getSVGFillStyle()).append("\"/>");        
+            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
+                    .append(r.getY()).append("\" width=\"").append(r.getWidth())
+                    .append("\" height=\"").append(r.getHeight()).append("\"");
+            this.sb.append(" style=\"").append(getSVGFillStyle())
+                    .append("\"/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g style=\"").append(getSVGFillStyle()).append("; stroke: none").append("\">");
+            this.sb.append("<g style=\"").append(getSVGFillStyle())
+                    .append("; stroke: none").append("\">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
         }  else {
-            System.err.println("*fill(" + s + ")");
             fill(new GeneralPath(s));
         }
     }
@@ -847,8 +943,6 @@ public class SVGGraphics2D extends Graphics2D {
             defs.append("\n");
         }
         defs.append("</defs>");
-        //System.out.println(defs.toString());
-        //StringBuilder builder = new StringBuilder(sb);
         svg.append(defs);
         svg.append(sb);
         svg.append("</svg>");
