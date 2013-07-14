@@ -810,26 +810,65 @@ public class SVGGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * A utility method used to create a polygon for rendering.
+     * 
+     * @param xPoints  the x-points.
+     * @param yPoints  the y-points.
+     * @param nPoints  the number of points to use for the polyline.
+     * @param close  closed?
+     * @return 
+     */
+    private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
+            int nPoints, boolean close) {
+        GeneralPath p = new GeneralPath();
+        p.moveTo(xPoints[0], yPoints[0]);
+        for (int i = 1; i < nPoints; i++) {
+            p.lineTo(xPoints[i], yPoints[i]);
+        }
+        if (close) {
+            p.closePath();
+        }
+        return p;
+    }
+    
+    /**
+     * Draws the specified multi-segment line.
+     * 
+     * @param xPoints  the x-points.
+     * @param yPoints  the y-points.
+     * @param nPoints  the number of points to use for the polyline.
+     */
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
-    }
-
-    @Override
-    public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, false);
+        draw(p);
     }
 
     /**
-     * Not yet supported.
+     * Draws the specified polygon.
      * 
-     * @param xPoints
-     * @param yPoints
-     * @param nPoints 
+     * @param xPoints  the x-points.
+     * @param yPoints  the y-points.
+     * @param nPoints  the number of points to use for the polygon.
+     */
+    @Override
+    public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
+        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        draw(p);
+    }
+
+    /**
+     * Fills the specified polygon.
+     * 
+     * @param xPoints  the x-points.
+     * @param yPoints  the y-points.
+     * @param nPoints  the number of points to use for the polygon.
      */
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        fill(p);
     }
 
     /**
