@@ -509,7 +509,8 @@ public class CanvasGraphics2D extends Graphics2D {
 
     @Override
     public void shear(double shx, double shy) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        AffineTransform t = AffineTransform.getShearInstance(shx, shy);
+        transform(t);
     }
 
     @Override
