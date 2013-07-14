@@ -693,12 +693,12 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public void clipRect(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        clip(new Rectangle(x, y, width, height));
     }
 
     @Override
     public void setClip(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        setClip(new Rectangle(x, y, width, height));
     }
 
     @Override

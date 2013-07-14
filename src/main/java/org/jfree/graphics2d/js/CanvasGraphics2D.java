@@ -566,11 +566,6 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void clip(Shape s) {
-        this.clip = s;
-    }
-
-    @Override
     public FontRenderContext getFontRenderContext() {
         return this.image.createGraphics().getFontRenderContext();
     }
@@ -600,6 +595,10 @@ public class CanvasGraphics2D extends Graphics2D {
         return this.clip;  // FIXME : should clone?
     }
 
+    /**
+     * 
+     * @param clip  the new clip (<code>null>/code> to reset). 
+     */
     @Override
     public void setClip(Shape clip) {
         System.err.println("setClip)" + clip + ")");
@@ -607,13 +606,18 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     @Override
+    public void clip(Shape s) {
+        this.clip = s;
+    }
+
+    @Override
     public void clipRect(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        clip(new Rectangle(x, y, width, height));
     }
 
     @Override
     public void setClip(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        setClip(new Rectangle(x, y, width, height));
     }
 
     @Override
