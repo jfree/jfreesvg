@@ -607,7 +607,9 @@ public class SVGGraphics2D extends Graphics2D {
 
     @Override
     public void rotate(double theta, double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        translate(x, y);
+        rotate(theta);
+        translate(-x, -y);
     }
 
     @Override
