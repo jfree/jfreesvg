@@ -500,7 +500,8 @@ public class CanvasGraphics2D extends Graphics2D {
 
     @Override
     public void rotate(double theta) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        AffineTransform t = AffineTransform.getRotateInstance(theta);
+        transform(t);
     }
 
     @Override
