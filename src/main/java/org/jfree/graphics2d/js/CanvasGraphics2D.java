@@ -22,6 +22,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -77,6 +78,12 @@ public class CanvasGraphics2D extends Graphics2D {
      * subsequently reused to avoid creating a lot of garbage.
      */
     private RoundRectangle2D roundRect;
+    
+     /**
+     * An instance that is lazily instantiated in draw/fillOval and then
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+   private Ellipse2D oval;
     
     /**
      * Creates a new instance.
@@ -684,15 +691,25 @@ public class CanvasGraphics2D extends Graphics2D {
         }
         fill(this.roundRect);
     }
-
+    
     @Override
     public void drawOval(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        if (this.oval == null) {
+            this.oval = new Ellipse2D.Double(x, y, width, height);
+        } else {
+            this.oval.setFrame(x, y, width, height);
+        }
+        draw(this.oval);
     }
 
     @Override
     public void fillOval(int x, int y, int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+       if (this.oval == null) {
+            this.oval = new Ellipse2D.Double(x, y, width, height);
+        } else {
+            this.oval.setFrame(x, y, width, height);
+        }
+        fill(this.oval);
     }
 
     @Override
