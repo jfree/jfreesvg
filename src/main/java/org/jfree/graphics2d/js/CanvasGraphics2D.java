@@ -22,6 +22,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -85,6 +86,12 @@ public class CanvasGraphics2D extends Graphics2D {
      */
    private Ellipse2D oval;
     
+    /**
+     * An instance that is lazily instantiated in draw/fillArc and then
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private Arc2D arc;
+
     /**
      * Creates a new instance.
      * 
@@ -720,13 +727,29 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void drawArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }
+        draw(this.arc);
     }
 
     @Override
-    public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void fillArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }
+        fill(this.arc);
     }
 
     /**

@@ -22,6 +22,7 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -75,7 +76,8 @@ public class SVGGraphics2D extends Graphics2D {
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
 
     /** A map of all the gradients used, and the corresponding id. */
-    private Map<GradientPaintKey, String> gradientPaints = new HashMap<GradientPaintKey, String>();
+    private Map<GradientPaintKey, String> gradientPaints 
+            = new HashMap<GradientPaintKey, String>();
     
     /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
@@ -83,12 +85,18 @@ public class SVGGraphics2D extends Graphics2D {
      */
     private RoundRectangle2D roundRect;
     
-     /**
+    /**
      * An instance that is lazily instantiated in draw/fillOval and then
      * subsequently reused to avoid creating a lot of garbage.
      */
-   private Ellipse2D oval;
-    
+    private Ellipse2D oval;
+   
+    /**
+     * An instance that is lazily instantiated in draw/fillArc and then
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private Arc2D arc;
+ 
     /** 
      * If the current paint is an instance of {@link GradientPaint}, this
      * field will contain the reference id that is used in the DEFS element
@@ -801,13 +809,29 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void drawArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }
+        draw(this.arc);
     }
 
     @Override
-    public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void fillArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }
+        fill(this.arc);
     }
 
     /**
