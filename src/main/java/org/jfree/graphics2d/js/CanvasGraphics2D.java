@@ -28,6 +28,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
@@ -70,6 +71,12 @@ public class CanvasGraphics2D extends Graphics2D {
 
     /** A hidden image used for font metrics. */
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
+    
+    /**
+     * An instance that is lazily instantiated in draw/fillRoundRect and then
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private RoundRectangle2D roundRect;
     
     /**
      * Creates a new instance.
@@ -631,14 +638,50 @@ public class CanvasGraphics2D extends Graphics2D {
         setPaint(saved);
     }
 
+    /**
+     * Fills a rectangle with rounded corners.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc-width.
+     * @param arcHeight  the arc-height.
+     */
     @Override
-    public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void drawRoundRect(int x, int y, int width, int height, 
+            int arcWidth, int arcHeight) {
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }
+        draw(this.roundRect);
     }
 
+    /**
+     * Fills a rectangle with rounded corners.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc-width.
+     * @param arcHeight  the arc-height.
+     */
     @Override
-    public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void fillRoundRect(int x, int y, int width, int height, 
+            int arcWidth, int arcHeight) {
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }
+        fill(this.roundRect);
     }
 
     @Override

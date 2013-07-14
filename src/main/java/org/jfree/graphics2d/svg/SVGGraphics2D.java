@@ -28,6 +28,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
@@ -74,7 +75,13 @@ public class SVGGraphics2D extends Graphics2D {
 
     /** A map of all the gradients used, and the corresponding id. */
     private Map<GradientPaintKey, String> gradientPaints = new HashMap<GradientPaintKey, String>();
-
+    
+    /**
+     * An instance that is lazily instantiated in draw/fillRoundRect and then
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private RoundRectangle2D roundRect;
+    
     /** 
      * If the current paint is an instance of {@link GradientPaint}, this
      * field will contain the reference id that is used in the DEFS element
@@ -715,15 +722,51 @@ public class SVGGraphics2D extends Graphics2D {
         fillRect(x, y, width, height);
         setPaint(saved);
     }
-
+    
+    /**
+     * Draws a rectangle with rounded corners.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc-width.
+     * @param arcHeight  the arc-height.
+     */
     @Override
-    public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void drawRoundRect(int x, int y, int width, int height, 
+            int arcWidth, int arcHeight) {      
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }
+        draw(this.roundRect);
     }
 
+    /**
+     * Fills a rectangle with rounded corners.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc-width.
+     * @param arcHeight  the arc-height.
+     */
     @Override
-    public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public void fillRoundRect(int x, int y, int width, int height, 
+            int arcWidth, int arcHeight) {
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }
+        fill(this.roundRect);
     }
 
     @Override
