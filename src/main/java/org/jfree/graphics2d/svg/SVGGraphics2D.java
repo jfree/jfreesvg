@@ -873,29 +873,28 @@ public class SVGGraphics2D extends Graphics2D {
         fill(this.oval);
     }
 
-    @Override
-    public void drawArc(int x, int y, int width, int height, int startAngle, 
+    private void setArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        if (arc == null) {
+        if (this.arc == null) {
             this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
                     arcAngle, Arc2D.OPEN);
         } else {
             this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
                     Arc2D.OPEN);
-        }
+        }        
+    }
+    
+    @Override
+    public void drawArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        setArc(x, y, width, height, startAngle, arcAngle);
         draw(this.arc);
     }
 
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        if (arc == null) {
-            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.OPEN);
-        } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.OPEN);
-        }
+        setArc(x, y, width, height, startAngle, arcAngle);
         fill(this.arc);
     }
 
