@@ -88,6 +88,12 @@ public class SVGGraphics2D extends Graphics2D {
     private Line2D line;
 
     /**
+     * An instance that is lazily instantiated in fillRect and then 
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    Rectangle2D rect;
+
+    /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
      * subsequently reused to avoid creating a lot of garbage.
      */
@@ -743,9 +749,22 @@ public class SVGGraphics2D extends Graphics2D {
         draw(this.line);
     }
 
+    /**
+     * Fills a rectangle with the current paint.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the rectangle width.
+     * @param height  the rectangle height.
+     */
     @Override
     public void fillRect(int x, int y, int width, int height) {
-        fill(new Rectangle2D.Float(x, y, width, height));
+        if (this.rect == null) {
+            this.rect = new Rectangle2D.Double(x, y, width, height);
+        } else {
+            this.rect.setRect(x, y, width, height);
+        }
+        fill(this.rect);
     }
 
     /**
