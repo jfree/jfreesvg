@@ -75,6 +75,12 @@ public class CanvasGraphics2D extends Graphics2D {
     private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
     
     /**
+     * An instance that is lazily instantiated in drawLine and then 
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private Line2D line;
+    
+    /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
      * subsequently reused to avoid creating a lot of garbage.
      */
@@ -632,9 +638,22 @@ public class CanvasGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Draws a line from (x1, y1) to (x2, y2).
+     * 
+     * @param x1  the x-coordinate of the start point.
+     * @param y1  the y-coordinate of the start point.
+     * @param x2  the x-coordinate of the end point.
+     * @param y2  the x-coordinate of the end point.
+     */
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        draw(new Line2D.Float(x1, y1, x2, y2));
+        if (this.line == null) {
+            this.line = new Line2D.Double(x1, y1, x2, y2);
+        } else {
+            this.line.setLine(x1, y1, x2, y2);
+        }
+        draw(this.line);
     }
 
     @Override
