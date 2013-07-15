@@ -837,23 +837,39 @@ public class SVGGraphics2D extends Graphics2D {
         fill(this.roundRect);
     }
 
-    @Override
-    public void drawOval(int x, int y, int width, int height) {
+    private void setOval(int x, int y, int width, int height) {
         if (this.oval == null) {
             this.oval = new Ellipse2D.Double(x, y, width, height);
         } else {
             this.oval.setFrame(x, y, width, height);
         }
+    }
+    
+    /**
+     * Draws an oval framed by the rectangle (x, y, width, height).
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
+    @Override
+    public void drawOval(int x, int y, int width, int height) {
+        setOval(x, y, width, height);
         draw(this.oval);
     }
 
+    /**
+     * Fills an oval framed by the rectangle (x, y, width, height).
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
     @Override
     public void fillOval(int x, int y, int width, int height) {
-       if (this.oval == null) {
-            this.oval = new Ellipse2D.Double(x, y, width, height);
-        } else {
-            this.oval.setFrame(x, y, width, height);
-        }
+        setOval(x, y, width, height);
         fill(this.oval);
     }
 
