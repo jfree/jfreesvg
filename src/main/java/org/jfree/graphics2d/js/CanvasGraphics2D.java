@@ -495,9 +495,16 @@ public class CanvasGraphics2D extends Graphics2D {
         drawString(builder.toString(), x, y);
     }
 
+    /**
+     * Draws the specified glyph vector at the location (x, y).
+     * 
+     * @param g  the glyph vector.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     */
     @Override
     public void drawGlyphVector(GlyphVector g, float x, float y) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        draw(g.getOutline(x, y));
     }
 
     @Override
