@@ -61,7 +61,8 @@ public class SVGGraphics2D extends Graphics2D {
     
     private Color color = Color.BLACK;
     
-    private Composite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f);
+    private Composite composite = AlphaComposite.getInstance(
+            AlphaComposite.SRC_OVER, 1.0f);
     
     private Stroke stroke = new BasicStroke(1.0f);
     
@@ -73,12 +74,19 @@ public class SVGGraphics2D extends Graphics2D {
     private Color background = Color.BLACK;
 
     /** A hidden image used for font metrics. */
-    private BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);;
+    private BufferedImage image = new BufferedImage(10, 10, 
+            BufferedImage.TYPE_INT_RGB);;
 
     /** A map of all the gradients used, and the corresponding id. */
     private Map<GradientPaintKey, String> gradientPaints 
             = new HashMap<GradientPaintKey, String>();
     
+    /**
+     * An instance that is lazily instantiated in drawLine and then 
+     * subsequently reused to avoid creating a lot of garbage.
+     */
+    private Line2D line;
+
     /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
      * subsequently reused to avoid creating a lot of garbage.
@@ -111,7 +119,8 @@ public class SVGGraphics2D extends Graphics2D {
         this.width = width;
         this.height = height;
         this.sb = new StringBuilder();
-        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
+                RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
     @Override
@@ -568,7 +577,8 @@ public class SVGGraphics2D extends Graphics2D {
         this.sb.append(this.transform.getTranslateY()); // m12
 
         this.sb.append(")\">");
-        this.sb.append("<text x=\"").append(x).append("\", y=\"").append(y).append("\"");
+        this.sb.append("<text x=\"").append(x).append("\", y=\"").append(y)
+                .append("\"");
         this.sb.append(" style=\"").append(getSVGFontStyle()).append("\">");
         this.sb.append(str).append("</text>");
         this.sb.append("</g>");
@@ -580,7 +590,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawString(AttributedCharacterIterator iterator, float x, float y) {
+    public void drawString(AttributedCharacterIterator iterator, float x, 
+            float y) {
         StringBuilder builder = new StringBuilder();
         int count = iterator.getEndIndex() - iterator.getBeginIndex();
         char c = iterator.first();
@@ -714,9 +725,22 @@ public class SVGGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Draws a line from (x1, y1) to (x2, y2).
+     * 
+     * @param x1  the x-coordinate of the start point.
+     * @param y1  the y-coordinate of the start point.
+     * @param x2  the x-coordinate of the end point.
+     * @param y2  the x-coordinate of the end point.
+     */
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        draw(new Line2D.Float(x1, y1, x2, y2));
+        if (this.line == null) {
+            this.line = new Line2D.Double(x1, y1, x2, y2);
+        } else {
+            this.line.setLine(x1, y1, x2, y2);
+        }
+        draw(this.line);
     }
 
     @Override
@@ -904,7 +928,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
+    public boolean drawImage(Image img, AffineTransform xform, 
+            ImageObserver obs) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -939,7 +964,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param xform 
      */
     @Override
-    public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
+    public void drawRenderableImage(RenderableImage img, 
+            AffineTransform xform) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -970,7 +996,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer) {
+    public boolean drawImage(Image img, int x, int y, int width, int height, 
+            ImageObserver observer) {
         System.err.println("drawImage(Image, int, int, int, int, ImageObserver");
         return false;
     }
@@ -986,7 +1013,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer) {
+    public boolean drawImage(Image img, int x, int y, Color bgcolor, 
+            ImageObserver observer) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -1003,7 +1031,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer) {
+    public boolean drawImage(Image img, int x, int y, int width, int height, 
+            Color bgcolor, ImageObserver observer) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -1023,7 +1052,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
+    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, 
+            int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -1044,7 +1074,9 @@ public class SVGGraphics2D extends Graphics2D {
      * @return 
      */
     @Override
-    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer) {
+    public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, 
+            int sx1, int sy1, int sx2, int sy2, Color bgcolor, 
+            ImageObserver observer) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
@@ -1063,10 +1095,12 @@ public class SVGGraphics2D extends Graphics2D {
      * @return The script.
      */
     public String getSVG() {
-        StringBuilder svg = new StringBuilder("<svg width=\"").append(width).append("\" height=\"").append(height).append("\">\n");
+        StringBuilder svg = new StringBuilder("<svg width=\"").append(width)
+                .append("\" height=\"").append(height).append("\">\n");
         StringBuilder defs = new StringBuilder("<defs>");
         for (GradientPaintKey key : this.gradientPaints.keySet()) {
-            defs.append(getLinearGradientElement(this.gradientPaints.get(key), key.getPaint()));
+            defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
+                    key.getPaint()));
             defs.append("\n");
         }
         defs.append("</defs>");
@@ -1077,7 +1111,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
     
     private String getLinearGradientElement(String id, GradientPaint paint) {
-        StringBuilder b = new StringBuilder("<lineargradient id=\"").append(id).append("\" ");
+        StringBuilder b = new StringBuilder("<lineargradient id=\"").append(id)
+                .append("\" ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
         boolean h = p1.getX() != p2.getX();
@@ -1086,8 +1121,10 @@ public class SVGGraphics2D extends Graphics2D {
         b.append("y1=\"").append(v ? "0%" : "50%").append("\" ");
         b.append("x2=\"").append(h ? "100%" : "50%").append("\" ");
         b.append("y2=\"").append(v ? "100%" : "50%").append("\">");
-        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(getSVGColor(paint.getColor1())).append(";\"/>");
-        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(getSVGColor(paint.getColor2())).append(";\"/>");
+        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(
+                getSVGColor(paint.getColor1())).append(";\"/>");
+        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
+                getSVGColor(paint.getColor2())).append(";\"/>");
         return b.append("</lineargradient>").toString();
     }
     
