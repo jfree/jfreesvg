@@ -792,6 +792,17 @@ public class SVGGraphics2D extends Graphics2D {
         setPaint(saved);
     }
     
+    private void setRoundRect(int x, int y, int width, int height, int arcWidth, 
+            int arcHeight) {
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }        
+    }
+    
     /**
      * Draws a rectangle with rounded corners.
      * 
@@ -804,14 +815,8 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void drawRoundRect(int x, int y, int width, int height, 
-            int arcWidth, int arcHeight) {      
-        if (this.roundRect == null) {
-            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
-                    arcWidth, arcHeight);
-        } else {
-            this.roundRect.setRoundRect(x, y, width, height, 
-                    arcWidth, arcHeight);
-        }
+            int arcWidth, int arcHeight) {
+        setRoundRect(x, y, width, height, arcWidth, arcHeight);
         draw(this.roundRect);
     }
 
@@ -828,13 +833,7 @@ public class SVGGraphics2D extends Graphics2D {
     @Override
     public void fillRoundRect(int x, int y, int width, int height, 
             int arcWidth, int arcHeight) {
-        if (this.roundRect == null) {
-            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
-                    arcWidth, arcHeight);
-        } else {
-            this.roundRect.setRoundRect(x, y, width, height, 
-                    arcWidth, arcHeight);
-        }
+        setRoundRect(x, y, width, height, arcWidth, arcHeight);
         fill(this.roundRect);
     }
 
