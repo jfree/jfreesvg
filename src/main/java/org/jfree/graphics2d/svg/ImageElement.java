@@ -6,7 +6,7 @@ package org.jfree.graphics2d.svg;
 import java.awt.Image;
 
 /**
- * 
+ * An image reference.
  */
 public class ImageElement {
     
