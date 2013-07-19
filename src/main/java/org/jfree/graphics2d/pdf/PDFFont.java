@@ -8,6 +8,19 @@ package org.jfree.graphics2d.pdf;
  */
 public class PDFFont extends PDFObject {
   
+    public static final String HELVETICA = "Helvetica";
+    public static final String HELVETICA_BOLD = "Helvetica-Bold";
+    public static final String HELVETICA_OBLIQUE = "Helvetica-Oblique";
+    public static final String HELVETICA_BOLDOBLIQUE = "Helvetica-BoldOblique";
+    public static final String TIMES_ROMAN = "Times-Roman";
+    public static final String TIMES_BOLD = "Times-Bold";
+    public static final String TIMES_ITALIC = "Times-Italic";
+    public static final String TIMES_BOLDITALIC = "Times-BoldItalic";
+    public static final String COURIER = "Courier";
+    public static final String COURIER_BOLD = "Courier-Bold";
+    public static final String COURIER_ITALIC = "Courier-Italic";
+    public static final String COURIER_BOLDITALIC = "Courier-BoldItalic";
+    
     private String name;
     
     /** The BaseFont (for example, "/Helvetica"). */
