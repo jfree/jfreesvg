@@ -22,9 +22,11 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
@@ -33,12 +35,9 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
 
 /**
  * A Graphics2D implementation that writes to PDF format.
@@ -70,7 +69,7 @@ public class PDFGraphics2D extends Graphics2D {
 
     private AffineTransform transform = new AffineTransform();
 
-    private Shape clip = new Rectangle2D.Double();
+    private Shape clip = null;
     
     private Font font = new Font("SansSerif", Font.PLAIN, 12);
     
@@ -128,31 +127,73 @@ public class PDFGraphics2D extends Graphics2D {
         this.gs.applyStrokeColor(getColor());
         this.gs.applyFillColor(getColor());
     }
-    
+
+    /**
+     * Not yet implemented.
+     * 
+     * @return A new graphics object.
+     */
     @Override
+    public Graphics create() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+ 
+    /**
+     * Returns the paint.  The default value is {@link Color#WHITE}.
+     * 
+     * @return The paint (never <code>null</code>). 
+     */
+   @Override
     public Paint getPaint() {
         return this.paint;
     }
 
+    /**
+     * Sets the paint.  If you pass <code>null</code> to this method, it does 
+     * nothing (in accordance with the JDK specification).
+     * 
+     * @param paint  the paint (<code>null</code> is permitted but ignored). 
+     */
     @Override
     public void setPaint(Paint paint) {
+        if (paint == null) {
+            return;
+        }
         this.paint = paint;
         if (paint instanceof Color) {
             setColor((Color) paint);
         }
     }
 
+    /**
+     * Returns the foreground color.  This method exists for backwards
+     * compatibility in AWT, you should use the {@link #getPaint()} method.
+     * 
+     * @return The foreground color (never <code>null</code>).
+     * 
+     * @see #getPaint() 
+     */
     @Override
     public Color getColor() {
         return this.color;
     }
 
+    /**
+     * Sets the foreground color.  This method exists for backwards 
+     * compatibility in AWT, you should use the 
+     * {@link #setPaint(java.awt.Paint)} method.
+     * 
+     * @param c  the color (<code>null</code> permitted but ignored). 
+     * 
+     * @see #setPaint(java.awt.Paint) 
+     */
     @Override
     public void setColor(Color c) {
-        if (this.color.equals(c)) {
+        if (c == null || this.color.equals(c)) {
             return;
         }
         this.color = c;
+        this.paint = c;
         this.gs.applyStrokeColor(c);
         this.gs.applyFillColor(c);
     }
@@ -161,7 +202,7 @@ public class PDFGraphics2D extends Graphics2D {
      * Returns the background color.  The default value is Color.BLACK.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
-     * @return The background color. 
+     * @return The background color (possibly <code>null</code>). 
      * 
      * @see #setBackground(java.awt.Color) 
      */
@@ -172,22 +213,22 @@ public class PDFGraphics2D extends Graphics2D {
 
     /**
      * Sets the background color.  This is used by the 
-     * {@link #clearRect(int, int, int, int)} method.
+     * {@link #clearRect(int, int, int, int)} method.  The reference 
+     * implementation allows <code>null</code> for the background color so
+     * we allow that too (but for that case, the clearRect method will do 
+     * nothing).
      * 
-     * @param color  the color (<code>null</code> not permitted).
+     * @param color  the color (<code>null</code> permitted).
      */
     @Override
     public void setBackground(Color color) {
-        if (color == null) {
-            throw new IllegalArgumentException("Null 'color' argument.");
-        }
         this.background = color;
     }
 
     /**
      * Returns the current composite.
      * 
-     * @return The current composite.
+     * @return The current composite (never <code>null</code>).
      */
     @Override
     public Composite getComposite() {
@@ -197,17 +238,20 @@ public class PDFGraphics2D extends Graphics2D {
     /**
      * Sets the composite (only AlphaComposite is handled).
      * 
-     * @param comp  the composite.
+     * @param comp  the composite (<code>null<code> not permitted).
      */
     @Override
     public void setComposite(Composite comp) {
+        if (comp == null) {
+            throw new IllegalArgumentException("Null 'comp' argument.");
+        }
         this.composite = comp;
     }
     
     /**
      * Returns the current stroke.
      * 
-     * @return The current stroke. 
+     * @return The current stroke (never <code>null</code>). 
      */
     @Override
     public Stroke getStroke() {
@@ -217,10 +261,13 @@ public class PDFGraphics2D extends Graphics2D {
     /**
      * Sets the stroke (only BasicStroke is handled at present).
      * 
-     * @param s  the stroke.
+     * @param s  the stroke (<code>null</code> not permitted).
      */
     @Override
     public void setStroke(Stroke s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Null 's' argument.");
+        }
         if (this.stroke.equals(s)) {
             return;
         }
@@ -232,9 +279,11 @@ public class PDFGraphics2D extends Graphics2D {
      * Returns the current value for the specified hint.  Note that all hints
      * are currently ignored in this implementation.
      * 
-     * @param hintKey  the hint key.
+     * @param hintKey  the hint key (<code>null</code> permitted, but the
+     *     result will be <code>null</code> also).
      * 
-     * @return The current value for the specified hint.
+     * @return The current value for the specified hint 
+     *     (possibly <code>null</code).
      */
     @Override
     public Object getRenderingHint(RenderingHints.Key hintKey) {
@@ -254,19 +303,20 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the rendering hints.
+     * Returns a copy of the rendering hints.  Modifying the returned copy
+     * will have no impact on the state of this Graphics2D instance.
      * 
-     * @return The rendering hints. 
+     * @return The rendering hints (never <code>null</code>). 
      */
     @Override
     public RenderingHints getRenderingHints() {
-        return this.hints;  // FIXME: should we return a copy?
+        return (RenderingHints) this.hints.clone();
     }
 
     /**
      * Sets the rendering hints.
      * 
-     * @param hints  the new set of hints.
+     * @param hints  the new set of hints (<code>null</code> not permitted).
      */
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
@@ -274,6 +324,11 @@ public class PDFGraphics2D extends Graphics2D {
         this.hints.putAll(hints);
     }
 
+    /**
+     * Adds all the supplied hints.
+     * 
+     * @param hints  the hints (<code>null</code> not permitted).
+     */
     @Override
     public void addRenderingHints(Map<?, ?> hints) {
         this.hints.putAll(hints);
@@ -281,7 +336,6 @@ public class PDFGraphics2D extends Graphics2D {
 
     @Override
     public void draw(Shape s) {
-        Logger.getLogger(PDFGraphics2D.class.getName()).info("draw(Shape); ");
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
             this.gs.drawLine(l);
@@ -289,14 +343,12 @@ public class PDFGraphics2D extends Graphics2D {
             Path2D p = (Path2D) s;
             this.gs.drawPath2D(p);
         } else {
-            System.out.println(s);
             draw(new GeneralPath(s));  // fallback
         }
     }
 
     @Override
     public void fill(Shape s) {
-        Logger.getLogger(PDFGraphics2D.class.getName()).info("fill(Shape);");
         if (s instanceof Path2D) {
             Path2D p = (Path2D) s;
             this.gs.fillPath2D(p);
@@ -305,17 +357,24 @@ public class PDFGraphics2D extends Graphics2D {
         }
     }
 
+    /**
+     * Returns the current font.
+     * 
+     * @return The current font (never <code>null</code>). 
+     */
     @Override
     public Font getFont() {
         return this.font;
     }
 
+    /**
+     * Sets the current font.
+     * 
+     * @param font  the font (<code>null</code> is permitted but ignored). 
+     */
     @Override
     public void setFont(Font font) {
-        if (font == null) {
-            throw new IllegalArgumentException("Null 'font' argument.");
-        }
-        if (this.font.equals(font)) {
+        if (font == null || this.font.equals(font)) {
             return;
         }
         this.font = font;
@@ -327,22 +386,55 @@ public class PDFGraphics2D extends Graphics2D {
         return this.image.createGraphics().getFontMetrics(f);
     }
 
+    /**
+     * Returns the font render context.  The implementation here returns the
+     * FontRenderContext for an image that is maintained internally (as for
+     * {@link SVGGraphics2D.getFontMetrics}.
+     * 
+     * @return The font render context.
+     */
     @Override
     public FontRenderContext getFontRenderContext() {
         return this.image.createGraphics().getFontRenderContext();
     }
 
+    /**
+     * Draws a string at (x, y).
+     * 
+     * @param str  the string (<code>null</code> not permitted).
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * 
+     * @see #drawString(java.lang.String, float, float) 
+     */
     @Override
     public void drawString(String str, int x, int y) {
         drawString(str, (float) x, (float) y);
     }
 
+    /**
+     * Draws a string at (x, y).
+     * 
+     * @param str  the string (<code>null</code> not permitted).
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     */
     @Override
     public void drawString(String str, float x, float y) {
-        Logger.getLogger(PDFGraphics2D.class.getName()).info("drawString(String, float, float);");
+        if (str == null) {
+            throw new NullPointerException("Null 'str' argument.");
+        }
         this.gs.drawString(str, x, y);
     }
 
+    /**
+     * Draws a string of attributed characters.  The call is delegated to
+     * {@link #drawString(java.text.AttributedCharacterIterator, float, float)}. 
+     * 
+     * @param iterator  an iterator for the characters.
+     * @param x  the x-coordinate.
+     * @param y  the x-coordinate.
+     */
     @Override
     public void drawString(AttributedCharacterIterator iterator, int x, int y) {
         drawString(iterator, (float) x, (float) y); 
@@ -373,15 +465,31 @@ public class PDFGraphics2D extends Graphics2D {
         draw(g.getOutline(x, y));
     }
 
+    /**
+     * Translates the origin to <code>(tx, ty)</code>.  This call is delegated 
+     * to {@link #translate(double, double)}.
+     * 
+     * @param tx  the x-translation.
+     * @param ty  the y-translation.
+     * 
+     * @see #translate(double, double) 
+     */
     @Override
-    public final void translate(int x, int y) {
-        translate((double) x, (double) y);
+    public void translate(int tx, int ty) {
+        translate((double) tx, (double) ty);
     }
 
+    /**
+     * Applies the translation (tx, ty).
+     * 
+     * @param tx  the x-translation.
+     * @param ty  the y-translation.
+     */
     @Override
-    public final void translate(double tx, double ty) {
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-        transform(t);
+    public void translate(double tx, double ty) {
+        AffineTransform t = getTransform();
+        t.translate(tx, ty);
+        setTransform(t);
     }
 
     @Override
@@ -397,10 +505,17 @@ public class PDFGraphics2D extends Graphics2D {
         translate(-x, -y);
     }
 
+    /**
+     * Applies a scale transformation.
+     * 
+     * @param sx  the x-scaling factor.
+     * @param sy  the y-scaling factor.
+     */
     @Override
-    public final void scale(double sx, double sy) {
-        AffineTransform t = AffineTransform.getScaleInstance(sx, sy);
-        transform(t);
+    public void scale(double sx, double sy) {
+        AffineTransform t = getTransform();
+        t.scale(sx, sy);
+        setTransform(t);
     }
 
     @Override
@@ -409,15 +524,27 @@ public class PDFGraphics2D extends Graphics2D {
         transform(t);
     }
 
+    /**
+     * Applies this transform to the existing transform.
+     * 
+     * @param t  the transform (<code>null</code> not permitted). 
+     */
     @Override
     public void transform(AffineTransform t) {
         t.concatenate(this.transform);
         setTransform(t);
     }
 
+    /**
+     * Returns a copy of the current transform.
+     * 
+     * @return A copy of the current transform.
+     * 
+     * @see #setTransform(java.awt.geom.AffineTransform) 
+     */
     @Override
     public AffineTransform getTransform() {
-        return this.transform;
+        return (AffineTransform) this.transform.clone();
     }
 
     /**
@@ -437,14 +564,32 @@ public class PDFGraphics2D extends Graphics2D {
         //this.gs.setTransform(t);
     }
 
-    @Override
-    public Graphics create() {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
-    }
-
+    /**
+     * Returns <code>true</code> if the rectangle (in device space) intersects
+     * with the shape (the interior, if onStroke is false, otherwise the 
+     * stroked outline of the shape).
+     * 
+     * @param rect  a rectangle (in device space).
+     * @param s the shape.
+     * @param onStroke  test the stroked outline only?
+     * @return 
+     */
     @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        Shape ts;
+        if (onStroke) {
+            ts = this.transform.createTransformedShape(
+                    this.stroke.createStrokedShape(s));
+        } else {
+            ts = this.transform.createTransformedShape(s);
+        }
+        if (!rect.getBounds2D().intersects(ts.getBounds2D())) {
+            return false;
+        }
+        Area a1 = new Area(rect);
+        Area a2 = new Area(ts);
+        a1.intersect(a2);
+        return !a1.isEmpty();
     }
 
     @Override
@@ -462,14 +607,37 @@ public class PDFGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); // TODO
     }
 
+    /**
+     * Returns the user clipping region.  The initial default value is 
+     * <code>null</code>.
+     * 
+     * @return The user clipping region (possibly <code>null</code>).
+     * 
+     * @see #setClip(java.awt.Shape) 
+     */
     @Override
     public Shape getClip() {
-        return this.clip;  // FIXME : should clone?
+        if (this.clip == null) {
+            return null;
+        }
+        AffineTransform inv;
+        try {
+            inv = this.transform.createInverse();
+            return inv.createTransformedShape(this.clip);
+        } catch (NoninvertibleTransformException ex) {
+            return null;
+        }
     }
 
+    /**
+     * Sets the user clipping region.
+     * 
+     * @param shape  the new user clipping region (<code>null</code> permitted).
+     */
     @Override
-    public void setClip(Shape clip) {
-        this.clip = clip;
+    public void setClip(Shape shape) {
+        // null is handled fine here...
+        this.clip = this.transform.createTransformedShape(shape);
     }
 
     @Override
@@ -477,14 +645,48 @@ public class PDFGraphics2D extends Graphics2D {
         return this.clip.getBounds();
     }
 
+    /**
+     * Clips to the intersection of the current clipping region and the
+     * specified shape. 
+     * 
+     * According to the Oracle API specification, this method will accept a 
+     * <code>null</code> argument, but there is an open bug report (since 2004) 
+     * that suggests this is wrong:
+     * 
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189
+     * 
+     * @param s  the clip shape (<code>null</code> not permitted). 
+     */
     @Override
     public void clip(Shape s) {
-        this.clip = s;
+        if (this.clip == null) {
+            setClip(s);
+            return;
+        }
+        Shape ts = this.transform.createTransformedShape(s);
+        if (!ts.intersects(this.clip.getBounds2D())) {
+            setClip(new Rectangle2D.Double());
+        } else {
+          Area a1 = new Area(ts);
+          Area a2 = new Area(this.clip);
+          a1.intersect(a2);
+          this.clip = new Path2D.Double(a1);
+        }
     }
 
+    /**
+     * Clips to the intersection of the current clipping region and the 
+     * specified rectangle.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
     @Override
     public void clipRect(int x, int y, int width, int height) {
-        clip(new Rectangle(x, y, width, height));
+        setRect(x, y, width, height);
+        clip(this.rect);
     }
 
     @Override
@@ -541,6 +743,9 @@ public class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void clearRect(int x, int y, int width, int height) {
+        if (getBackground() == null) {
+            return;  // we can't do anything
+        }
         Paint saved = getPaint();
         setPaint(getBackground());
         fillRect(x, y, width, height);
@@ -730,8 +935,10 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     @Override
-    public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+    public void drawRenderableImage(RenderableImage img, 
+            AffineTransform xform) {
+        RenderedImage ri = img.createDefaultRendering();
+        drawRenderedImage(ri, xform);
     }
 
     @Override
@@ -745,84 +952,135 @@ public class PDFGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); // TODO
     }
 
+    /**
+     * Draws an image.
+     * 
+     * @param img  the image.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param bgcolor  the background color.
+     * @param observer  ignored.
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
     public boolean drawImage(Image img, int x, int y, Color bgcolor, 
             ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet.");  // TODO
+        int w = img.getWidth(null);
+        if (w < 0) {
+            return false;
+        }
+        int h = img.getHeight(null);
+        if (h < 0) {
+            return false;
+        }
+        return drawImage(img, x, y, w, h, bgcolor, observer);
     }
 
+    /**
+     * Draws an image to the rectangle (x, y, w, h), first filling the 
+     * background with the specified color.
+     * 
+     * @param img  the image.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param w  the width.
+     * @param h  the height.
+     * @param bgcolor  the background color.
+     * @param observer  ignored.
+     * 
+     * @return {@code true} if the image is drawn.      
+     */
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height, 
+    public boolean drawImage(Image img, int x, int y, int w, int h, 
             Color bgcolor, ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet.");  // TODO
+        Paint saved = getPaint();
+        setPaint(bgcolor);
+        fillRect(x, y, w, h);
+        setPaint(saved);
+        return drawImage(img, x, y, w, h, observer);
     }
 
+    /**
+     * Draws an image.
+     * 
+     * @param img  the image.
+     * @param dx1  the x-coordinate for the top left of the destination.
+     * @param dy1  the y-coordinate for the top left of the destination.
+     * @param dx2  the x-coordinate for the bottom right of the destination.
+     * @param dy2  the y-coordinate for the bottom right of the destination.
+     * @param sx1 the x-coordinate for the top left of the source.
+     * @param sy1 the y-coordinate for the top left of the source.
+     * @param sx2 the x-coordinate for the bottom right of the source.
+     * @param sy2 the y-coordinate for the bottom right of the source.
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, 
             int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet.");  // TODO
+        int w = dx2 - dx1;
+        int h = dy2 - dy1;
+        BufferedImage img2 = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 
+                w, h);
+        Graphics2D g2 = img2.createGraphics();
+        g2.drawImage(img, 0, 0, w, h, sx1, sy1, sx2, sy2, null);
+        return drawImage(img2, dx1, dx2, null);
     }
 
+    /**
+     * Draws an image.
+     * 
+     * @param img  the image.
+     * @param dx1  the x-coordinate for the top left of the destination.
+     * @param dy1  the y-coordinate for the top left of the destination.
+     * @param dx2  the x-coordinate for the bottom right of the destination.
+     * @param dy2  the y-coordinate for the bottom right of the destination.
+     * @param sx1 the x-coordinate for the top left of the source.
+     * @param sy1 the y-coordinate for the top left of the source.
+     * @param sx2 the x-coordinate for the bottom right of the source.
+     * @param sy2 the y-coordinate for the bottom right of the source.
+     * @param bgcolor  the background color.
+     * @param observer  ignored.
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, 
             int sx1, int sy1, int sx2, int sy2, Color bgcolor, 
             ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet.");  // TODO
+        Paint saved = getPaint();
+        setPaint(bgcolor);
+        fillRect(dx1, dy1, dx2 - dx1, dy2 - dy1);
+        setPaint(saved);
+        return drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer);
     }
 
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
         throw new UnsupportedOperationException("Not supported yet."); // TODO
     }
-
-//ı//    private void writeGraphics2(ByteArrayOutputStream bos) throws UnsupportedEncodingException, IOException {
-//        bos.write("5 0 obj\n".getBytes("US-ASCII"));
-//        bos.write("<< /Length 883 >>\n".getBytes("US-ASCII"));
-//        
-//        bos.write(this.gs.getBytes());
-//        
-//        bos.write("endobj\n".getBytes("US-ASCII"));
-//    }
-//    
-//    private void writeGraphics(ByteArrayOutputStream bos) throws UnsupportedEncodingException, IOException {
-//        bos.write("5 0 obj\n".getBytes("US-ASCII"));
-//        bos.write("<< /Length 883 >>\n".getBytes("US-ASCII"));
-//        bos.write("stream\n".getBytes("US-ASCII"));
-//        //69
-//        bos.write("% Draw a black line segment, using the default line width.\n150 250 m\n".getBytes("US-ASCII"));
-//        //10
-//        bos.write("150 350 l\n".getBytes("US-ASCII"));
-//        //2
-//        bos.write("S\n".getBytes("US-ASCII"));
-//        //72
-//        bos.write("% Draw a thicker, dashed line segment.\n4 w % Set line width to 4 points\n".getBytes("US-ASCII"));
-//        //56
-//        bos.write("[4 6] 0 d % Set dash pattern to 4 units on, 6 units off\n".getBytes("US-ASCII"));
-//        //10
-//        bos.write("150 250 m\n".getBytes("US-ASCII"));
-//        //12
-//        bos.write("400 250 l\nS\n".getBytes("US-ASCII"));
-//        //77
-//        bos.write("[] 0 d % Reset dash pattern to a solid line\n1 w % Reset line width to 1 unit\n".getBytes("US-ASCII"));
-//        //169
-//        bos.write("% Draw a rectangle with a 1-unit red border, filled with light blue.\n1.0 0.0 0.0 RG % Red for stroke color\n0.5 0.75 1.0 rg % Light blue for fill color\n200 300 50 75 re\n".getBytes("US-ASCII"));
-//        //2
-//        bos.write("B\n".getBytes("US-ASCII"));
-//        //74
-//        bos.write("% Draw a curve filled with gray and with a colored border.\n0.5 0.1 0.2 RG\n".getBytes("US-ASCII"));
-//        //6
-//        bos.write("0.7 g\n".getBytes("US-ASCII"));
-//        //10
-//        bos.write("300 300 m\n".getBytes("US-ASCII"));
-//        //26
-//        bos.write("300 400 400 400 400 300 c\n".getBytes("US-ASCII"));
-//        bos.write("b\nendstream\n".getBytes("US-ASCII"));
-//        bos.write("endobj\n".getBytes("US-ASCII"));
-//    }
     
     @Override
     public void dispose() {
         // nothing to do
     }
-    
+
+    /**
+     * Sets the attributes of the reusable {@link Rectangle2D} object that is
+     * used by the {@link #drawRect(int, int, int, int)} and 
+     * {@link #fillRect(int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
+    private void setRect(int x, int y, int width, int height) {
+        if (this.rect == null) {
+            this.rect = new Rectangle2D.Double(x, y, width, height);
+        } else {
+            this.rect.setRect(x, y, width, height);
+        }
+    }
 }
