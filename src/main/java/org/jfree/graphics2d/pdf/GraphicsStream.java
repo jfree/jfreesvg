@@ -228,25 +228,23 @@ public class GraphicsStream extends Stream {
             switch (type) {
             case (PathIterator.SEG_MOVETO):
                 b.append(coords[0]).append(" ");
-                b.append(coords[1]).append(" ").append("m\n");
+                b.append(coords[1]).append(" m\n");
                 break;
             case (PathIterator.SEG_LINETO):
                 b.append(coords[0]).append(" ").append(coords[1]);
-                b.append(" ").append("l\n");                
+                b.append(" l\n");                
                 break;
             case (PathIterator.SEG_QUADTO):
-                //b.append("Q ").append(coords[0])
-                //        .append(" ").append(coords[1])
-                //        .append(" ").append(coords[2])
-                //        .append(" ").append(coords[3]);
+                b.append(coords[0]).append(" ").append(coords[1]).append(" ")
+                        .append(coords[0]).append(" ").append(coords[1])
+                        .append(" ").append(coords[2]).append(" ")
+                        .append(coords[3]).append(" c\n");
                 break;
             case (PathIterator.SEG_CUBICTO):
-                //b.append("C ").append(coords[0]).append(" ")
-                //        .append(coords[1]).append(" ")
-                //        .append(coords[2]).append(" ")
-                //        .append(coords[3]).append(" ")
-                //        .append(coords[4]).append(" ")
-                //        .append(coords[5]);
+                b.append(coords[0]).append(" ").append(coords[1]).append(" ")
+                        .append(coords[2]).append(" ").append(coords[3])
+                        .append(" ").append(coords[4]).append(" ")
+                        .append(coords[5]).append(" c\n");
                 break;
             case (PathIterator.SEG_CLOSE):
                 b.append("h\n");

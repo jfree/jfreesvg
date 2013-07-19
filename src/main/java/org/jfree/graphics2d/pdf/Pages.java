@@ -25,12 +25,15 @@ public class Pages extends PDFObject {
     
     private int nextFont = 1;
     
+    private FontMapper fontMapper;
+    
     Pages(int number, int generation, PDFDocument parent) {
         super(number, generation);
         this.parent = parent;
         this.pages = new ArrayList<Page>();
         this.fonts = new ArrayList<PDFFont>();
         this.fontMap = new HashMap<FontKey, PDFFont>();
+        this.fontMapper = new DefaultFontMapper();
     }
     
     public PDFDocument getDocument() {
@@ -58,16 +61,16 @@ public class Pages extends PDFObject {
         this.pages.add(page);
     }
     
-    
     public String findOrCreateFontReference(Font f) {
         // for now, map all fonts to one of the standard PDF fonts
         FontKey fontKey = FontKey.createFontKey(f);
         PDFFont pdfFont = this.fontMap.get(fontKey);
         if (pdfFont == null) {
             int number = this.parent.getNextNumber();
-            String name = "/F" + this.nextFont + "D" + f.getFamily();
+            String name = "/F" + this.nextFont + "-" + f.getFamily();
+            String baseFont = this.fontMapper.mapToBaseFont(f);
             this.nextFont++;
-            pdfFont = new PDFFont(number, 0, name, "/Times-Roman", "/MacRomanEncoding");
+            pdfFont = new PDFFont(number, 0, name, "/" + baseFont, "/MacRomanEncoding");
             this.fonts.add(pdfFont);
             this.fontMap.put(fontKey, pdfFont);
         }
