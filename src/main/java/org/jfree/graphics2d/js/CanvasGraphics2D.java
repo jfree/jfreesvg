@@ -54,7 +54,7 @@ public class CanvasGraphics2D extends Graphics2D {
     /** Rendering hints (all ignored). */
     private RenderingHints hints;
     
-    private Shape clip = new Rectangle2D.Double();
+    private Shape clip;;
     
     private Paint paint = Color.BLACK;
     
@@ -106,7 +106,9 @@ public class CanvasGraphics2D extends Graphics2D {
     public CanvasGraphics2D(String canvasID) {
         this.canvasID = canvasID;
         this.sb = new StringBuilder();
-        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        this.clip = null;
     }
 
     @Override
@@ -507,15 +509,29 @@ public class CanvasGraphics2D extends Graphics2D {
         draw(g.getOutline(x, y));
     }
 
+    /**
+     * Translates the origin to <code>(tx, ty)</code>.  This call is delegated 
+     * to {@link #translate(double, double)}.
+     * 
+     * @param tx  the x-translation.
+     * @param ty  the y-translation.
+     */
     @Override
     public void translate(int x, int y) {
         translate((double) x, (double) y);
     }
 
+    /**
+     * Applies the translation (tx, ty).
+     * 
+     * @param tx  the x-translation.
+     * @param ty  the y-translation.
+     */
     @Override
     public void translate(double tx, double ty) {
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-        transform(t);
+        AffineTransform t = getTransform();
+        t.translate(tx, ty);
+        setTransform(t);
     }
 
     @Override
@@ -531,10 +547,17 @@ public class CanvasGraphics2D extends Graphics2D {
         translate(-x, -y);
     }
 
+    /**
+     * Applies a scale transformation.
+     * 
+     * @param sx  the x-scaling factor.
+     * @param sy  the y-scaling factor.
+     */
     @Override
     public void scale(double sx, double sy) {
-        AffineTransform t = AffineTransform.getScaleInstance(sx, sy);
-        transform(t);
+        AffineTransform t = getTransform();
+        t.scale(sx, sy);
+        setTransform(t);
     }
 
     @Override
@@ -557,9 +580,14 @@ public class CanvasGraphics2D extends Graphics2D {
         setTransform(t);
     }
 
+    /**
+     * Returns a copy of the current transform.
+     * 
+     * @return A copy of the current transform.
+     */
     @Override
     public AffineTransform getTransform() {
-        return this.transform;
+        return (AffineTransform) this.transform.clone();
     }
 
     /**
@@ -605,11 +633,25 @@ public class CanvasGraphics2D extends Graphics2D {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Returns the clip bounds.
+     * 
+     * @return The clip bounds (possibly <code>null</code>). 
+     */
     @Override
     public Rectangle getClipBounds() {
-        return this.clip.getBounds();
+        if (this.clip == null) {
+            return null;
+        }
+        return getClip().getBounds();
     }
 
+    /**
+     * Returns the user clipping region.  The initial default value is 
+     * <code>null</code>.
+     * 
+     * @return The user clipping region (possibly <code>null</code>). 
+     */
     @Override
     public Shape getClip() {
         return this.clip;  // FIXME : should clone?
