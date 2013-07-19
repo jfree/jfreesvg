@@ -41,6 +41,7 @@ import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.AttributedCharacterIterator;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
-import org.jfree.graphics2d.Shapes;
+import org.jfree.graphics2d.GraphicsUtils;
 
 /**
  * A Graphics2D implementation that creates SVG output.  Some implementation
@@ -75,6 +76,14 @@ public class SVGGraphics2D extends Graphics2D {
     
     private int height;
     
+    /** 
+     * The number of decimal places to use when writing the matrix values
+     * for transformations. 
+     */
+    private int matrixDP;
+
+    private DecimalFormat fixedDPFormat = new DecimalFormat("0.######");
+
     /** The buffer that accumulates the SVG output. */
     private StringBuilder sb;
 
@@ -91,8 +100,17 @@ public class SVGGraphics2D extends Graphics2D {
      */
     private Map<Shape, String> clipPaths = new HashMap<Shape, String>();
     
+    /** 
+     * A list of images that are referenced but not embedded in the SVG.
+     * After the SVG is generated, the caller can make use of this list to
+     * write PNG files if they don't already exist.  
+     */
+    private List<ImageElement> imageElements;
+    
     /** The user clip (can be null). */
     private Shape clip;
+    
+    private Shape registeredClip;
     
     /** The current transform. */
     private AffineTransform transform = new AffineTransform();
@@ -112,7 +130,7 @@ public class SVGGraphics2D extends Graphics2D {
     private Color background = Color.BLACK;
 
     /** A hidden image used for font metrics. */
-    private BufferedImage image = new BufferedImage(10, 10, 
+    private BufferedImage fmImage = new BufferedImage(10, 10, 
             BufferedImage.TYPE_INT_RGB);;
 
     /**
@@ -162,13 +180,59 @@ public class SVGGraphics2D extends Graphics2D {
         this.width = width;
         this.height = height;
         this.clip = null;
+        this.imageElements = new ArrayList<ImageElement>();
         this.sb = new StringBuilder();
-        this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        this.hints.put(SVGHints.SVG_IMAGE_HANDLING_KEY, 
-                SVGHints.IMAGE_EMBED_PNG_DATA_VAL);
+        this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
+                SVGHints.VALUE_IMAGE_HANDLING_EMBED);
     }
 
+    /**
+     * Returns the width for the SVG element, specified in the constructor.
+     * 
+     * @return The width for the SVG element. 
+     */
+    public int getWidth() {
+        return this.width;
+    }
+    
+    /**
+     * Returns the height for the SVG element, specified in the constructor.
+     * 
+     * @return The height for the SVG element. 
+     */
+    public int getHeight() {
+        return this.height;
+    }
+    
+    /**
+     * Returns the number of decimal places used to write the transformation
+     * matrices in the SVG output.  The default value is 6.
+     * 
+     * @return The number of decimal places.
+     */
+    public int getMatrixDP() {
+        return this.matrixDP;    
+    }
+    
+    /**
+     * Sets the number of decimal places used to write the transformation
+     * matrices in the SVG output.  Values in the range 1 to 10 will be used
+     * to configure a formatter to that number of decimal places, for all other
+     * values we revert to the normal String conversion of double primitives
+     * (approximately 16 decimals places).
+     * 
+     * @param dp  the number of decimal places (normally 1 to 10). 
+     */
+    public void setMatrixDP(int dp) {
+        this.matrixDP = dp;
+        if (dp < 1 || dp > 10) {
+            this.fixedDPFormat = null;
+            return;
+        }
+        this.fixedDPFormat = new DecimalFormat("0." 
+                + "##########".substring(0, dp));
+    }
+    
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
@@ -207,12 +271,16 @@ public class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Sets the paint.
+     * Sets the paint.  If you pass <code>null</code> to this method, it does 
+     * nothing (in accordance with the JDK specification).
      * 
-     * @param paint  the paint (<code>null</code> not permitted). 
+     * @param paint  the paint (<code>null</code> is permitted but ignored). 
      */
     @Override
     public void setPaint(Paint paint) {
+        if (paint == null) {
+            return;
+        }
         this.paint = paint;
         this.gradientPaintRef = null;
         if (paint instanceof Color) {
@@ -235,7 +303,9 @@ public class SVGGraphics2D extends Graphics2D {
      * Returns the foreground color.  This method exists for backwards
      * compatibility in AWT, you should use the {@link #getPaint()} method.
      * 
-     * @return The foreground color. 
+     * @return The foreground color (never <code>null</code>).
+     * 
+     * @see #getPaint() 
      */
     @Override
     public Color getColor() {
@@ -247,18 +317,24 @@ public class SVGGraphics2D extends Graphics2D {
      * compatibility in AWT, you should use the 
      * {@link #setPaint(java.awt.Paint)} method.
      * 
-     * @param c  the color. 
+     * @param c  the color (<code>null</code> permitted but ignored). 
+     * 
+     * @see #setPaint(java.awt.Paint) 
      */
     @Override
     public void setColor(Color c) {
+        if (c == null) {
+            return;
+        }
         this.color = c;
+        this.paint = c;
     }
 
     /**
      * Returns the background color.  The default value is Color.BLACK.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
-     * @return The background color. 
+     * @return The background color (possibly <code>null</code>). 
      * 
      * @see #setBackground(java.awt.Color) 
      */
@@ -269,22 +345,22 @@ public class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the background color.  This is used by the 
-     * {@link #clearRect(int, int, int, int)} method.
+     * {@link #clearRect(int, int, int, int)} method.  The reference 
+     * implementation allows <code>null</code> for the background color so
+     * we allow that too (but for that case, the clearRect method will do 
+     * nothing).
      * 
-     * @param color  the color (<code>null</code> not permitted).
+     * @param color  the color (<code>null</code> permitted).
      */
     @Override
     public void setBackground(Color color) {
-        if (color == null) {
-            throw new IllegalArgumentException("Null 'color' argument.");
-        }
         this.background = color;
     }
 
     /**
      * Returns the current composite.
      * 
-     * @return The current composite.
+     * @return The current composite (never <code>null</code>).
      */
     @Override
     public Composite getComposite() {
@@ -294,17 +370,20 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Sets the composite (only AlphaComposite is handled).
      * 
-     * @param comp  the composite.
+     * @param comp  the composite (<code>null<code> not permitted).
      */
     @Override
     public void setComposite(Composite comp) {
+        if (comp == null) {
+            throw new IllegalArgumentException("Null 'comp' argument.");
+        }
         this.composite = comp;
     }
 
     /**
      * Returns the current stroke.
      * 
-     * @return The current stroke. 
+     * @return The current stroke (never <code>null</code>). 
      */
     @Override
     public Stroke getStroke() {
@@ -314,10 +393,13 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Sets the stroke (only BasicStroke is handled at present).
      * 
-     * @param s  the stroke.
+     * @param s  the stroke (<code>null</code> not permitted).
      */
     @Override
     public void setStroke(Stroke s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Null 's' argument.");
+        }
         this.stroke = s;
     }
 
@@ -326,9 +408,11 @@ public class SVGGraphics2D extends Graphics2D {
      * {@link SVGHints} class for information about the hints that can be
      * used with this implementation.
      * 
-     * @param hintKey  the hint key.
+     * @param hintKey  the hint key (<code>null</code> permitted, but the
+     *     result will be <code>null</code> also).
      * 
-     * @return The current value for the specified hint.
+     * @return The current value for the specified hint 
+     *     (possibly <code>null</code).
      */
     @Override
     public Object getRenderingHint(RenderingHints.Key hintKey) {
@@ -348,9 +432,10 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns a copy of the rendering hints.
+     * Returns a copy of the rendering hints.  Modifying the returned copy
+     * will have no impact on the state of this Graphics2D instance.
      * 
-     * @return The rendering hints. 
+     * @return The rendering hints (never <code>null</code>). 
      */
     @Override
     public RenderingHints getRenderingHints() {
@@ -360,7 +445,7 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Sets the rendering hints.
      * 
-     * @param hints  the new set of hints.
+     * @param hints  the new set of hints (<code>null</code> not permitted).
      */
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
@@ -371,7 +456,7 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Adds all the supplied hints.
      * 
-     * @param hints  the hints. 
+     * @param hints  the hints (<code>null</code> not permitted).
      */
     @Override
     public void addRenderingHints(Map<?, ?> hints) {
@@ -435,6 +520,9 @@ public class SVGGraphics2D extends Graphics2D {
     public void fill(Shape s) {
         if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
+            if (r.isEmpty()) {
+                return;
+            }
             this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
                     .append(r.getY()).append("\" width=\"").append(r.getWidth())
                     .append("\" height=\"").append(r.getHeight()).append("\" ");
@@ -607,7 +695,7 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the current font.
      * 
-     * @return The current font. 
+     * @return The current font (never <code>null</code>). 
      */
     @Override
     public Font getFont() {
@@ -617,12 +705,12 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Sets the current font.
      * 
-     * @param font  the font. 
+     * @param font  the font (<code>null</code> is permitted but ignored). 
      */
     @Override
     public void setFont(Font font) {
         if (font == null) {
-            throw new IllegalArgumentException("Null 'font' argument.");
+            return;
         }
         this.font = font;
     }
@@ -655,7 +743,7 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public FontMetrics getFontMetrics(Font f) {
-        return this.image.createGraphics().getFontMetrics(f);
+        return this.fmImage.createGraphics().getFontMetrics(f);
     }
     
     /**
@@ -667,15 +755,17 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public FontRenderContext getFontRenderContext() {
-        return this.image.createGraphics().getFontRenderContext();
+        return this.fmImage.createGraphics().getFontRenderContext();
     }
 
     /**
      * Draws a string at (x, y).
      * 
-     * @param str  the string.
+     * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
+     * 
+     * @see #drawString(java.lang.String, float, float) 
      */
     @Override
     public void drawString(String str, int x, int y) {
@@ -685,12 +775,15 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Draws a string at (x, y).
      * 
-     * @param str  the string.
+     * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
     @Override
     public void drawString(String str, float x, float y) {
+        if (str == null) {
+            throw new NullPointerException("Null 'str' argument.");
+        }
         this.sb.append("<g ");
         this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\">");
@@ -755,6 +848,8 @@ public class SVGGraphics2D extends Graphics2D {
      * 
      * @param tx  the x-translation.
      * @param ty  the y-translation.
+     * 
+     * @see #translate(double, double) 
      */
     @Override
     public void translate(int tx, int ty) {
@@ -786,7 +881,7 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies a rotation (anti-clockwise) about <code>(x, y)</code>..
+     * Applies a rotation (anti-clockwise) about <code>(x, y)</code>.
      * 
      * @param theta  the rotation angle (in radians).
      * @param x  the x-coordinate.
@@ -827,7 +922,7 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Applies this transform to the existing transform.
      * 
-     * @param t  the transform. 
+     * @param t  the transform (<code>null</code> not permitted). 
      */
     @Override
     public void transform(AffineTransform t) {
@@ -838,7 +933,9 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Returns a copy of the current transform.
      * 
-     * @return A copy of the current transform.
+     * @return A copy of the current transform (never <code>null</code>).
+     * 
+     * @see #setTransform(java.awt.geom.AffineTransform) 
      */
     @Override
     public AffineTransform getTransform() {
@@ -860,9 +957,18 @@ public class SVGGraphics2D extends Graphics2D {
         }
     }
 
+    /**
+     * Returns <code>true</code> if the rectangle (in device space) intersects
+     * with the shape (the interior, if onStroke is false, otherwise the 
+     * stroked outline of the shape).
+     * 
+     * @param rect  a rectangle (in device space).
+     * @param s the shape.
+     * @param onStroke  test the stroked outline only?
+     * @return 
+     */
     @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
-        Shape trect = this.transform.createTransformedShape(rect);
         Shape ts;
         if (onStroke) {
             ts = this.transform.createTransformedShape(
@@ -870,10 +976,10 @@ public class SVGGraphics2D extends Graphics2D {
         } else {
             ts = this.transform.createTransformedShape(s);
         }
-        if (!trect.getBounds2D().intersects(ts.getBounds2D())) {
+        if (!rect.getBounds2D().intersects(ts.getBounds2D())) {
             return false;
         }
-        Area a1 = new Area(trect);
+        Area a1 = new Area(rect);
         Area a2 = new Area(ts);
         a1.intersect(a2);
         return !a1.isEmpty();
@@ -914,7 +1020,9 @@ public class SVGGraphics2D extends Graphics2D {
      * Returns the user clipping region.  The initial default value is 
      * <code>null</code>.
      * 
-     * @return The user clipping region (possibly <code>null</code>). 
+     * @return The user clipping region (possibly <code>null</code>).
+     * 
+     * @see #setClip(java.awt.Shape) 
      */
     @Override
     public Shape getClip() {
@@ -923,17 +1031,9 @@ public class SVGGraphics2D extends Graphics2D {
         }
         AffineTransform inv;
         try {
-            //        if (this.clip instanceof Rectangle2D) {
-            //            Rectangle2D r = (Rectangle2D) this.clip;
-            //            return new Rectangle2D.Double(r.getX(), r.getY(), r.getWidth(),
-            //                    r.getHeight());
-            //        } else {
-            //            return new Path2D.Double(this.clip);
-            //        }
             inv = this.transform.createInverse();
             return inv.createTransformedShape(this.clip);
         } catch (NoninvertibleTransformException ex) {
-            Logger.getLogger(SVGGraphics2D.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -961,18 +1061,28 @@ public class SVGGraphics2D extends Graphics2D {
             return;  // nothing to do
         }
         int count = this.clipPaths.size();
-        Shape key = Shapes.copyOf(clip);
+        Shape key = GraphicsUtils.copyOf(clip);
         this.clipPaths.put(key, "clip-" + count);
+        this.registeredClip = key;
+    }
+    
+    private String fixedDP(double d) {
+        if (this.fixedDPFormat != null) {
+            return fixedDPFormat.format(d);            
+        } else {
+            return String.valueOf(d);
+        }
+
     }
     
     private String getSVGTransform(AffineTransform t) {
         StringBuilder b = new StringBuilder("matrix(");
-        b.append(t.getScaleX()).append(",");
-        b.append(t.getShearY()).append(",");
-        b.append(t.getShearX()).append(",");
-        b.append(t.getScaleY()).append(",");
-        b.append(t.getTranslateX()).append(",");
-        b.append(t.getTranslateY()).append(")");
+        b.append(fixedDP(t.getScaleX())).append(",");
+        b.append(fixedDP(t.getShearY())).append(",");
+        b.append(fixedDP(t.getShearX())).append(",");
+        b.append(fixedDP(t.getScaleY())).append(",");
+        b.append(fixedDP(t.getTranslateX())).append(",");
+        b.append(fixedDP(t.getTranslateY())).append(")");
         return b.toString();
     }
 
@@ -1028,6 +1138,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
+     * 
+     * @see #getClip() 
      */
     @Override
     public void setClip(int x, int y, int width, int height) {
@@ -1079,6 +1191,9 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void clearRect(int x, int y, int width, int height) {
+        if (getBackground() == null) {
+            return;  // we can't do anything
+        }
         Paint saved = getPaint();
         setPaint(getBackground());
         fillRect(x, y, width, height);
@@ -1265,7 +1380,8 @@ public class SVGGraphics2D extends Graphics2D {
         try {
             ImageIO.write(ri, "png", baos);
         } catch (IOException ex) {
-            Logger.getLogger(SVGGraphics2D.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SVGGraphics2D.class.getName()).log(Level.SEVERE, 
+                    "IOException while writing PNG data.", ex);
         }
         return baos.toByteArray();
     }  
@@ -1282,11 +1398,11 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
-        int w = img.getWidth(null);
+        int w = img.getWidth(observer);
         if (w < 0) {
             return false;
         }
-        int h = img.getHeight(null);
+        int h = img.getHeight(observer);
         if (h < 0) {
             return false;
         }
@@ -1309,31 +1425,47 @@ public class SVGGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             ImageObserver observer) {
-        if (SVGHints.IMAGE_EMBED_PNG_DATA_VAL.equals(this.getRenderingHint(
-                SVGHints.SVG_IMAGE_HANDLING_KEY))) {
+        
+        // the rendering hints control whether the image is embedded or
+        // referenced...
+        Object hint = this.getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
+        if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
             this.sb.append("<image xlink:href=\"data:image/png;base64,");
             this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
                     img)));
             this.sb.append("\" ");
-            
-            String clipRef = this.clipPaths.get(this.clip);
+            String clipRef = this.clipPaths.get(this.registeredClip);
             if (clipRef != null) {
                 this.sb.append("clip-path=\"url(#").append(clipRef)
                         .append(")\" ");
             }
-            
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");            
             this.sb.append("x=\"").append(x).append("\" y=\"").append(y)
                     .append("\" ");
             this.sb.append("width=\"").append(w).append("\" height=\"")
                     .append(h).append("\"/>\n");
-
             return true;
-        } else {
-            // TODO
-            // generate an image file name
-            // add the image to a map with the given name
+        } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
+            int count = this.imageElements.size();
+            String fileName = "image-" + count + ".png";
+            ImageElement imageElement = new ImageElement(fileName, img);
+            this.imageElements.add(imageElement);
             // write an SVG element for the img
-            return false;
+            this.sb.append("<image xlink:href=\"");
+            this.sb.append(fileName).append("\" ");
+            String clipRef = this.clipPaths.get(this.registeredClip);
+            if (clipRef != null) {
+                this.sb.append("clip-path=\"url(#").append(clipRef)
+                        .append(")\" ");
+            }
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
+            this.sb.append("x=\"").append(x).append("\" y=\"").append(y)
+                    .append("\" ");
+            this.sb.append("width=\"").append(w).append("\" height=\"")
+                    .append(h).append("\"/>\n");
+            return true;
         }
     }
 
@@ -1442,21 +1574,22 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Not yet supported.
+     * Draws the rendered image.
      * 
-     * @param img
-     * @param xform 
+     * @param img  the image.
+     * @param xform  the transform.
      */
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        BufferedImage bi = GraphicsUtils.convertRenderedImage(img);
+        drawImage(bi, xform, null);
     }
 
     /**
-     * Not yet supported.
+     * Draws the renderable image.
      * 
-     * @param img
-     * @param xform 
+     * @param img  the renderable image.
+     * @param xform  the transform.
      */
     @Override
     public void drawRenderableImage(RenderableImage img, 
@@ -1466,30 +1599,37 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Not yet supported.
+     * Draws an image with the specified transform.
      * 
-     * @param img
-     * @param xform
-     * @param obs
-     * @return 
+     * @param img  the image.
+     * @param xform  the transform.
+     * @param obs  the image observer (ignored).
+     * 
+     * @return {@code true} if the image is drawn. 
      */
     @Override
     public boolean drawImage(Image img, AffineTransform xform, 
             ImageObserver obs) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        AffineTransform savedTransform = getTransform();
+        transform(xform);
+        boolean result = drawImage(img, 0, 0, obs);
+        setTransform(savedTransform);
+        return result;
     }
 
     /**
-     * Not yet supported.
+     * Draws the image resulting from applying the BufferedImageOp to the 
+     * specified image.
      * 
-     * @param img
-     * @param op
-     * @param x
-     * @param y 
+     * @param img  the image.
+     * @param op  the operation.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
      */
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        BufferedImage imageToDraw = op.filter(img, null);
+        drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
     }
 
     /**
@@ -1545,15 +1685,19 @@ public class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the list of image elements that have been included in the 
-     * SVG output.  You will need to ensure that the corresponding image
-     * files are written to the output.
+     * Returns the list of image elements that have been referenced in the 
+     * SVG output but not embedded.  If the image files don't already exist,
+     * you can use this list as the basis for creating the image files.
      * 
-     * @return The list of image elements. 
+     * @return The list of image elements.
+     * 
+     * @see SVGHints#SVG_IMAGE_HANDLING_KEY
      */
     public List<ImageElement> getSVGImages() {
-        return new ArrayList<ImageElement>();
+        return this.imageElements;
     }
+    
+    private static final double EPSILON = 0.00000001;
     
     /**
      * Returns an element to represent a linear gradient.  All the linear
@@ -1569,8 +1713,8 @@ public class SVGGraphics2D extends Graphics2D {
                 .append("\" ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        boolean h = p1.getX() != p2.getX();
-        boolean v = p1.getY() != p2.getY();
+        boolean h = Math.abs(p1.getX() - p2.getX()) > EPSILON;
+        boolean v = Math.abs(p1.getY() - p2.getY()) > EPSILON;
         b.append("x1=\"").append(h ? "0%" : "50%").append("\" ");
         b.append("y1=\"").append(v ? "0%" : "50%").append("\" ");
         b.append("x2=\"").append(h ? "100%" : "50%").append("\" ");
@@ -1607,9 +1751,9 @@ public class SVGGraphics2D extends Graphics2D {
      */
     private String getClipPathRef() {
         StringBuilder b = new StringBuilder();
-        String clipRef = this.clipPaths.get(this.clip);
+        String clipRef = this.clipPaths.get(this.registeredClip);
         if (clipRef != null) {
-            this.sb.append("clip-path=\"url(#").append(clipRef).append(")\"");
+            b.append("clip-path=\"url(#").append(clipRef).append(")\"");
         }
         return b.toString();
     }
