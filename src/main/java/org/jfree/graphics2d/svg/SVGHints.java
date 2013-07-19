@@ -13,16 +13,24 @@ import java.awt.RenderingHints;
 public class SVGHints {
 
     /**
-     * The key for the hint that controls how images are supported.
+     * The key for the hint that controls whether images are embedded in the
+     * SVG or referenced externally.
      */
-    public static final SVGHints.Key SVG_IMAGE_HANDLING_KEY 
+    public static final SVGHints.Key KEY_IMAGE_HANDLING 
             = new SVGHints.Key();
     
-    public static final Object IMAGE_EMBED_PNG_DATA_VAL 
-            = "IMAGE_EMBED_PNG_DATA_VAL";
+    /**
+     * Hint value to say that images should be embedded in the SVG output
+     * using PNG data Base64 encoded.
+     */
+    public static final Object VALUE_IMAGE_HANDLING_EMBED 
+            = "VALUE_IMAGE_HANDLING_EMBED";
     
-    public static final Object IMAGE_HREF_PNG_FILE_VAL 
-            = "IMAGE_HREF_PNG_FILE_VAL";
+    /**
+     * Hint value to say that images should be referenced externally.
+     */
+    public static final Object VALUE_IMAGE_HANDLING_REFERENCE 
+            = "VALUE_IMAGE_HANDLING_REFERENCE";
     
     /**
      * A key for hints used by the SVGGraphics2D class.
@@ -42,8 +50,8 @@ public class SVGHints {
          */
         @Override
         public boolean isCompatibleValue(Object val) {
-            return IMAGE_EMBED_PNG_DATA_VAL.equals(val)
-                    || IMAGE_HREF_PNG_FILE_VAL.equals(val);
+            return VALUE_IMAGE_HANDLING_EMBED.equals(val)
+                    || VALUE_IMAGE_HANDLING_REFERENCE.equals(val);
         }
     }
     
