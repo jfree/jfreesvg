@@ -27,6 +27,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -48,6 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
+import org.jfree.graphics2d.Shapes;
 
 /**
  * A Graphics2D implementation that creates SVG output.  Some implementation
@@ -57,6 +59,7 @@ import javax.xml.bind.DatatypeConverter;
  * note that the observer is ignored completely.  In any case, using images
  * that are not fully loaded already would not be a good idea in the 
  * context of generating SVG data/files;</li>
+ * 
  * <li>the getFontMetrics() and getFontRenderContext() methods return values
  * that come from an internal BufferedImage, this is a short-cut and we don't
  * know if there are any negative consequences (if you know of any, please
@@ -158,7 +161,7 @@ public class SVGGraphics2D extends Graphics2D {
     public SVGGraphics2D(int width, int height) {
         this.width = width;
         this.height = height;
-        this.clip = new Rectangle(0, 0, width, height);
+        this.clip = null;
         this.sb = new StringBuilder();
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -389,23 +392,29 @@ public class SVGGraphics2D extends Graphics2D {
             this.sb.append("<line x1=\"").append(l.getX1())
                     .append("\" y1=\"").append(l.getY1()).append("\" x2=\"")
                     .append(l.getX2()).append("\" y2=\"")
-                    .append(l.getY2()).append("\"");
-            this.sb.append(" style=\"").append(strokeStyle()).append("\" ");
+                    .append(l.getY2()).append("\" ");
+            this.sb.append("style=\"").append(strokeStyle()).append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
             this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
                     .append(r.getY()).append("\" width=\"").append(r.getWidth())
-                    .append("\" height=\"").append(r.getHeight()).append("\"");
-            this.sb.append(" style=\"").append(strokeStyle())
+                    .append("\" height=\"").append(r.getHeight()).append("\" ");
+            this.sb.append("style=\"").append(strokeStyle())
                     .append("; fill: none").append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g style=\"").append(strokeStyle())
                     .append("; fill: none").append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -428,14 +437,18 @@ public class SVGGraphics2D extends Graphics2D {
             Rectangle2D r = (Rectangle2D) s;
             this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
                     .append(r.getY()).append("\" width=\"").append(r.getWidth())
-                    .append("\" height=\"").append(r.getHeight()).append("\"");
-            this.sb.append(" style=\"").append(getSVGFillStyle()).append("\" ");
+                    .append("\" height=\"").append(r.getHeight()).append("\" ");
+            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g style=\"").append(getSVGFillStyle());
             this.sb.append("; stroke: none").append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -623,7 +636,7 @@ public class SVGGraphics2D extends Graphics2D {
          StringBuilder b = new StringBuilder();
          b.append("fill: ").append(getSVGColor()).append("; ");
          b.append("font-family: ").append(this.font.getFamily()).append("; ");
-         b.append("font-size: ").append(this.font.getSize()).append(";");
+         b.append("font-size: ").append(this.font.getSize()).append("; ");
          if (this.font.isBold()) {
              b.append("font-weight: bold; ");
          }
@@ -679,14 +692,8 @@ public class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawString(String str, float x, float y) {
         this.sb.append("<g ");
-        this.sb.append("transform=\"matrix(");
-        this.sb.append(this.transform.getScaleX()).append(","); // m00
-        this.sb.append(this.transform.getShearY()).append(","); // m10
-        this.sb.append(this.transform.getShearX()).append(","); // m01
-        this.sb.append(this.transform.getScaleY()).append(",");  // m11
-        this.sb.append(this.transform.getTranslateX()).append(","); // m02
-        this.sb.append(this.transform.getTranslateY()); // m12
-        this.sb.append(")\">");
+        this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\">");
         this.sb.append("<text x=\"").append(x).append("\", y=\"").append(y)
                 .append("\"");
         this.sb.append(" style=\"").append(getSVGFontStyle()).append("\" ");
@@ -755,15 +762,16 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Translates the origin to (tx, ty).
+     * Applies the translation (tx, ty).
      * 
      * @param tx  the x-translation.
      * @param ty  the y-translation.
      */
     @Override
     public void translate(double tx, double ty) {
-        AffineTransform t = AffineTransform.getTranslateInstance(tx, ty);
-        transform(t);
+        AffineTransform t = getTransform();
+        t.translate(tx, ty);
+        setTransform(t);
     }
 
     /**
@@ -799,8 +807,9 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void scale(double sx, double sy) {
-        AffineTransform t = AffineTransform.getScaleInstance(sx, sy);
-        transform(t);
+        AffineTransform t = getTransform();
+        t.scale(sx, sy);
+        setTransform(t);
     }
 
     /**
@@ -827,13 +836,13 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the current transform.
+     * Returns a copy of the current transform.
      * 
-     * @return The current transform.
+     * @return A copy of the current transform.
      */
     @Override
     public AffineTransform getTransform() {
-        return this.transform;
+        return (AffineTransform) this.transform.clone();
     }
 
     /**
@@ -898,29 +907,47 @@ public class SVGGraphics2D extends Graphics2D {
         if (this.clip == null) {
             return null;
         }
-        return this.clip.getBounds();
+        return getClip().getBounds();
     }
 
     /**
-     * Returns the user clipping region.
+     * Returns the user clipping region.  The initial default value is 
+     * <code>null</code>.
      * 
      * @return The user clipping region (possibly <code>null</code>). 
      */
     @Override
     public Shape getClip() {
-        return this.clip;
+        if (this.clip == null) {
+            return null;
+        }
+        AffineTransform inv;
+        try {
+            //        if (this.clip instanceof Rectangle2D) {
+            //            Rectangle2D r = (Rectangle2D) this.clip;
+            //            return new Rectangle2D.Double(r.getX(), r.getY(), r.getWidth(),
+            //                    r.getHeight());
+            //        } else {
+            //            return new Path2D.Double(this.clip);
+            //        }
+            inv = this.transform.createInverse();
+            return inv.createTransformedShape(this.clip);
+        } catch (NoninvertibleTransformException ex) {
+            Logger.getLogger(SVGGraphics2D.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     /**
      * Sets the user clipping region.
      * 
-     * @param clip  the new user clipping region (<code>null</code> permitted).
+     * @param shape  the new user clipping region (<code>null</code> permitted).
      */
     @Override
-    public void setClip(Shape clip) {
+    public void setClip(Shape shape) {
         // null is handled fine here...
-        this.clip = this.transform.createTransformedShape(clip);
-        registerClip(this.clip);
+        this.clip = this.transform.createTransformedShape(shape);
+        registerClip(shape);
     }
     
     /**
@@ -934,7 +961,19 @@ public class SVGGraphics2D extends Graphics2D {
             return;  // nothing to do
         }
         int count = this.clipPaths.size();
-        this.clipPaths.put(clip, "clip-" + count);
+        Shape key = Shapes.copyOf(clip);
+        this.clipPaths.put(key, "clip-" + count);
+    }
+    
+    private String getSVGTransform(AffineTransform t) {
+        StringBuilder b = new StringBuilder("matrix(");
+        b.append(t.getScaleX()).append(",");
+        b.append(t.getShearY()).append(",");
+        b.append(t.getShearX()).append(",");
+        b.append(t.getScaleY()).append(",");
+        b.append(t.getTranslateX()).append(",");
+        b.append(t.getTranslateY()).append(")");
+        return b.toString();
     }
 
     /**
@@ -955,12 +994,16 @@ public class SVGGraphics2D extends Graphics2D {
             setClip(s);
             return;
         }
-        Shape ss = this.transform.createTransformedShape(s);
-        Area a1 = new Area(ss);
-        Area a2 = new Area(this.clip);
-        a1.intersect(a2);
-        this.clip = new Path2D.Double(a1);
-        registerClip(this.clip);
+        Shape ts = this.transform.createTransformedShape(s);
+        if (!ts.intersects(this.clip.getBounds2D())) {
+            setClip(new Rectangle2D.Double());
+        } else {
+          Area a1 = new Area(ts);
+          Area a2 = new Area(this.clip);
+          a1.intersect(a2);
+          this.clip = new Path2D.Double(a1);
+        }
+        registerClip(s);  // SVG is expecting the non-transformed clip area
     }
 
     /**
@@ -1104,27 +1147,6 @@ public class SVGGraphics2D extends Graphics2D {
         fill(this.oval);
     }
 
-    /**
-     * Sets the attributes of the reusable Arc2D object.
-     * 
-     * @param x  the x-coordinate.
-     * @param y  the y-coordinate.
-     * @param width  the width.
-     * @param height  the height.
-     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
-     * @param arcAngle  the angle (anticlockwise) in degrees.
-     */
-    private void setArc(int x, int y, int width, int height, int startAngle, 
-            int arcAngle) {
-        if (this.arc == null) {
-            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.OPEN);
-        } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.OPEN);
-        }        
-    }
-    
     /**
      * Draws an arc.
      * 
@@ -1439,7 +1461,8 @@ public class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawRenderableImage(RenderableImage img, 
             AffineTransform xform) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        RenderedImage ri = img.createDefaultRendering();
+        drawRenderedImage(ri, xform);
     }
 
     /**
@@ -1533,7 +1556,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns an element to represent a linear gradient.
+     * Returns an element to represent a linear gradient.  All the linear
+     * gradients that are used get written to the DEFS element in the SVG.
      * 
      * @param id  the reference id.
      * @param paint  the gradient.
@@ -1559,15 +1583,16 @@ public class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns an element to represent a clip path.
+     * Returns an element to represent a clip path.  All the clip paths that
+     * are used are written to the DEFS element in the SVG.
      * 
-     * @param name  the reference id.
+     * @param refID  the reference id.
      * @param s  the clip region.
      * 
      * @return The SVG element.
      */
-    private String getClipPathElement(String name, Shape s) {
-        StringBuilder b = new StringBuilder("<clipPath id=\"").append(name)
+    private String getClipPathElement(String refID, Shape s) {
+        StringBuilder b = new StringBuilder("<clipPath id=\"").append(refID)
                 .append("\">");
         b.append("<path ").append(getSVGPathData(new Path2D.Double(s)))
                 .append("/>");
@@ -1575,7 +1600,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns a clip path reference for the current user clip.
+     * Returns a clip path reference for the current user clip.  This is 
+     * written out on all SVG elements that draw or fill shapes or text.
      * 
      * @return A clip path reference. 
      */
@@ -1587,7 +1613,17 @@ public class SVGGraphics2D extends Graphics2D {
         }
         return b.toString();
     }
- 
+    
+    /**
+     * Sets the attributes of the reusable {@link Rectangle2D} object that is
+     * used by the {@link SVGGraphics2D#drawRect(int, int, int, int)} and 
+     * {@link SVGGraphics2D#fillRect(int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
     private void setRect(int x, int y, int width, int height) {
         if (this.rect == null) {
             this.rect = new Rectangle2D.Double(x, y, width, height);
@@ -1596,6 +1632,18 @@ public class SVGGraphics2D extends Graphics2D {
         }
     }
     
+    /**
+     * Sets the attributes of the reusable {@link RoundRectangle2D} object that
+     * is used by the {@link #drawRoundRect(int, int, int, int, int, int)} and
+     * {@link #fillRoundRect(int, int, int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc width.
+     * @param arcHeight  the arc height.
+     */
     private void setRoundRect(int x, int y, int width, int height, int arcWidth, 
             int arcHeight) {
         if (this.roundRect == null) {
@@ -1607,6 +1655,39 @@ public class SVGGraphics2D extends Graphics2D {
         }        
     }
 
+    /**
+     * Sets the attributes of the reusable {@link Arc2D} object that is used by
+     * {@link #drawArc(int, int, int, int, int, int)} and 
+     * {@link #fillArc(int, int, int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
+     * @param arcAngle  the angle (anticlockwise) in degrees.
+     */
+    private void setArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (this.arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }        
+    }
+    
+    /**
+     * Sets the attributes of the reusable {@link Ellipse2D} object that is 
+     * used by the {@link #drawOval(int, int, int, int)} and
+     * {@link #fillOval(int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
     private void setOval(int x, int y, int width, int height) {
         if (this.oval == null) {
             this.oval = new Ellipse2D.Double(x, y, width, height);
