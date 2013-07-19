@@ -3,14 +3,22 @@
  */
 package org.jfree.graphics2d;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,9 +33,20 @@ public class TestGraphics2D {
     
     @Before
     public void setUp() {
+        // to test a reference implementation, use this Graphics2D from a
+        // BufferedImage in the JDK
         BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
-        this.g2 = new SVGGraphics2D(10, 20);
+        this.g2 = img.createGraphics();
+        
+        // Test SVGGraphics2D...
+        //this.g2 = new SVGGraphics2D(10, 20);
+ 
+        // Test PDFGraphics2D...
+//        PDFDocument pdfDoc = new PDFDocument();
+//        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
+//        this.g2 = page.getGraphics2D();
+
+        // Test CanvasGraphics2D...
         //this.g2 = new CanvasGraphics2D("id");
     }
     
@@ -36,7 +55,7 @@ public class TestGraphics2D {
      */
     @Test
     public void checkDefaultTransform() {
-        Assert.assertEquals(new AffineTransform(), g2.getTransform());
+        assertEquals(new AffineTransform(), g2.getTransform());
     }
     
     /**
@@ -85,6 +104,33 @@ public class TestGraphics2D {
         Assert.assertEquals(t, g2.getTransform());
         t.setToRotation(Math.PI);
         Assert.assertNotEquals(t, g2.getTransform());
+    }
+    
+    @Test
+    public void checkSetNonInvertibleTransform() {
+        AffineTransform t = AffineTransform.getScaleInstance(0.0, 0.0);
+        g2.setTransform(t);
+        Assert.assertEquals(t, g2.getTransform());
+        
+        // after setting the clip, we cannot retrieve it while the transform
+        // is non-invertible...
+        Rectangle2D clip = new Rectangle2D.Double(1, 2, 3, 4);
+        g2.setClip(clip);
+        Assert.assertNull(g2.getClip());
+        
+        g2.setTransform(new AffineTransform());
+        Assert.assertEquals(new Rectangle2D.Double(0, 0, 0, 0), 
+                g2.getClip().getBounds2D());
+    }
+
+    @Test
+    public void checkTransformNull() {
+        try {
+            this.g2.transform(null);
+            Assert.fail("Expected a NullPointerException.");
+        } catch (NullPointerException e) {
+            // this exception is expected
+        }
     }
     
     /**
@@ -291,6 +337,7 @@ public class TestGraphics2D {
                 g2.getClip().getBounds2D());
     }
     
+    @Test
     public void checkClipRectParams() {
         Rectangle2D clip = new Rectangle2D.Double(0, 0, 5, 5);
         this.g2.setClip(clip);
@@ -305,4 +352,266 @@ public class TestGraphics2D {
         Assert.assertTrue(this.g2.getClip().getBounds2D().isEmpty());    
     }
     
+    @Test
+    public void checkDrawStringWithNullString() {
+        try {
+            g2.drawString((String) null, 1, 2);
+            Assert.fail("There should be a NullPointerException.");
+        } catch (NullPointerException e) {
+            // this exception is expected
+        }
+        try {
+            g2.drawString((String) null, 1.0f, 2.0f);
+            Assert.fail("There should be a NullPointerException.");
+        } catch (NullPointerException e) {
+            // this exception is expected
+        }
+    }
+    
+    /**
+     * Some checks for the create() method.
+     */
+    @Test 
+    public void checkCreate() {
+        this.g2.setClip(new Rectangle(1, 2, 3, 4));
+        Graphics2D copy = (Graphics2D) g2.create();
+        assertEquals(copy.getBackground(), g2.getBackground());
+        assertEquals(copy.getClip().getBounds2D(), 
+                g2.getClip().getBounds2D());
+        assertEquals(copy.getColor(), g2.getColor());
+        assertEquals(copy.getComposite(), g2.getComposite());
+        assertEquals(copy.getFont(), g2.getFont());
+        assertEquals(copy.getRenderingHints(), g2.getRenderingHints());        
+        assertEquals(copy.getStroke(), g2.getStroke()); 
+        assertEquals(copy.getTransform(), g2.getTransform()); 
+    }
+    
+    /**
+     * The setPaint() method allows a very minor state leakage in the sense 
+     * that it is possible to modify a GradientPaint externally after a call
+     * to the setPaint() method and have it impact the state of the 
+     * Graphics2D implementation.  Avoiding this would require cloning the
+     * Paint object, but there is no good way to do that for an arbitrary
+     * Paint instance.  
+     */
+    @Test
+    public void checkSetPaintSafety() {
+        Point2D pt1 = new Point2D.Double(1.0, 2.0);
+        Point2D pt2 = new Point2D.Double(3.0, 4.0);
+        GradientPaint gp = new GradientPaint(pt1, Color.RED, pt2, Color.BLUE);
+        this.g2.setPaint(gp);
+        assertEquals(gp, this.g2.getPaint());
+        Assert.assertTrue(gp == this.g2.getPaint());
+        pt1.setLocation(7.0, 7.0);
+        assertEquals(gp, this.g2.getPaint());
+    }
+    
+    /**
+     * According to the Javadocs, setting the paint to null should have no 
+     * impact on the current paint (that is, the call is silently ignored).
+     */
+    @Test
+    public void checkSetPaintNull() {
+        this.g2.setPaint(Color.RED);
+        // this next call should have no impact
+        this.g2.setPaint(null);
+        assertEquals(Color.RED, this.g2.getPaint());
+    }
+    
+    /**
+     * Passing a Color to setPaint() also updates the color, but not the
+     * background color.
+     */
+    @Test
+    public void checkSetPaintAlsoUpdatesColorButNotBackground() {
+        Color existingBackground = this.g2.getBackground();
+        this.g2.setPaint(Color.MAGENTA);
+        assertEquals(Color.MAGENTA, this.g2.getPaint());
+        assertEquals(Color.MAGENTA, this.g2.getColor());
+        assertEquals(existingBackground, this.g2.getBackground());
+    }
+    
+    @Test
+    public void checkSetColorAlsoUpdatesPaint() {
+        this.g2.setColor(Color.MAGENTA);
+        assertEquals(Color.MAGENTA, this.g2.getPaint());
+        assertEquals(Color.MAGENTA, this.g2.getColor());
+    }
+    
+    /**
+     * The behaviour of the reference implementation has been observed as
+     * ignoring null.  This matches the documented behaviour of the
+     * setPaint() method.
+     */
+    @Test
+    public void checkSetColorNull() {
+        this.g2.setColor(Color.RED);
+        this.g2.setColor(null);
+        assertEquals(Color.RED, this.g2.getColor());
+    }
+    
+    /**
+     * Setting the background color does not change the color or paint.
+     */
+    @Test
+    public void checkSetBackground() {
+        this.g2.setBackground(Color.CYAN);
+        assertEquals(Color.CYAN, this.g2.getBackground());
+        assertFalse(Color.CYAN.equals(this.g2.getColor()));
+        assertFalse(Color.CYAN.equals(this.g2.getPaint()));
+    }
+
+    /**
+     * The behaviour of the reference implementation has been observed as
+     * allowing null (this is inconsistent with the behaviour of setColor()).
+     */
+    @Test
+    public void checkSetBackgroundNull() {
+        this.g2.setBackground(Color.RED);
+        this.g2.setBackground(null);
+        assertEquals(null, this.g2.getBackground());
+    }
+    
+    /**
+     * Since the setBackground() method is allowing null, we should ensure
+     * that the clearRect() method doesn't fail in this case.  With no
+     * background color, the clearRect() method should be a no-op but there
+     * is no easy way to test for that.
+     */
+    @Test
+    public void checkClearRectWithNullBackground() {
+        this.g2.setBackground(null);
+        this.g2.clearRect(1, 2, 3, 4);
+        //no exceptions and we're good
+    }
+
+    /**
+     * In the reference implementation, setting a null composite has been 
+     * observed to throw an IllegalArgumentException.
+     */
+    @Test
+    public void checkSetCompositeNull() {
+        try {
+            this.g2.setComposite(null);
+            Assert.fail("Expected an IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // this exception is expected in the test   
+        }
+    }
+    
+    @Test
+    public void checkSetStrokeNull() {
+        try {
+            this.g2.setStroke(null);
+            Assert.fail("Expected an IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // this exception is expected in the test   
+        }
+    }
+    
+    /**
+     * Basic check of set then get.
+     */
+    @Test
+    public void checkSetRenderingHint() {
+        this.g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, 
+                RenderingHints.VALUE_STROKE_PURE);
+        assertEquals(RenderingHints.VALUE_STROKE_PURE, 
+                this.g2.getRenderingHint(RenderingHints.KEY_STROKE_CONTROL));
+    }
+    
+    /**
+     * The reference implementation has been observed to throw a 
+     * NullPointerException when the key is null.
+     */
+    @Test
+    public void checkSetRenderingHintWithNullKey() {
+        try {
+            this.g2.setRenderingHint(null, "XYZ");
+            Assert.fail("NullPointerException is expected here.");
+        } catch (NullPointerException e) {
+            // this is expected
+        }
+    }
+    
+    /**
+     * The reference implementation has been observed to accept a null key 
+     * and return null in that case.
+     */
+    @Test
+    public void checkGetRenderingHintWithNullKey() {
+        assertNull(this.g2.getRenderingHint(null));
+    }
+    
+    /**
+     * Check setting a hint with a value that doesn't match the key.
+     */
+    @Test
+    public void checkSetRenderingHintWithInconsistentValue() {
+        try {
+            this.g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, 
+                    RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+            Assert.fail("Expected an IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // we expect this exception
+        }
+    }
+    
+    /**
+     * A call to getRenderingHints() is returning a copy of the hints, so 
+     * changing it will not affect the state of the Graphics2D instance.
+     */
+    @Test
+    public void checkGetRenderingHintsSafety() {
+        this.g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+                RenderingHints.VALUE_ANTIALIAS_OFF);
+        RenderingHints hints = this.g2.getRenderingHints();
+        hints.put(RenderingHints.KEY_ANTIALIASING, 
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        assertEquals(RenderingHints.VALUE_ANTIALIAS_OFF, 
+                this.g2.getRenderingHint(RenderingHints.KEY_ANTIALIASING));   
+    }
+    
+    @Test
+    public void checkSetRenderingHintsNull() {
+        try {
+            this.g2.setRenderingHints(null);
+            Assert.fail("NullPointerException expected.");
+        } catch (NullPointerException e) {
+            // this is expected
+        }
+    }
+    
+    @Test
+    public void checkHit() {
+        Shape shape = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
+        Rectangle r = new Rectangle(2, 2, 2, 2);
+        assertFalse(this.g2.hit(r, shape, false));
+        this.g2.scale(3.0, 3.0);
+        assertTrue(this.g2.hit(r, shape, false));
+    }
+    
+    @Test
+    public void checkHitForOutline() {
+        Shape shape = new Rectangle2D.Double(0.0, 0.0, 3.0, 3.0);
+        Rectangle r = new Rectangle(1, 1, 1, 1);
+        assertFalse(this.g2.hit(r, shape, true));
+        this.g2.scale(0.5, 0.5);
+        // now the rectangle is entirely inside the shape, but does not touch
+        // the outline...
+        assertTrue(this.g2.hit(r, shape, true));
+    } 
+    
+    /**
+     * We have observed in the reference implementation that setting the font
+     * to null does not change the current font setting.
+     */
+    @Test
+    public void checkSetFontNull() {
+        Font f = new Font("Serif", Font.PLAIN, 8);
+        this.g2.setFont(f);
+        assertEquals(f, this.g2.getFont());
+        this.g2.setFont(null);
+        assertEquals(f, this.g2.getFont());
+    }
 }
