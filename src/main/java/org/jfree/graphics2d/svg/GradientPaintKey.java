@@ -7,6 +7,8 @@ import java.awt.GradientPaint;
 
 /**
  * A wrapper for a GradientPaint that can be used as the key for a HashMap.
+ * GradientPaint itself does not implement the equals() and hashCode() methods,
+ * so it doesn't make an ideal key.
  */
 public final class GradientPaintKey {
 
