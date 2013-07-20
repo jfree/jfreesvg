@@ -6,14 +6,12 @@ package org.jfree.graphics2d.demo;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
-import org.jfree.graphics2d.svg.SVGHints;
 
 /**
  * A small demo that draws an image as part of the rendering to SVG.
@@ -35,7 +33,7 @@ public class SVGImageDemo1 {
             SVGGraphics2D g2 = new SVGGraphics2D(600, 400);
 //            g2.setRenderingHint(SVGHints.KEY_IMAGE_HANDLING, 
 //                    SVGHints.VALUE_IMAGE_HANDLING_REFERENCE);
-            g2.setMatrixDP(0);
+            g2.setTransformDP(0);
             ImageIcon icon = new ImageIcon("/jfree_chart_1.jpg");
             g2.rotate(Math.PI / 12);
             g2.setStroke(new BasicStroke(2.0f));
