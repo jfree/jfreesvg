@@ -80,10 +80,18 @@ public class SVGGraphics2D extends Graphics2D {
      * The number of decimal places to use when writing the matrix values
      * for transformations. 
      */
-    private int matrixDP;
+    private int transformDP;
+    
+    private DecimalFormat transformFormat = new DecimalFormat("0.######");
+    
+    /**
+     * The number of decimal places to use when writing coordinates for
+     * geometrical shapes.
+     */
+    private int geometryDP;
 
-    private DecimalFormat fixedDPFormat = new DecimalFormat("0.######");
-
+    private DecimalFormat geometryFormat = new DecimalFormat("0.##");
+    
     /** The buffer that accumulates the SVG output. */
     private StringBuilder sb;
 
@@ -210,8 +218,8 @@ public class SVGGraphics2D extends Graphics2D {
      * 
      * @return The number of decimal places.
      */
-    public int getMatrixDP() {
-        return this.matrixDP;    
+    public int getTransformDP() {
+        return this.transformDP;    
     }
     
     /**
@@ -223,13 +231,42 @@ public class SVGGraphics2D extends Graphics2D {
      * 
      * @param dp  the number of decimal places (normally 1 to 10). 
      */
-    public void setMatrixDP(int dp) {
-        this.matrixDP = dp;
+    public void setTransformDP(int dp) {
+        this.transformDP = dp;
         if (dp < 1 || dp > 10) {
-            this.fixedDPFormat = null;
+            this.transformFormat = null;
             return;
         }
-        this.fixedDPFormat = new DecimalFormat("0." 
+        this.transformFormat = new DecimalFormat("0." 
+                + "##########".substring(0, dp));
+    }
+    
+    /**
+     * Returns the number of decimal places used to write the coordinates
+     * of geometrical shapes.  The default value is 2.
+     * 
+     * @return The number of decimal places.
+     */
+    public int getGeometryDP() {
+        return this.geometryDP;    
+    }
+    
+    /**
+     * Sets the number of decimal places used to write the coordinates of
+     * geometrical shapes in the SVG output.  Values in the range 1 to 10 will 
+     * be used to configure a formatter to that number of decimal places, for 
+     * all other values we revert to the normal String conversion of double 
+     * primitives (approximately 16 decimals places).
+     * 
+     * @param dp  the number of decimal places (normally 1 to 10). 
+     */
+    public void setGeometryDP(int dp) {
+        this.geometryDP = dp;
+        if (dp < 1 || dp > 10) {
+            this.geometryFormat = null;
+            return;
+        }
+        this.geometryFormat = new DecimalFormat("0." 
                 + "##########".substring(0, dp));
     }
     
@@ -474,10 +511,11 @@ public class SVGGraphics2D extends Graphics2D {
     public void draw(Shape s) {
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
-            this.sb.append("<line x1=\"").append(l.getX1())
-                    .append("\" y1=\"").append(l.getY1()).append("\" x2=\"")
-                    .append(l.getX2()).append("\" y2=\"")
-                    .append(l.getY2()).append("\" ");
+            this.sb.append("<line x1=\"").append(geomDP(l.getX1()))
+                    .append("\" y1=\"").append(geomDP(l.getY1()))
+                    .append("\" x2=\"").append(geomDP(l.getX2()))
+                    .append("\" y2=\"").append(geomDP(l.getY2()))
+                    .append("\" ");
             this.sb.append("style=\"").append(strokeStyle()).append("\" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
@@ -485,9 +523,11 @@ public class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
-                    .append(r.getY()).append("\" width=\"").append(r.getWidth())
-                    .append("\" height=\"").append(r.getHeight()).append("\" ");
+            this.sb.append("<rect x=\"").append(geomDP(r.getX()))
+                    .append("\" y=\"").append(geomDP(r.getY()))
+                    .append("\" width=\"").append(geomDP(r.getWidth()))
+                    .append("\" height=\"").append(geomDP(r.getHeight()))
+                    .append("\" ");
             this.sb.append("style=\"").append(strokeStyle())
                     .append("; fill: none").append("\" ");
             this.sb.append("transform=\"").append(getSVGTransform(
@@ -523,9 +563,11 @@ public class SVGGraphics2D extends Graphics2D {
             if (r.isEmpty()) {
                 return;
             }
-            this.sb.append("<rect x=\"").append(r.getX()).append("\" y=\"")
-                    .append(r.getY()).append("\" width=\"").append(r.getWidth())
-                    .append("\" height=\"").append(r.getHeight()).append("\" ");
+            this.sb.append("<rect x=\"").append(geomDP(r.getX()))
+                    .append("\" y=\"").append(geomDP(r.getY()))
+                    .append("\" width=\"").append(geomDP(r.getWidth()))
+                    .append("\" height=\"").append(geomDP(r.getHeight()))
+                    .append("\" ");
             this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
@@ -570,29 +612,31 @@ public class SVGGraphics2D extends Graphics2D {
                 closePt = new double[2];
                 closePt[0] = coords[0];
                 closePt[1] = coords[1];
-                b.append("M ").append(coords[0]).append(" ").append(coords[1]);
+                b.append("M ").append(geomDP(coords[0])).append(" ")
+                        .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_LINETO):
-                b.append("L ").append(coords[0]).append(" ").append(coords[1]);
+                b.append("L ").append(geomDP(coords[0])).append(" ")
+                        .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append("Q ").append(coords[0])
-                        .append(" ").append(coords[1])
-                        .append(" ").append(coords[2])
-                        .append(" ").append(coords[3]);
+                b.append("Q ").append(geomDP(coords[0]))
+                        .append(" ").append(geomDP(coords[1]))
+                        .append(" ").append(geomDP(coords[2]))
+                        .append(" ").append(geomDP(coords[3]));
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append("C ").append(coords[0]).append(" ")
-                        .append(coords[1]).append(" ")
-                        .append(coords[2]).append(" ")
-                        .append(coords[3]).append(" ")
-                        .append(coords[4]).append(" ")
-                        .append(coords[5]);
+                b.append("C ").append(geomDP(coords[0])).append(" ")
+                        .append(geomDP(coords[1])).append(" ")
+                        .append(geomDP(coords[2])).append(" ")
+                        .append(geomDP(coords[3])).append(" ")
+                        .append(geomDP(coords[4])).append(" ")
+                        .append(geomDP(coords[5]));
                 break;
             case (PathIterator.SEG_CLOSE):
                 if (closePt != null) {
-                    b.append("M ").append(closePt[0]).append(" ")
-                            .append(closePt[1]);
+                    b.append("M ").append(geomDP(closePt[0])).append(" ")
+                            .append(geomDP(closePt[1]));
                 }
                 break;
             default:
@@ -787,7 +831,8 @@ public class SVGGraphics2D extends Graphics2D {
         this.sb.append("<g ");
         this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\">");
-        this.sb.append("<text x=\"").append(x).append("\", y=\"").append(y)
+        this.sb.append("<text x=\"").append(geomDP(x))
+                .append("\", y=\"").append(geomDP(y))
                 .append("\"");
         this.sb.append(" style=\"").append(getSVGFontStyle()).append("\" ");
         this.sb.append(getClipPathRef());
@@ -1066,23 +1111,30 @@ public class SVGGraphics2D extends Graphics2D {
         this.registeredClip = key;
     }
     
-    private String fixedDP(double d) {
-        if (this.fixedDPFormat != null) {
-            return fixedDPFormat.format(d);            
+    private String transformDP(double d) {
+        if (this.transformFormat != null) {
+            return transformFormat.format(d);            
         } else {
             return String.valueOf(d);
         }
-
+    }
+    
+    private String geomDP(double d) {
+        if (this.geometryFormat != null) {
+            return geometryFormat.format(d);            
+        } else {
+            return String.valueOf(d);
+        }
     }
     
     private String getSVGTransform(AffineTransform t) {
         StringBuilder b = new StringBuilder("matrix(");
-        b.append(fixedDP(t.getScaleX())).append(",");
-        b.append(fixedDP(t.getShearY())).append(",");
-        b.append(fixedDP(t.getShearX())).append(",");
-        b.append(fixedDP(t.getScaleY())).append(",");
-        b.append(fixedDP(t.getTranslateX())).append(",");
-        b.append(fixedDP(t.getTranslateY())).append(")");
+        b.append(transformDP(t.getScaleX())).append(",");
+        b.append(transformDP(t.getShearY())).append(",");
+        b.append(transformDP(t.getShearX())).append(",");
+        b.append(transformDP(t.getScaleY())).append(",");
+        b.append(transformDP(t.getTranslateX())).append(",");
+        b.append(transformDP(t.getTranslateY())).append(")");
         return b.toString();
     }
 
@@ -1441,10 +1493,11 @@ public class SVGGraphics2D extends Graphics2D {
             }
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");            
-            this.sb.append("x=\"").append(x).append("\" y=\"").append(y)
+            this.sb.append("x=\"").append(geomDP(x))
+                    .append("\" y=\"").append(geomDP(y))
                     .append("\" ");
-            this.sb.append("width=\"").append(w).append("\" height=\"")
-                    .append(h).append("\"/>\n");
+            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
+                    .append(geomDP(h)).append("\"/>\n");
             return true;
         } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
             int count = this.imageElements.size();
@@ -1461,10 +1514,11 @@ public class SVGGraphics2D extends Graphics2D {
             }
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
-            this.sb.append("x=\"").append(x).append("\" y=\"").append(y)
+            this.sb.append("x=\"").append(geomDP(x))
+                    .append("\" y=\"").append(geomDP(y))
                     .append("\" ");
-            this.sb.append("width=\"").append(w).append("\" height=\"")
-                    .append(h).append("\"/>\n");
+            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
+                    .append(geomDP(h)).append("\"/>\n");
             return true;
         }
     }
