@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 
@@ -48,26 +49,46 @@ public class GraphicsStream extends Stream {
      * @param t  the transform.
      */
     public void applyTransform(AffineTransform t) {
-        this.content.append(t.getScaleX()).append(" ");
-        this.content.append(t.getShearY()).append(" ");
-        this.content.append(t.getShearX()).append(" ");
-        this.content.append(t.getScaleY()).append(" ");
-        this.content.append(t.getTranslateX()).append(" ");
-        this.content.append(t.getTranslateY()).append(" cm\n");
+      this.content.append(t.getScaleX()).append(" ");
+      this.content.append(t.getShearY()).append(" ");
+      this.content.append(t.getShearX()).append(" ");
+      this.content.append(t.getScaleY()).append(" ");
+      this.content.append(t.getTranslateX()).append(" ");
+      this.content.append(t.getTranslateY()).append(" cm\n");
     }
     
+    private AffineTransform prevTransInv;
+    
+    public void setTransform(AffineTransform t) {
+        AffineTransform tt = new AffineTransform(t);
+        try {
+          AffineTransform inv = tt.createInverse();
+          AffineTransform comb = null;
+          if (this.prevTransInv != null) {
+            comb = new AffineTransform(this.prevTransInv);
+            comb.concatenate(tt);
+          } else {
+            comb = tt;
+          }
+          this.prevTransInv = inv;
+          applyTransform(comb);
+        } catch (NoninvertibleTransformException e) {
+          // do nothing
+        }
+    }
+
     /**
      * Applies a text transform.
      * 
      * @param t  the transform.
      */
     public void applyTextTransform(AffineTransform t) {
-        this.content.append(t.getScaleX()).append(" ");
-        this.content.append(t.getShearY()).append(" ");
-        this.content.append(t.getShearX()).append(" ");
-        this.content.append(t.getScaleY()).append(" ");
-        this.content.append(t.getTranslateX()).append(" ");
-        this.content.append(t.getTranslateY()).append(" Tm\n");
+          this.content.append(t.getScaleX()).append(" ");
+          this.content.append(t.getShearY()).append(" ");
+          this.content.append(t.getShearX()).append(" ");
+          this.content.append(t.getScaleY()).append(" ");
+          this.content.append(t.getTranslateX()).append(" ");
+          this.content.append(t.getTranslateY()).append(" Tm\n");
     }
     
     /**
