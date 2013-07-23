@@ -121,10 +121,10 @@ public class PDFGraphics2D extends Graphics2D {
         AffineTransform textTransform = new AffineTransform();
         textTransform.translate(0.0, 1.0);
         textTransform.scale(1.0, -1.0);
-        //this.gs.applyTextTransform(textTransform);
         this.gs.applyFont(getFont());
         this.gs.applyStrokeColor(getColor());
         this.gs.applyFillColor(getColor());
+        this.gs.applyStroke(getStroke());
     }
 
     /**
@@ -556,13 +556,12 @@ public class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setTransform(AffineTransform t) {
-        AffineTransform prevT = this.transform;
         if (t == null) {
             this.transform = new AffineTransform();
         } else {
             this.transform = new AffineTransform(t);
         }
-        //this.gs.applyTransform(t);
+        this.gs.setTransform(t);
     }
 
     /**
