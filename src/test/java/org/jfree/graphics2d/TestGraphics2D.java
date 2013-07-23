@@ -18,7 +18,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import org.jfree.graphics2d.canvas.CanvasGraphics2D;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,8 +35,8 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        this.g2 = img.createGraphics();
+        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        //this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
         //this.g2 = new SVGGraphics2D(10, 20);
@@ -47,7 +47,7 @@ public class TestGraphics2D {
 //        this.g2 = page.getGraphics2D();
 
         // Test CanvasGraphics2D...
-        //this.g2 = new CanvasGraphics2D("id");
+        this.g2 = new CanvasGraphics2D("id");
     }
     
     /**
@@ -123,6 +123,26 @@ public class TestGraphics2D {
                 g2.getClip().getBounds2D());
     }
 
+    /**
+     * A check for a call to transform() with a rotation, that follows a
+     * translation.
+     */
+    @Test
+    public void checkTransform() {
+        AffineTransform t = new AffineTransform();
+        this.g2.setTransform(t);
+        this.g2.translate(30, 30);
+        AffineTransform rt = AffineTransform.getRotateInstance(Math.PI / 2.0, 300, 200);
+        this.g2.transform(rt);
+        t = this.g2.getTransform();
+        assertEquals(0, t.getScaleX(), EPSILON);
+        assertEquals(0, t.getScaleY(), EPSILON);
+        assertEquals(-1.0, t.getShearX(), EPSILON);
+        assertEquals(1.0, t.getShearY(), EPSILON);
+        assertEquals(530.0, t.getTranslateX(), EPSILON);
+        assertEquals(-70, t.getTranslateY(), EPSILON);
+    }
+    
     @Test
     public void checkTransformNull() {
         try {
