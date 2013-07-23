@@ -567,7 +567,7 @@ public class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns the font render context.  The implementation here returns the
      * FontRenderContext for an image that is maintained internally (as for
-     * {@link SVGGraphics2D.getFontMetrics}.
+     * {@link #getFontMetrics}.
      * 
      * @return The font render context.
      */
@@ -668,8 +668,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * @param ty  the y-translation.
      */
     @Override
-    public void translate(int x, int y) {
-        translate((double) x, (double) y);
+    public void translate(int tx, int ty) {
+        translate((double) tx, (double) ty);
     }
 
     /**
@@ -750,8 +750,9 @@ public class CanvasGraphics2D extends Graphics2D {
         this.sb.append(t.getTranslateX()).append(","); // m02
         this.sb.append(t.getTranslateY()); // m12
         this.sb.append(");");
-        t.concatenate(this.transform);
-        setTransform(t);
+        AffineTransform tx = getTransform();
+        tx.concatenate(t);
+        setTransform(tx);
     }
 
     /**
@@ -797,7 +798,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * @param rect  a rectangle (in device space).
      * @param s the shape.
      * @param onStroke  test the stroked outline only?
-     * @return 
+     * 
+     * @return A boolean. 
      */
     @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
@@ -1094,7 +1096,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polyline.
      * @param close  closed?
-     * @return 
+     * 
+     * @return A polygon. 
      */
     private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
             int nPoints, boolean close) {
@@ -1154,7 +1157,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * @param img
      * @param xform
      * @param obs
-     * @return 
+     * 
+     * @return A boolean. 
      */
     @Override
     public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
@@ -1230,7 +1234,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * @param width
      * @param height
      * @param observer
-     * @return 
+     * 
+     * @return A boolean. 
      */
     @Override
     public boolean drawImage(Image img, int x, int y, int width, int height, 
