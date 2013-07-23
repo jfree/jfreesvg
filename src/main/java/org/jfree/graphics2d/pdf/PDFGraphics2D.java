@@ -37,7 +37,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
 
 /**
  * A Graphics2D implementation that writes to PDF format.
@@ -389,7 +388,7 @@ public class PDFGraphics2D extends Graphics2D {
     /**
      * Returns the font render context.  The implementation here returns the
      * FontRenderContext for an image that is maintained internally (as for
-     * {@link SVGGraphics2D.getFontMetrics}.
+     * {@link #getFontMetrics}.
      * 
      * @return The font render context.
      */
@@ -494,8 +493,9 @@ public class PDFGraphics2D extends Graphics2D {
 
     @Override
     public void rotate(double theta) {
-        AffineTransform t = AffineTransform.getRotateInstance(theta);
-        transform(t);
+        AffineTransform t = getTransform();
+        t.rotate(theta);
+        setTransform(t);
     }
 
     @Override
@@ -531,8 +531,9 @@ public class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void transform(AffineTransform t) {
-        t.concatenate(this.transform);
-        setTransform(t);
+        AffineTransform tx = getTransform();
+        tx.concatenate(t);
+        setTransform(tx);
     }
 
     /**
@@ -561,7 +562,7 @@ public class PDFGraphics2D extends Graphics2D {
         } else {
             this.transform = new AffineTransform(t);
         }
-        //this.gs.setTransform(t);
+        //this.gs.applyTransform(t);
     }
 
     /**
@@ -572,7 +573,8 @@ public class PDFGraphics2D extends Graphics2D {
      * @param rect  a rectangle (in device space).
      * @param s the shape.
      * @param onStroke  test the stroked outline only?
-     * @return 
+     * 
+     * @return A boolean. 
      */
     @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
@@ -865,7 +867,8 @@ public class PDFGraphics2D extends Graphics2D {
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polyline.
      * @param close  closed?
-     * @return 
+     * 
+     * @return A polygon.
      */
     private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
             int nPoints, boolean close) {
