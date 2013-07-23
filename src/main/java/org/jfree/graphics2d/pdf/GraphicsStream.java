@@ -175,7 +175,7 @@ public class GraphicsStream extends Stream {
         AffineTransform t = new AffineTransform(1.0, 0.0, 0.0, -1.0, 0.0, 
                 y * 2); // WHY??
         applyTextTransform(t);
-        this.content.append("/").append(fontRef).append(" ")
+        this.content.append(fontRef).append(" ")
                 .append(this.font.getSize()).append(" Tf ");
         this.content.append(x).append(" ").append(y).append(" Td (")
                 .append(text).append(") Tj ET\n");
