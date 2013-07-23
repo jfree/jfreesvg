@@ -3,6 +3,7 @@
  */
 package org.jfree.graphics2d;
 
+import java.awt.BasicStroke;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -18,7 +19,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import org.jfree.graphics2d.canvas.CanvasGraphics2D;
+import org.jfree.graphics2d.pdf.PDFDocument;
+import org.jfree.graphics2d.pdf.Page;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -42,12 +44,12 @@ public class TestGraphics2D {
         //this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
-//        PDFDocument pdfDoc = new PDFDocument();
-//        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
-//        this.g2 = page.getGraphics2D();
+        PDFDocument pdfDoc = new PDFDocument();
+        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
+        this.g2 = page.getGraphics2D();
 
         // Test CanvasGraphics2D...
-        this.g2 = new CanvasGraphics2D("id");
+        //this.g2 = new CanvasGraphics2D("id");
     }
     
     /**
@@ -633,5 +635,13 @@ public class TestGraphics2D {
         assertEquals(f, this.g2.getFont());
         this.g2.setFont(null);
         assertEquals(f, this.g2.getFont());
+    }
+    
+    @Test
+    public void checkDefaultStroke() {
+        BasicStroke s = (BasicStroke) this.g2.getStroke();
+        assertEquals(BasicStroke.CAP_SQUARE, s.getEndCap());
+        assertEquals(1.0f, s.getLineWidth(), EPSILON);
+        assertEquals(BasicStroke.JOIN_MITER, s.getLineJoin());
     }
 }
