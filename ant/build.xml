@@ -1,0 +1,148 @@
+<!-- An ANT build file for 'graphics2d' -->
+
+<!-- Written by David Gilbert. -->
+
+<!-- Tested recently with Ant 1.8.2 -->
+
+<!-- This script will create temporary directories ../build and -->
+<!-- ../distribution, as working areas.  A ../javadoc directory will -->
+<!-- be created for the Javadoc HTML pages. -->
+
+<project name="graphics2d" default="all" basedir="..">
+
+    <!-- Initialisation. -->
+    <target name="initialise" description="Initialise required settings.">
+        <tstamp />
+        <property name="jfreeg2d.name" value="jfreegraphics2d" />
+        <property name="jfreeg2d.version" value="1.0" />
+        <property name="jfreechart.name" value="jfreechart" />
+        <property name="jfreechart.version" value="1.0.15" />
+        <property name="jcommon.name" value="jcommon" />
+        <property name="jcommon.version" value="1.0.18" />
+        <property name="builddir" value="${basedir}/build" />
+        <property name="src.version" value="1.6"/>
+        <property name="target.version" value="1.6"/>
+        <path id="build.classpath">
+            <fileset dir="${basedir}/lib/">
+                <include name="${jcommon.name}-${jcommon.version}.jar"/>
+                <include name="${jfreechart.name}-${jfreechart.version}.jar"/>
+            </fileset>
+        </path>
+    </target>
+
+    <!-- Compile the classes -->
+    <target name="compile" depends="initialise"
+            description="Compile the 'graphics2d' source code.">
+
+        <!-- create a temp build directory -->
+        <mkdir dir="${basedir}/build" />
+
+        <!-- compile the source -->
+        <javac srcdir="${basedir}/src/main/java"
+               destdir="${basedir}/build"
+               debug="on"
+               deprecation="false"
+               source="${src.version}"
+               target="${target.version}">
+            <classpath refid="build.classpath" />
+        </javac>
+
+        <!-- make the jar -->
+        <jar jarfile="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar"
+             basedir="${basedir}/build" >
+            <manifest>
+                <attribute name="Specification-Title" value="${jfreeg2d.name}" />
+                <attribute name="Specification-Version" value="${jfreeg2d.version}" />
+                <attribute name="Specification-Vendor" value="Object Refinery Limited" />
+                <attribute name="Implementation-Title" value="${jfreeg2d.name}" />
+                <attribute name="Implementation-Version" value="${jfreeg2d.version}" />
+                <attribute name="Implementation-Vendor" value="Object Refinery Limited" />
+            </manifest>
+        </jar>
+
+        <!-- delete the temp directory -->
+        <delete dir="${basedir}/build" />
+
+    </target>
+
+    <!-- Generate the JFree Graphics2D API HTML pages -->
+    <target name="javadoc"
+            description="Generate the Javadoc HTML pages."
+            depends="initialise">
+        <delete dir="${basedir}/javadoc" />
+        <mkdir dir="${basedir}/javadoc" />
+        <javadoc destdir="${basedir}/javadoc"
+                 windowtitle="JFree Graphics2D (version ${jfreeg2d.version})"
+                 overview="${basedir}/src/main/java/overview.html"
+                 use="yes"
+                 linksource="yes"
+                 splitindex="yes">
+            <classpath refid="build.classpath" />
+            <packageset dir="${basedir}/src/main/java" defaultexcludes="yes">
+            </packageset>
+        </javadoc>
+    </target>
+
+    <!-- Create zip file containing the API HTML pages. -->
+    <target name="zip-javadocs"
+            description="Create ZIP file containing Javadoc HTML pages."
+            depends="javadoc">
+        <!-- make the zip file -->
+        <zip zipfile="${basedir}/${jfreeg2d.name}-${jfreeg2d.version}-javadocs.zip">
+             <zipfileset dir="${basedir}/javadoc"
+                         prefix="${jfreeg2d.name}-${jfreeg2d.version}-javadocs" />
+        </zip>
+    </target>
+
+
+    <!-- Fill the 'distribution' directory. -->
+    <target name="fill-distribution" depends="compile">
+
+        <!-- delete the temporary distribution directory, if there is one -->
+        <delete dir="${basedir}/distribution" />
+
+        <!-- make a temporary distribution directory -->
+        <mkdir dir="${basedir}/distribution" />
+
+        <!-- copy across README  -->
+        <copy file="${basedir}/README.md" tofile="${basedir}/distribution/README.md" />
+
+        <!-- copy across runtime jar file -->
+        <copy file="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" tofile="${basedir}/distribution/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" />
+
+        <!-- copy across source files -->
+        <copy todir="${basedir}/distribution/src">
+            <fileset dir="${basedir}/src">
+            </fileset>
+        </copy>
+
+        <!-- copy across ant build files -->
+        <copy file="${basedir}/ant/build.xml" tofile="${basedir}/distribution/ant/build.xml" />
+
+        <!-- convert end-of-line characters in text files -->
+        <fixcrlf srcdir="${basedir}/distribution/src"
+                 eol="crlf" eof="remove"
+                 excludes="**/*.jpg" />
+    </target>
+
+    <!-- Make .zip distribution for JFreeGraphics2D -->
+    <target name="zip" depends="fill-distribution">
+
+        <!-- make the zip file -->
+        <zip zipfile="${basedir}/${jfreeg2d.name}-${jfreeg2d.version}.zip">
+             <zipfileset dir="${basedir}/distribution"
+                         prefix="${jfreeg2d.name}-${jfreeg2d.version}" />
+        </zip>
+
+    </target>
+
+    <!-- ALL -->
+    <target name="all"
+            depends="compile,zip-javadocs,zip"
+            description="Compiles JFreeGraphics2D, builds the jar files, generates the Javadoc HTML pages and creates distribution file (.zip).">
+
+        <!-- delete the temporary distribution directory -->
+        <delete dir="${basedir}/distribution" />
+    </target>
+
+</project>
