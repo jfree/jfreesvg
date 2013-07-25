@@ -22,36 +22,34 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.graphics2d.canvas;
 
 import java.awt.RenderingHints;
 
 /**
- * Rendering hints that can be used with the SVGGraphics2D implementation.
- * For the moment, there is a single hint that controls how images are
- * handled (embedded in the SVG, or referenced externally).
+ * Rendering hints that can be used with the CanvasGraphics2D implementation.
+ * For the moment, there is a single hint that controls how geometrical 
+ * coordinates are written (absolute or relative coordinates).
  */
-public class SVGHints {
+public class CanvasHints {
 
     /**
-     * The key for the hint that controls whether images are embedded in the
-     * SVG or referenced externally.
+     * The key for the hint that controls...
      */
-    public static final SVGHints.Key KEY_IMAGE_HANDLING 
-            = new SVGHints.Key();
+    public static final CanvasHints.Key KEY_COORDINATES 
+            = new CanvasHints.Key();
     
     /**
-     * Hint value to say that images should be embedded in the SVG output
-     * using PNG data Base64 encoded.
+     * Hint value to say that ...
      */
-    public static final Object VALUE_IMAGE_HANDLING_EMBED 
-            = "VALUE_IMAGE_HANDLING_EMBED";
+    public static final Object VALUE_COORDINATES_ABSOLUTE 
+            = "VALUE_COORDINATES_ABSOLUTE";
     
     /**
-     * Hint value to say that images should be referenced externally.
+     * Hint value to say that ...
      */
-    public static final Object VALUE_IMAGE_HANDLING_REFERENCE 
-            = "VALUE_IMAGE_HANDLING_REFERENCE";
+    public static final Object VALUE_COORDINATES_RELATIVE 
+            = "VALUE_COORDINATES_RELATIVE";
     
     /**
      * A key for hints used by the SVGGraphics2D class.
@@ -71,9 +69,10 @@ public class SVGHints {
          */
         @Override
         public boolean isCompatibleValue(Object val) {
-            return VALUE_IMAGE_HANDLING_EMBED.equals(val)
-                    || VALUE_IMAGE_HANDLING_REFERENCE.equals(val);
+            return VALUE_COORDINATES_ABSOLUTE.equals(val)
+                    || VALUE_COORDINATES_RELATIVE.equals(val);
         }
     }
     
 }
+
