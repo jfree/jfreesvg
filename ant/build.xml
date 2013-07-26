@@ -39,9 +39,10 @@
 
         <!-- compile the source -->
         <javac srcdir="${basedir}/src/main/java"
+               excludes="org/jfree/graphics2d/demo/**"
                destdir="${basedir}/build"
                debug="on"
-               deprecation="false"
+               deprecation="true"
                source="${src.version}"
                target="${target.version}">
             <classpath refid="build.classpath" />
@@ -78,7 +79,8 @@
                  linksource="yes"
                  splitindex="yes">
             <classpath refid="build.classpath" />
-            <packageset dir="${basedir}/src/main/java" defaultexcludes="yes">
+            <packageset dir="${basedir}/src/main/java"
+               excludes="org/jfree/graphics2d/demo" >
             </packageset>
         </javadoc>
     </target>
@@ -107,12 +109,27 @@
         <!-- copy across README  -->
         <copy file="${basedir}/README.md" tofile="${basedir}/distribution/README.md" />
 
+        <!-- copy across agpl-3.0.txt  -->
+        <copy file="${basedir}/agpl-3.0.txt" tofile="${basedir}/distribution/agpl-3.0.txt" />
+
         <!-- copy across runtime jar file -->
-        <copy file="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" tofile="${basedir}/distribution/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" />
+        <copy file="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" tofile="${basedir}/distribution/${jfreeg2d.name}-${jfreeg2d.version}.jar" />
+
+        <!-- copy across JFreeChart and JCommon jar files -->
+        <copy file="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}.jar" />
+        <copy file="${basedir}/lib/${jcommon.name}-${jcommon.version}.jar" tofile="${basedir}/distribution/lib/${jcommon.name}-${jcommon.version}.jar" />
+        <copy file="${basedir}/lib/license-LGPL.txt" tofile="${basedir}/distribution/lib/license-LGPL.txt" />
 
         <!-- copy across source files -->
         <copy todir="${basedir}/distribution/src">
             <fileset dir="${basedir}/src">
+                <exclude name="test/**"/>
+            </fileset>
+        </copy>
+
+        <!-- copy across Javadoc files -->
+        <copy todir="${basedir}/distribution/javadoc">
+            <fileset dir="${basedir}/javadoc">
             </fileset>
         </copy>
 
