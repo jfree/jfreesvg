@@ -27,8 +27,11 @@ package org.jfree.graphics2d.svg;
 import java.awt.Image;
 
 /**
- * An image reference.  This object provides the name (href) used in the
- * SVG element to refer to an external image, and the Image itself.
+ * A <code>(String, Image)</code> pair that links together a reference ID and 
+ * the source image.  This is used internally by {@link SVGGraphics2D} to track
+ * images as they are rendered.  This is important when images are not embedded
+ * in the SVG output, in which case you may need to generate corresponding
+ * image files for the images (see also {@link SVGGraphics2D#getSVGImages()}). 
  */
 public class ImageElement {
     
@@ -41,27 +44,33 @@ public class ImageElement {
     /**
      * Creates a new instance.
      * 
-     * @param href  the href.
-     * @param image  the image.
+     * @param href  the href (<code>null</code> not permitted).
+     * @param image  the image (<code>null</code> not permitted).
      */
     public ImageElement(String href, Image image) {
+        if (href == null) {
+            throw new IllegalArgumentException("Null 'href' argument.");
+        }
+        if (image == null) {
+            throw new IllegalArgumentException("Null 'image' argument.");
+        }
         this.href = href;
         this.image = image;
     }
 
     /**
-     * Returns the href.
+     * Returns the reference ID that was specified in the constructor.
      * 
-     * @return The href.
+     * @return The href (never <code>null</code>).
      */
     public String getHref() {
         return href;
     }
 
     /**
-     * Returns the image.
+     * Returns the image that was specified in the constructor.
      * 
-     * @return The image. 
+     * @return The image (never <code>null</code>).
      */
     public Image getImage() {
         return image;
