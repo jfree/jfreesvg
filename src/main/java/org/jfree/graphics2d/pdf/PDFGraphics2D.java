@@ -61,11 +61,10 @@ import java.util.Map;
 
 /**
  * A Graphics2D implementation that writes to PDF format.
- * 
- * Times−Roman Times−Bold Times−Italic Times−BoldItalic
- * Helvetica Helvetica−Bold Helvetica−Oblique Helvetica−BoldOblique
- * Courier Courier−Bold Courier−Oblique Courier−BoldOblique
- * Symbol ZapfDingbats 
+ * <p>
+ * For some demos of the use of this class, please look in the
+ * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
+ * directory.
  */
 public class PDFGraphics2D extends Graphics2D {
 
@@ -249,6 +248,8 @@ public class PDFGraphics2D extends Graphics2D {
      * Returns the current composite.
      * 
      * @return The current composite (never <code>null</code>).
+     * 
+     * @see #setComposite(java.awt.Composite) 
      */
     @Override
     public Composite getComposite() {
@@ -256,9 +257,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
     
     /**
-     * Sets the composite (only AlphaComposite is handled).
+     * Sets the composite (only <code>AlphaComposite</code> is handled).
      * 
-     * @param comp  the composite (<code>null<code> not permitted).
+     * @param comp  the composite (<code>null</code> not permitted).
+     * 
+     * @see #getComposite() 
      */
     @Override
     public void setComposite(Composite comp) {
@@ -303,7 +306,7 @@ public class PDFGraphics2D extends Graphics2D {
      *     result will be <code>null</code> also).
      * 
      * @return The current value for the specified hint 
-     *     (possibly <code>null</code).
+     *     (possibly <code>null</code>).
      */
     @Override
     public Object getRenderingHint(RenderingHints.Key hintKey) {
