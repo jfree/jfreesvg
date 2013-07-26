@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -70,7 +72,7 @@ import java.util.Map;
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
  */
-public class CanvasGraphics2D extends Graphics2D {
+public final class CanvasGraphics2D extends Graphics2D {
 
     /** The canvas ID. */
     private String canvasID;
@@ -134,7 +136,8 @@ public class CanvasGraphics2D extends Graphics2D {
     private Arc2D arc;
 
     /**
-     * Creates a new instance.
+     * Creates a new instance.  The canvas ID is stored but not used in the
+     * current implementation.
      * 
      * @param canvasID  the canvas ID. 
      */
@@ -146,6 +149,20 @@ public class CanvasGraphics2D extends Graphics2D {
         this.clip = null;
     }
 
+    /**
+     * Returns the canvas ID that was passed to the constructor.
+     * 
+     * @return The canvas ID. 
+     */
+    public String getCanvasID() {
+        return this.canvasID;
+    }
+    
+    /**
+     * Not yet implemented.
+     * 
+     * @return The graphics configuration.
+     */
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
@@ -172,9 +189,12 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the paint.  The default value is {@link Color#BLACK}.
+     * Returns the paint used to draw or fill shapes (or text).  The default 
+     * value is {@link Color#BLACK}.
      * 
      * @return The paint (never <code>null</code>). 
+     * 
+     * @see #setPaint(java.awt.Paint) 
      */
     @Override
     public Paint getPaint() {
@@ -182,10 +202,15 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the paint.  If you pass <code>null</code> to this method, it does 
-     * nothing (in accordance with the JDK specification).
+     * Sets the paint used to draw or fill shapes (or text).  If 
+     * <code>paint</code> is an instance of <code>Color</code>, this method will
+     * also update the current color attribute (see {@link #getColor()}). If 
+     * you pass <code>null</code> to this method, it does nothing (in 
+     * accordance with the JDK specification).
      * 
-     * @param paint  the paint (<code>null</code> is permitted but ignored). 
+     * @param paint  the paint (<code>null</code> is permitted but ignored).
+     * 
+     * @see #getPaint() 
      */
     @Override
     public void setPaint(Paint paint) {
@@ -262,7 +287,7 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the background color.  The default value is Color.BLACK.
+     * Returns the background color.  The default value is {@link Color#BLACK}.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
      * @return The background color (possibly <code>null</code>). 
@@ -275,13 +300,15 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the background color. This is used by the 
+     * Sets the background color.  This is used by the 
      * {@link #clearRect(int, int, int, int)} method.  The reference 
      * implementation allows <code>null</code> for the background color so
      * we allow that too (but for that case, the clearRect method will do 
      * nothing).
      * 
      * @param color  the color (<code>null</code> permitted).
+     * 
+     * @see #getBackground() 
      */
     @Override
     public void setBackground(Color color) {
@@ -316,7 +343,8 @@ public class CanvasGraphics2D extends Graphics2D {
         if (comp instanceof AlphaComposite) {
             AlphaComposite ac = (AlphaComposite) comp;
             sb.append("ctx.globalAlpha=").append(ac.getAlpha()).append(";");
-            sb.append("ctx.globalCompositeOperation=\"").append(toJSCompositeRuleName(ac.getRule())).append("\";");
+            sb.append("ctx.globalCompositeOperation=\"").append(
+                    toJSCompositeRuleName(ac.getRule())).append("\";");
         } else {
             System.err.println("setComposite(" + comp + ")");        
         }
@@ -343,14 +371,17 @@ public class CanvasGraphics2D extends Graphics2D {
             case AlphaComposite.DST_ATOP:
                 return "destination-atop";
             default:
-                throw new IllegalArgumentException("Unknown/unhandled 'rule' " + rule);
+                throw new IllegalArgumentException("Unknown/unhandled 'rule' " 
+                        + rule);
         }
     }
 
     /**
-     * Returns the current stroke.
+     * Returns the current stroke (used when drawing shapes). 
      * 
      * @return The current stroke (never <code>null</code>). 
+     * 
+     * @see #setStroke(java.awt.Stroke) 
      */
     @Override
     public Stroke getStroke() {
@@ -358,9 +389,12 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the stroke (only BasicStroke is handled at present).
+     * Sets the stroke that will be used to draw shapes.  Only 
+     * <code>BasicStroke</code> is supported.
      * 
-     * @param s  the stroke.
+     * @param s  the stroke (<code>null</code> not permitted).
+     * 
+     * @see #getStroke() 
      */
     @Override
     public void setStroke(Stroke s) {
@@ -397,6 +431,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * 
      * @return The current value for the specified hint 
      *     (possibly <code>null</code>).
+     * 
+     * @see #setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object) 
      */
     @Override
     public Object getRenderingHint(RenderingHints.Key hintKey) {
@@ -409,6 +445,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * 
      * @param hintKey  the hint key (<code>null</code> not permitted).
      * @param hintValue  the hint value.
+     * 
+     * @see #getRenderingHint(java.awt.RenderingHints.Key) 
      */
     @Override
     public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue) {
@@ -420,6 +458,8 @@ public class CanvasGraphics2D extends Graphics2D {
      * will have no impact on the state of this Graphics2D instance.
      * 
      * @return The rendering hints (never <code>null</code>). 
+     * 
+     * @see #setRenderingHints(java.util.Map) 
      */
     @Override
     public RenderingHints getRenderingHints() {
@@ -427,9 +467,11 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the rendering hints.
+     * Sets the rendering hints to the specified collection.
      * 
      * @param hints  the new set of hints (<code>null</code> not permitted).
+     * 
+     * @see #getRenderingHints() 
      */
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
@@ -438,7 +480,7 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Adds all the supplied hints.
+     * Adds all the supplied rendering hints.
      * 
      * @param hints  the hints (<code>null</code> not permitted).
      */
@@ -448,10 +490,15 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified shape.  There is direct handling for Line2D,
-     * Rectangle2D and Path2D.  All other shapes are drawn as a GeneralPath.
+     * Draws the specified shape with the current <code>paint</code> and 
+     * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
+     * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
+     * mapped to a <code>GeneralPath</code> and then drawn (effectively as 
+     * </code>Path2D</code> objects).
      * 
-     * @param s  the shape (<code>null</code> not permitted). 
+     * @param s  the shape (<code>null</code> not permitted).
+     * 
+     * @see #fill(java.awt.Shape) 
      */
     @Override
     public void draw(Shape s) {
@@ -465,10 +512,14 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified shape.  There is direct handling for Rectangle2D 
-     * and Path2D.  All other shapes are filled as a GeneralPath.
+     * Fills the specified shape with the current <code>paint</code>.  There is
+     * direct handling for <code>Rectangle2D</code> and <code>Path2D</code>.  
+     * All other shapes are mapped to a <code>GeneralPath</code> and then 
+     * filled.
      * 
      * @param s  the shape (<code>null</code> not permitted). 
+     * 
+     * @see #draw(java.awt.Shape) 
      */
     @Override
     public void fill(Shape s) {
@@ -557,9 +608,11 @@ public class CanvasGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the current font.
+     * Returns the current font used for drawing text.
      * 
-     * @return The current font (never <code>null</code>). 
+     * @return The current font (never <code>null</code>).
+     * 
+     * @see #setFont(java.awt.Font) 
      */
     @Override
     public Font getFont() {
@@ -567,9 +620,11 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the current font.
+     * Sets the font to be used for drawing text.
      * 
-     * @param font  the font (<code>null</code> is permitted but ignored). 
+     * @param font  the font (<code>null</code> is permitted but ignored).
+     * 
+     * @see #getFont() 
      */
     @Override
     public void setFont(Font font) {
@@ -595,8 +650,8 @@ public class CanvasGraphics2D extends Graphics2D {
  
     /**
      * Returns the font render context.  The implementation here returns the
-     * FontRenderContext for an image that is maintained internally (as for
-     * {@link #getFontMetrics}.
+     * <code>FontRenderContext</code> for an image that is maintained 
+     * internally (as for {@link #getFontMetrics}).
      * 
      * @return The font render context.
      */
@@ -606,7 +661,8 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at (x, y).
+     * Draws a string at <code>(x, y)</code>.  The start of the text at the
+     * baseline level will be aligned with the <code>(x, y)</code> point.
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -620,7 +676,8 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at (x, y).
+     * Draws a string at <code>(x, y)</code>. The start of the text at the
+     * baseline level will be aligned with the <code>(x, y)</code> point.
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -644,7 +701,8 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string of attributed characters.  The call is delegated to
+     * Draws a string of attributed characters at <code>(x, y)</code>.  The 
+     * call is delegated to 
      * {@link #drawString(java.text.AttributedCharacterIterator, float, float)}. 
      * 
      * @param iterator  an iterator for the characters.
@@ -657,10 +715,13 @@ public class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string of attributed characters.  LIMITATION: in the current
-     * implementation, the string is drawn but the formatting is ignored.
+     * Draws a string of attributed characters at <code>(x, y)</code>. 
+     * <p>
+     * <b>LIMITATION</b>: in the current implementation, the string is drawn 
+     * using the current font and the formatting is ignored.
      * 
-     * @param iterator  an iterator over the characters.
+     * @param iterator  an iterator over the characters (<code>null</code> not 
+     *     permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
@@ -1387,7 +1448,7 @@ public class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Returns the script that has been generated by calls to this 
-     * Graphics2D implementation.
+     * <code>Graphics2D</code> implementation.
      * 
      * @return The script.
      */

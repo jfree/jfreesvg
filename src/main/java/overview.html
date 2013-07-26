@@ -1,15 +1,23 @@
 <HTML>
 <BODY>
-JFreeGraphics2D is a vector graphics library for the Java(tm) platform that allows Java2D drawings to be rendered to various output formats including Scalable Vector Graphics (SVG) and Portable Document Format (PDF).
-<p>
-The key classes in this library are:
-<ul>
-  <li> the {@link org.jfree.graphics2d.svg.SVGGraphics2D} for generating output in Scalable Vector Graphics (SVG) format;</li>
-  <li> the {@link org.jfree.graphics2d.pdf.PDFGraphics2D} for generating output in Portable Document Format (PDF).</li>
-</ul>
-<p>
-JFreeGraphics2D requires Java 6 or later.
-<p>
-For more information, see <a href="http://www.jfree.org/jfreegraphics2d/index.html">http://www.jfree.org/jfreegraphics2d/index.html</a>.
+  <b>JFreeGraphics2D</b> is a vector graphics library for the Java(tm) platform
+  that allows Java2D drawings to be rendered to various output formats
+  including Scalable Vector Graphics (SVG) and Portable Document 
+  Format (PDF).  The key classes in this library are:
+  <p>
+  <li>the {@link org.jfree.graphics2d.svg.SVGGraphics2D} class for 
+  generating output in Scalable Vector Graphics (SVG) format;</li>
+  <li>the {@link org.jfree.graphics2d.pdf.PDFDocument} and 
+        {@link org.jfree.graphics2d.pdf.PDFGraphics2D} classes for generating 
+        output in Portable Document Format (PDF).</li>
+  <p>
+  In addition, there is an experimental 
+  {@link org.jfree.graphics2d.canvas.CanvasGraphics2D} class for translating
+  Java2D calls to Javascript HTML5 Canvas API calls.  This has less utility
+  than the SVG and PDF classes, but is included in any case.
+  <p>  
+  <b>JFreeGraphics2D</b> requires Java 6 or later.  For more information, see 
+  <a href="http://www.jfree.org/jfreegraphics2d/index.html">
+      http://www.jfree.org/jfreegraphics2d/index.html</a>.
 </BODY>
 </HTML>

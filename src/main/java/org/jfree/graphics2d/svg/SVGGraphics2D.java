@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -114,7 +116,7 @@ import org.jfree.graphics2d.GraphicsUtils;
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
  */
-public class SVGGraphics2D extends Graphics2D {
+public final class SVGGraphics2D extends Graphics2D {
 
     /** Rendering hints (see SVGHints). */
     private RenderingHints hints;
@@ -344,7 +346,7 @@ public class SVGGraphics2D extends Graphics2D {
     /**
      * Not yet implemented.
      * 
-     * @return 
+     * @return The graphics configuration.
      */
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
@@ -452,7 +454,7 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the background color.  The default value is Color.BLACK.
+     * Returns the background color.  The default value is {@link Color#BLACK}.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
      * @return The background color (possibly <code>null</code>). 
@@ -605,12 +607,15 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified shape.  There is direct handling for 
-     * <code>Line2D</code>, <code>Rectangle2D</code> and <code>Path2D></code>.  
-     * All other shapes are mapped to a <code>GeneralPath</code> and then drawn
-     * (effectively as </code>Path2D</code> objects).
+     * Draws the specified shape with the current <code>paint</code> and 
+     * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
+     * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
+     * mapped to a <code>GeneralPath</code> and then drawn (effectively as 
+     * </code>Path2D</code> objects).
      * 
-     * @param s  the shape (<code>null</code> not permitted). 
+     * @param s  the shape (<code>null</code> not permitted).
+     * 
+     * @see #fill(java.awt.Shape) 
      */
     @Override
     public void draw(Shape s) {
@@ -661,6 +666,8 @@ public class SVGGraphics2D extends Graphics2D {
      * filled.
      * 
      * @param s  the shape (<code>null</code> not permitted). 
+     * 
+     * @see #draw(java.awt.Shape) 
      */
     @Override
     public void fill(Shape s) {
@@ -859,7 +866,7 @@ public class SVGGraphics2D extends Graphics2D {
      * 
      * @param font  the font (<code>null</code> is permitted but ignored).
      * 
-     * @see #sgetFont() 
+     * @see #getFont() 
      */
     @Override
     public void setFont(Font font) {
@@ -1394,6 +1401,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
+     * 
+     * @see #fillRoundRect(int, int, int, int, int, int) 
      */
     @Override
     public void drawRoundRect(int x, int y, int width, int height, 
@@ -1403,7 +1412,8 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills a rectangle with rounded corners.
+     * Fills a rectangle with rounded corners using the current 
+     * <code>paint</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1411,6 +1421,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
+     * 
+     * @see #drawRoundRect(int, int, int, int, int, int) 
      */
     @Override
     public void fillRoundRect(int x, int y, int width, int height, 
@@ -1421,7 +1433,7 @@ public class SVGGraphics2D extends Graphics2D {
 
     /**
      * Draws an oval framed by the rectangle <code>(x, y, width, height)</code>
-     * using the current <code>paint</code> and <code>stroke</code>..
+     * using the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1464,6 +1476,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #fillArc(int, int, int, int, int, int) 
      */
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
@@ -1473,7 +1487,10 @@ public class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an arc.
+     * Fills an arc contained within the rectangle 
+     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
+     * and continuing through <code>arcAngle</code> degrees, using 
+     * the current <code>paint</code>
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1481,6 +1498,8 @@ public class SVGGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #drawArc(int, int, int, int, int, int) 
      */
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
@@ -1489,29 +1508,6 @@ public class SVGGraphics2D extends Graphics2D {
         fill(this.arc);
     }
 
-    /**
-     * A utility method used to create a polygon for rendering.
-     * 
-     * @param xPoints  the x-points.
-     * @param yPoints  the y-points.
-     * @param nPoints  the number of points to use for the polyline.
-     * @param close  closed?
-     * 
-     * @return A polygon.
-     */
-    private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
-            int nPoints, boolean close) {
-        GeneralPath p = new GeneralPath();
-        p.moveTo(xPoints[0], yPoints[0]);
-        for (int i = 1; i < nPoints; i++) {
-            p.lineTo(xPoints[i], yPoints[i]);
-        }
-        if (close) {
-            p.closePath();
-        }
-        return p;
-    }
-    
     /**
      * Draws the specified multi-segment line using the current 
      * <code>paint</code> and <code>stroke</code>.
@@ -1522,7 +1518,8 @@ public class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, false);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                false);
         draw(p);
     }
 
@@ -1533,23 +1530,28 @@ public class SVGGraphics2D extends Graphics2D {
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
-     */
+     * 
+     * @see #fillPolygon(int[], int[], int)      */
     @Override
     public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         draw(p);
     }
 
     /**
-     * Fills the specified polygon.
+     * Fills the specified polygon using the current <code>paint</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
+     * 
+     * @see #drawPolygon(int[], int[], int) 
      */
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         fill(p);
     }
 

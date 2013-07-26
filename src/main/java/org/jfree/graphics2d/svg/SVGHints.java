@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +34,7 @@ import java.awt.RenderingHints;
  * {@link #KEY_IMAGE_HANDLING}) that controls how images are handled (embedded
  * in the SVG, or referenced externally).
  */
-public class SVGHints {
+public final class SVGHints {
 
     private SVGHints() {
         // no need to instantiate this    

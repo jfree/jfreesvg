@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -115,13 +117,6 @@ public class PDFBarChartDemo1 {
         renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
                 ItemLabelAnchor.INSIDE6, TextAnchor.BOTTOM_CENTER));
 
-        // set up gradient paints for series...
-//        GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, Color.blue,
-//                0.0f, 0.0f, new Color(0, 0, 64));
-//        GradientPaint gp1 = new GradientPaint(0.0f, 0.0f, Color.green,
-//                0.0f, 0.0f, new Color(0, 64, 0));
-        //renderer.setSeriesPaint(0, gp0);
-        //renderer.setSeriesPaint(1, gp1);
         return chart;
     }
  
@@ -131,8 +126,7 @@ public class PDFBarChartDemo1 {
         Page page = pdfDoc.createPage(new Rectangle(612, 468));
         PDFGraphics2D g2 = page.getGraphics2D();
         chart.draw(g2, new Rectangle(0, 0, 612, 468));
-        File f = new File("PDFBarChartDemo1.pdf");
-        pdfDoc.writeToFile(f);
+        pdfDoc.writeToFile(new File("PDFBarChartDemo1.pdf"));
     }
 
 }

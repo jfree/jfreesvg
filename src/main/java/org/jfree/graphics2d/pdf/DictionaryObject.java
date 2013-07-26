@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,8 +28,8 @@ package org.jfree.graphics2d.pdf;
 
 /**
  * A PDF object that is represented by a dictionary.  This is used to
- * represent the Catalog and the Outline (the latter being a placeholder
- * implementation only).
+ * represent the <code>Catalog</code> and the <code>Outlines</code> (the latter 
+ * being a placeholder implementation only since we don't generate outlines).
  */
 public class DictionaryObject extends PDFObject {
     

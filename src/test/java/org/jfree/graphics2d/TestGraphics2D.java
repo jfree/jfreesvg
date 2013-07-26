@@ -1,5 +1,7 @@
 /**
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ * 
+ * This test file is internal, it will not be released.
  */
 package org.jfree.graphics2d;
 

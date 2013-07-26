@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,18 +27,15 @@
 package org.jfree.graphics2d.demo;
 
 import java.awt.Rectangle;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 
 /**
  * A demo/test for a pie chart.
@@ -82,33 +81,6 @@ public class SVGPieChartDemo1 {
         return chart;
 
     }
-
-    public static void writeToHTML(File f, String svg) throws IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(f));
-            writer.write("<!DOCTYPE html>\n");
-            writer.write("<html>\n");
-            writer.write("<head>\n");
-            writer.write("<title>SVGPieChartDemo</title>\n");
-            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"); 
-            writer.write("</head>\n");
-            writer.write("<body>\n");
-
-            writer.write(svg + "\n");
-            writer.write("</body>\n");
-            writer.write("</html>\n");
-            writer.flush();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(SVGPieChartDemo1.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
-    }
     
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
@@ -116,6 +88,6 @@ public class SVGPieChartDemo1 {
         Rectangle r = new Rectangle(0, 0, 600, 400);
         chart.draw(g2, r);
         File f = new File("SVGPieChartDemo1.html");
-        writeToHTML(f, g2.getSVGElement());
+        SVGUtils.writeToHTML(f, "SVGPieChartDemo1", g2.getSVGElement());
     }
 }

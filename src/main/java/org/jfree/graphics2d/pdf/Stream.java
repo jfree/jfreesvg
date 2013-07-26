@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,17 +27,32 @@
 package org.jfree.graphics2d.pdf;
 
 /**
- * A stream will have a Dictionary and a byte stream (and is also a PDFObject).
+ * A <code>Stream</code> is a {@link PDFObject} that has a {@link Dictionary} 
+ * and a byte stream.
  */
 public abstract class Stream extends PDFObject {
 
+    /** The dictionary. */
     private Dictionary dictionary;
     
+    /**
+     * Creates a new stream with an empty dictionary.
+     * 
+     * @param number  the PDF object number.
+     * @param generation  the PDF object generation number.
+     */
     Stream(int number, int generation) {
         super(number, generation);
         this.dictionary = new Dictionary();
     }
     
+    /**
+     * Returns the PDF string describing this stream. This will eventually
+     * be written to the byte array for the PDF document.
+     * 
+     * @return The PDF string. 
+     */
+    @Override
     public String getObjectString() {
         String streamContent = getStreamContentString();
         this.dictionary.put("/Length", Integer.valueOf(streamContent.length()));
@@ -45,6 +62,11 @@ public abstract class Stream extends PDFObject {
         return b.toString();   
     }
     
+    /**
+     * Returns the PDF string describing the stream content.
+     * 
+     * @return The PDF string describing the stream content. 
+     */
     public abstract String getStreamContentString();
     
 }

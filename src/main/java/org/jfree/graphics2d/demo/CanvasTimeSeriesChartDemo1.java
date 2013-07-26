@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +44,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.graphics2d.canvas.CanvasGraphics2D;
-import static org.jfree.graphics2d.demo.CanvasPieChartDemo1.writeToHTML;
+import org.jfree.graphics2d.canvas.CanvasUtils;
 import org.jfree.ui.HorizontalAlignment;
 
 /**
@@ -414,13 +416,14 @@ public class CanvasTimeSeriesChartDemo1 {
         return dataset;
     }
 
-    
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         CanvasGraphics2D g2 = new CanvasGraphics2D("id");
-        Rectangle r = new Rectangle(0, 0, 600, 400);
-        chart.draw(g2, r);
+        int width = 600;
+        int height = 400;
+        chart.draw(g2, new Rectangle(0, 0, width, height));
         File f = new File("CanvasTimeSeriesChartDemo1.html");
-        writeToHTML(f, g2.getScript());
+        CanvasUtils.writeToHTML(f, "CanvasTimeSeriesChartDemo1", 
+                g2.getCanvasID(), width, height, g2.getScript());
     }
 }

@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +32,7 @@ import java.util.Map;
 
 /**
  * A class that can be used to map AWT/Java2D fonts to PDF built-in font names.
- * This is a very minimal (crappy) way to support fonts in our PDFGraphics2D 
+ * This is a very minimal way to support fonts in our <code>PDFGraphics2D</code> 
  * implementation...hope to improve it later.
  */
 public class DefaultFontMapper implements FontMapper {

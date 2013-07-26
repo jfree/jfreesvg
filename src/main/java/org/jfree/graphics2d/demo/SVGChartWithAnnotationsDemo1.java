@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,14 +31,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYDrawableAnnotation;
@@ -59,6 +57,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 import org.jfree.ui.RectangleInsets;
 
 /**
@@ -185,33 +184,6 @@ public class SVGChartWithAnnotationsDemo1 {
                 DateTickUnitType.YEAR, 5, df));
         return units;
     }
-
-    public static void writeToHTML(File f, String svg) throws IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(f));
-            writer.write("<!DOCTYPE html>\n");
-            writer.write("<html>\n");
-            writer.write("<head>\n");
-            writer.write("<title>SVGChartWithAnnotationsDemo1</title>\n");
-            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"); 
-            writer.write("</head>\n");
-            writer.write("<body>\n");
-
-            writer.write(svg + "\n");
-            writer.write("</body>\n");
-            writer.write("</html>\n");
-            writer.flush();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(SVGChartWithAnnotationsDemo1.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
-    }
     
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
@@ -219,6 +191,7 @@ public class SVGChartWithAnnotationsDemo1 {
         Rectangle r = new Rectangle(0, 0, 500, 300);
         chart.draw(g2, r);
         File f = new File("SVGChartWithAnnotationsDemo1.html");
-        writeToHTML(f, g2.getSVGElement());
+        SVGUtils.writeToHTML(f, "SVGChartWithAnnotationsDemo1", 
+                g2.getSVGElement());
     }
 }

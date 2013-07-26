@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,11 +47,14 @@ public class FontKey {
     /**
      * Creates a new key for a given font.
      * 
-     * @param f  the font.
+     * @param f  the font (<code>null</code> not permitted).
      * 
      * @return The font key. 
      */
     public static FontKey createFontKey(Font f) {
+        if (f == null) {
+            throw new IllegalArgumentException("Null 'f' argument.");
+        }
         String family = f.getFamily();
         boolean bold = f.isBold();
         boolean italic = f.isItalic();
@@ -69,6 +74,13 @@ public class FontKey {
         this.isItalic = italic;
     }
 
+    /**
+     * Tests this key for equality with an arbitrary object.
+     * 
+     * @param obj  the object to test against (<code>null</code> permitted).
+     * 
+     * @return A boolean. 
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -90,6 +102,11 @@ public class FontKey {
         return true;
     }
     
+    /**
+     * Returns a hash code for this instance.
+     * 
+     * @return A hash code. 
+     */
     @Override
     public int hashCode() {
         int hash = 3;

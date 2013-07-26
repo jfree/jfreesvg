@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +35,7 @@ import java.awt.Image;
  * in the SVG output, in which case you may need to generate corresponding
  * image files for the images (see also {@link SVGGraphics2D#getSVGImages()}). 
  */
-public class ImageElement {
+public final class ImageElement {
     
     /** The filename specified in the href. */
     private String href;

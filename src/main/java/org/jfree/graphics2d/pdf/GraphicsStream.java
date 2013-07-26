@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +37,10 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 
 /**
- * A class that supports the creation of a PDF graphics stream.
+ * A <code>Stream</code> that contains graphics for the PDF document that
+ * can be generated via the {@link PDFGraphics2D} class.  The {@link Page}
+ * class will create a <code>GraphicsStream</code> instance to represent its
+ * content.  You don't normally interact directly with this class.
  */
 public class GraphicsStream extends Stream {
 
@@ -54,9 +59,9 @@ public class GraphicsStream extends Stream {
     /**
      * Creates a new instance.
      * 
-     * @param number  the object number.
-     * @param generation  the generation number.
-     * @param page  the parent page.
+     * @param number  the PDF object number.
+     * @param generation  the PDF generation number.
+     * @param page  the parent page (<code>null</code> not permitted).
      */
     GraphicsStream(int number, int generation, Page page) {
       super(number, generation);
@@ -80,6 +85,11 @@ public class GraphicsStream extends Stream {
     
     private AffineTransform prevTransInv;
     
+    /**
+     * Sets the transform.
+     * 
+     * @param t  the transform. 
+     */
     public void setTransform(AffineTransform t) {
         AffineTransform tt = new AffineTransform(t);
         try {
@@ -215,7 +225,7 @@ public class GraphicsStream extends Stream {
         String fontRef = this.page.findOrCreateFontReference(this.font);
         this.content.append("BT ");
         AffineTransform t = new AffineTransform(1.0, 0.0, 0.0, -1.0, 0.0, 
-                y * 2); // WHY??
+                y * 2); 
         applyTextTransform(t);
         this.content.append(fontRef).append(" ")
                 .append(this.font.getSize()).append(" Tf ");
@@ -255,7 +265,8 @@ public class GraphicsStream extends Stream {
     }
 
     /**
-     * A utility method to convert a Path2D instance to a PDF path string.
+     * A utility method to convert a <code>Path2D</code> instance to a PDF 
+     * path string.
      * 
      * @param path  the path.
      * 

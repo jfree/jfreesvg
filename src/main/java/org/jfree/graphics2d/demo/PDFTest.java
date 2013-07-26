@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +44,6 @@ public class PDFTest {
         PDFDocument pdfDoc = new PDFDocument();
         Page page = pdfDoc.createPage(new Rectangle(612, 468));
         PDFGraphics2D g2 = page.getGraphics2D();
-        //g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL));
         AffineTransform saved = g2.getTransform();
         g2.setColor(Color.RED);
         g2.translate(50, 100);

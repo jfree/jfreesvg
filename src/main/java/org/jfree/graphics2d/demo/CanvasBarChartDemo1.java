@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +29,8 @@ package org.jfree.graphics2d.demo;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Rectangle;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -46,10 +44,13 @@ import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
 import org.jfree.graphics2d.canvas.CanvasGraphics2D;
+import org.jfree.graphics2d.canvas.CanvasUtils;
 import org.jfree.ui.TextAnchor;
 
 /**
- * A demo/test for a bar chart.
+ * A demo using {@link CanvasGraphics2D} and JFreeChart to write a bar chart 
+ * to an HTML file where a Javascript function draws the chart on an
+ * HTML5 canvas.
  */
 public class CanvasBarChartDemo1 {
     
@@ -128,49 +129,15 @@ public class CanvasBarChartDemo1 {
         return chart;
     }
 
-    public static void writeToHTML(File f, String canvasScript) throws IOException {
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new FileWriter(f));
-            writer.write("<!DOCTYPE html>\n");
-            writer.write("<html>\n");
-            writer.write("<head>\n");
-            writer.write("<title>CanvasBarChartDemo1</title>\n");
-            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"); 
-            writer.write("<script>\n");
-            writer.write("window.onload = function() {\n");
-            writer.write("var canvas = document.getElementById(\"canvas1\");\n");
-            writer.write("var ctx = canvas.getContext(\"2d\");\n");
-            writer.write("if (!ctx.setLineDash) {\n");
-            writer.write("ctx.setLineDash = function() {};\n");
-            writer.write("}\n");
-            writer.write(canvasScript + "\n");
-            writer.write("}\n");
-            writer.write("</script>\n");
-            writer.write("</head>\n");
-            writer.write("<body>\n");
-
-            writer.write("<canvas id=\"canvas1\" width=\"600\" height=\"400\"></canvas>");
-            writer.write("</body>\n");
-            writer.write("</html>\n");
-            writer.flush();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(CanvasPieChartDemo1.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
-    }
-    
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         CanvasGraphics2D g2 = new CanvasGraphics2D("id");
-        Rectangle r = new Rectangle(0, 0, 600, 400);
+        int width = 600;
+        int height = 400;
+        Rectangle r = new Rectangle(0, 0, width, height);
         chart.draw(g2, r);
         File f = new File("CanvasBarChartDemo1.html");
-        writeToHTML(f, g2.getScript());
+        CanvasUtils.writeToHTML(f, "CanvasBarChartDemo1", g2.getCanvasID(), 
+               width, height, g2.getScript());
     }
 }

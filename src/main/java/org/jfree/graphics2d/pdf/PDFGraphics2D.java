@@ -3,6 +3,8 @@
  * ============================================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ *
+ * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,15 +60,24 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
+import org.jfree.graphics2d.GraphicsUtils;
 
 /**
- * A Graphics2D implementation that writes to PDF format.
+ * A Graphics2D implementation that writes to PDF format.  For typical usage,
+ * see the documentation for the {@link PDFDocument} class.
+ * <p>
+ * Some implementation notes:
+ * <p>
+ * <ul>
+ * <li>font support is very limited in this initial release;</li>
+ * <li>drawing images is not yet supported;</li>
+ * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
  */
-public class PDFGraphics2D extends Graphics2D {
+public final class PDFGraphics2D extends Graphics2D {
 
     int width;
     
@@ -128,14 +139,27 @@ public class PDFGraphics2D extends Graphics2D {
     
     private GraphicsStream gs;
     
+    /**
+     * Creates a new instance of <code>PDFGraphics2D</code>.  You won't 
+     * normally create this directly, instead you will call the 
+     * {@link Page#getGraphics2D()} method.
+     * 
+     * @param gs  the graphics stream.
+     * @param width  the width.
+     * @param height  the height.
+     */
     public PDFGraphics2D(GraphicsStream gs, int width, int height) {
+        if (gs == null) {
+            throw new IllegalArgumentException("Null 'gs' argument.");
+        }
         this.width = width;
         this.height = height;
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
         this.gs = gs;
         // flip the y-axis to match the Java2D convention
-        this.gs.applyTransform(AffineTransform.getTranslateInstance(0.0, height));
+        this.gs.applyTransform(AffineTransform.getTranslateInstance(0.0, 
+                height));
         this.gs.applyTransform(AffineTransform.getScaleInstance(1.0, -1.0));
         
         AffineTransform textTransform = new AffineTransform();
@@ -158,9 +182,12 @@ public class PDFGraphics2D extends Graphics2D {
     }
  
     /**
-     * Returns the paint.  The default value is {@link Color#WHITE}.
+     * Returns the paint used to draw or fill shapes (or text).  The default 
+     * value is {@link Color#WHITE}.
      * 
-     * @return The paint (never <code>null</code>). 
+     * @return The paint (never <code>null</code>).
+     *
+     * @see #setPaint(java.awt.Paint) 
      */
    @Override
     public Paint getPaint() {
@@ -168,10 +195,15 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the paint.  If you pass <code>null</code> to this method, it does 
-     * nothing (in accordance with the JDK specification).
+     * Sets the paint used to draw or fill shapes (or text).  If 
+     * <code>paint</code> is an instance of <code>Color</code>, this method will
+     * also update the current color attribute (see {@link #getColor()}). If 
+     * you pass <code>null</code> to this method, it does nothing (in 
+     * accordance with the JDK specification).
      * 
-     * @param paint  the paint (<code>null</code> is permitted but ignored). 
+     * @param paint  the paint (<code>null</code> is permitted but ignored).
+     * 
+     * @see #getPaint() 
      */
     @Override
     public void setPaint(Paint paint) {
@@ -218,7 +250,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the background color.  The default value is Color.BLACK.
+     * Returns the background color.  The default value is {@link Color#BLACK}.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
      * @return The background color (possibly <code>null</code>). 
@@ -238,6 +270,8 @@ public class PDFGraphics2D extends Graphics2D {
      * nothing).
      * 
      * @param color  the color (<code>null</code> permitted).
+     * 
+     * @see #getBackground() 
      */
     @Override
     public void setBackground(Color color) {
@@ -272,9 +306,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the current stroke.
+     * Returns the current stroke (used when drawing shapes). 
      * 
      * @return The current stroke (never <code>null</code>). 
+     * 
+     * @see #setStroke(java.awt.Stroke) 
      */
     @Override
     public Stroke getStroke() {
@@ -282,9 +318,12 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the stroke (only BasicStroke is handled at present).
+     * Sets the stroke that will be used to draw shapes.  Only 
+     * <code>BasicStroke</code> is supported.
      * 
      * @param s  the stroke (<code>null</code> not permitted).
+     * 
+     * @see #getStroke() 
      */
     @Override
     public void setStroke(Stroke s) {
@@ -307,6 +346,8 @@ public class PDFGraphics2D extends Graphics2D {
      * 
      * @return The current value for the specified hint 
      *     (possibly <code>null</code>).
+     * 
+     * @see #setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object) 
      */
     @Override
     public Object getRenderingHint(RenderingHints.Key hintKey) {
@@ -319,6 +360,8 @@ public class PDFGraphics2D extends Graphics2D {
      * 
      * @param hintKey  the hint key.
      * @param hintValue  the hint value.
+     * 
+     * @see #getRenderingHint(java.awt.RenderingHints.Key) 
      */
     @Override
     public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue) {
@@ -327,9 +370,12 @@ public class PDFGraphics2D extends Graphics2D {
 
     /**
      * Returns a copy of the rendering hints.  Modifying the returned copy
-     * will have no impact on the state of this Graphics2D instance.
+     * will have no impact on the state of this <code>Graphics2D</code> 
+     * instance.
      * 
      * @return The rendering hints (never <code>null</code>). 
+     * 
+     * @see #setRenderingHints(java.util.Map) 
      */
     @Override
     public RenderingHints getRenderingHints() {
@@ -337,9 +383,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the rendering hints.
+     * Sets the rendering hints to the specified collection.
      * 
      * @param hints  the new set of hints (<code>null</code> not permitted).
+     * 
+     * @see #getRenderingHints() 
      */
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
@@ -348,7 +396,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Adds all the supplied hints.
+     * Adds all the supplied rendering hints.
      * 
      * @param hints  the hints (<code>null</code> not permitted).
      */
@@ -357,6 +405,17 @@ public class PDFGraphics2D extends Graphics2D {
         this.hints.putAll(hints);
     }
 
+    /**
+     * Draws the specified shape with the current <code>paint</code> and 
+     * <code>stroke</code>.  There is direct handling for <code>Line2D</code> 
+     * and <code>Path2D</code>.  All other shapes are mapped to a 
+     * <code>GeneralPath</code> and then drawn (effectively as 
+     * </code>Path2D</code> objects).
+     * 
+     * @param s  the shape (<code>null</code> not permitted). 
+     * 
+     * @see #fill(java.awt.Shape) 
+     */
     @Override
     public void draw(Shape s) {
         if (s instanceof Line2D) {
@@ -370,6 +429,15 @@ public class PDFGraphics2D extends Graphics2D {
         }
     }
 
+    /**
+     * Fills the specified shape with the current <code>paint</code>.  There is
+     * direct handling for <code>Path2D</code>. All other shapes are mapped to 
+     * a <code>GeneralPath</code> and then filled.
+     * 
+     * @param s  the shape (<code>null</code> not permitted). 
+     * 
+     * @see #draw(java.awt.Shape) 
+     */    
     @Override
     public void fill(Shape s) {
         if (s instanceof Path2D) {
@@ -381,9 +449,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the current font.
+     * Returns the current font used for drawing text.
      * 
-     * @return The current font (never <code>null</code>). 
+     * @return The current font (never <code>null</code>).
+     * 
+     * @see #setFont(java.awt.Font) 
      */
     @Override
     public Font getFont() {
@@ -391,9 +461,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the current font.
+     * Sets the font to be used for drawing text.
      * 
-     * @param font  the font (<code>null</code> is permitted but ignored). 
+     * @param font  the font (<code>null</code> is permitted but ignored).
+     * 
+     * @see #getFont() 
      */
     @Override
     public void setFont(Font font) {
@@ -404,6 +476,13 @@ public class PDFGraphics2D extends Graphics2D {
         this.gs.applyFont(font);
     }
 
+    /**
+     * Returns the font metrics for the specified font.
+     * 
+     * @param f  the font.
+     * 
+     * @return The font metrics. 
+     */
     @Override
     public FontMetrics getFontMetrics(Font f) {
         return this.image.createGraphics().getFontMetrics(f);
@@ -411,8 +490,8 @@ public class PDFGraphics2D extends Graphics2D {
 
     /**
      * Returns the font render context.  The implementation here returns the
-     * FontRenderContext for an image that is maintained internally (as for
-     * {@link #getFontMetrics}.
+     * <code>FontRenderContext</code> for an image that is maintained 
+     * internally (as for {@link #getFontMetrics}).
      * 
      * @return The font render context.
      */
@@ -422,7 +501,8 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at (x, y).
+     * Draws a string at <code>(x, y)</code>.  The start of the text at the
+     * baseline level will be aligned with the <code>(x, y)</code> point.
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -436,7 +516,8 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at (x, y).
+     * Draws a string at <code>(x, y)</code>. The start of the text at the
+     * baseline level will be aligned with the <code>(x, y)</code> point.
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -451,7 +532,8 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string of attributed characters.  The call is delegated to
+     * Draws a string of attributed characters at <code>(x, y)</code>.  The 
+     * call is delegated to 
      * {@link #drawString(java.text.AttributedCharacterIterator, float, float)}. 
      * 
      * @param iterator  an iterator for the characters.
@@ -463,6 +545,17 @@ public class PDFGraphics2D extends Graphics2D {
         drawString(iterator, (float) x, (float) y); 
     }
 
+    /**
+     * Draws a string of attributed characters at <code>(x, y)</code>. 
+     * <p>
+     * <b>LIMITATION</b>: in the current implementation, the string is drawn 
+     * using the current font and the formatting is ignored.
+     * 
+     * @param iterator  an iterator over the characters (<code>null</code> not 
+     *     permitted).
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     */
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, 
             float y) {
@@ -477,9 +570,9 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified glyph vector at the location (x, y).
+     * Draws the specified glyph vector at the location <code>(x, y)</code>.
      * 
-     * @param g  the glyph vector.
+     * @param g  the glyph vector (<code>null</code> not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
@@ -489,7 +582,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Translates the origin to <code>(tx, ty)</code>.  This call is delegated 
+     * Applies the translation <code>(tx, ty)</code>.  This call is delegated 
      * to {@link #translate(double, double)}.
      * 
      * @param tx  the x-translation.
@@ -503,7 +596,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies the translation (tx, ty).
+     * Applies the translation <code>(tx, ty)</code>.
      * 
      * @param tx  the x-translation.
      * @param ty  the y-translation.
@@ -515,6 +608,11 @@ public class PDFGraphics2D extends Graphics2D {
         setTransform(t);
     }
 
+    /**
+     * Applies a rotation (anti-clockwise) about <code>(0, 0)</code>.
+     * 
+     * @param theta  the rotation angle (in radians). 
+     */
     @Override
     public void rotate(double theta) {
         AffineTransform t = getTransform();
@@ -522,6 +620,13 @@ public class PDFGraphics2D extends Graphics2D {
         setTransform(t);
     }
 
+    /**
+     * Applies a rotation (anti-clockwise) about <code>(x, y)</code>.
+     * 
+     * @param theta  the rotation angle (in radians).
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     */
     @Override
     public void rotate(double theta, double x, double y) {
         translate(x, y);
@@ -542,6 +647,17 @@ public class PDFGraphics2D extends Graphics2D {
         setTransform(t);
     }
 
+    /**
+     * Applies a shear transformation. This is equivalent to the following 
+     * call to the <code>transform</code> method:
+     * <p>
+     * <ul><li>
+     * <code>transform(AffineTransform.getShearInstance(shx, shy));</code>
+     * </ul>
+     * 
+     * @param shx  the x-shear factor.
+     * @param shy  the y-shear factor.
+     */
     @Override
     public void shear(double shx, double shy) {
         AffineTransform t = AffineTransform.getShearInstance(shx, shy);
@@ -549,7 +665,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies this transform to the existing transform.
+     * Applies this transform to the existing transform by concatenating it.
      * 
      * @param t  the transform (<code>null</code> not permitted). 
      */
@@ -563,7 +679,7 @@ public class PDFGraphics2D extends Graphics2D {
     /**
      * Returns a copy of the current transform.
      * 
-     * @return A copy of the current transform.
+     * @return A copy of the current transform (never <code>null</code>).
      * 
      * @see #setTransform(java.awt.geom.AffineTransform) 
      */
@@ -577,6 +693,8 @@ public class PDFGraphics2D extends Graphics2D {
      * 
      * @param t  the new transform (<code>null</code> permitted, resets to the
      *     identity transform).
+     * 
+     * @see #getTransform() 
      */
     @Override
     public void setTransform(AffineTransform t) {
@@ -590,8 +708,8 @@ public class PDFGraphics2D extends Graphics2D {
 
     /**
      * Returns <code>true</code> if the rectangle (in device space) intersects
-     * with the shape (the interior, if onStroke is false, otherwise the 
-     * stroked outline of the shape).
+     * with the shape (the interior, if <code>onStroke</code> is false, 
+     * otherwise the stroked outline of the shape).
      * 
      * @param rect  a rectangle (in device space).
      * @param s the shape.
@@ -617,19 +735,32 @@ public class PDFGraphics2D extends Graphics2D {
         return !a1.isEmpty();
     }
 
+    /**
+     * Not yet implemented.
+     * 
+     * @return The graphics configuration.
+     */
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         throw new UnsupportedOperationException("Not supported yet."); // TODO
     }
 
+    /**
+     * Does nothing in this <code>PDFGraphics2D</code> implementation.
+     */
     @Override
     public void setPaintMode() {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        // do nothing
     }
 
+    /**
+     * Does nothing in this <code>PDFGraphics2D</code> implementation.
+     * 
+     * @param c  ignored
+     */
     @Override
-    public void setXORMode(Color c1) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+    public void setXORMode(Color c) {
+        // do nothing
     }
 
     /**
@@ -658,6 +789,8 @@ public class PDFGraphics2D extends Graphics2D {
      * Sets the user clipping region.
      * 
      * @param shape  the new user clipping region (<code>null</code> permitted).
+     * 
+     * @see #getClip()
      */
     @Override
     public void setClip(Shape shape) {
@@ -665,6 +798,13 @@ public class PDFGraphics2D extends Graphics2D {
         this.clip = this.transform.createTransformedShape(shape);
     }
 
+    /**
+     * Returns the bounds of the user clipping region.
+     * 
+     * @return The clip bounds (possibly <code>null</code>). 
+     * 
+     * @see #getClip() 
+     */
     @Override
     public Rectangle getClipBounds() {
         return this.clip.getBounds();
@@ -677,8 +817,9 @@ public class PDFGraphics2D extends Graphics2D {
      * According to the Oracle API specification, this method will accept a 
      * <code>null</code> argument, but there is an open bug report (since 2004) 
      * that suggests this is wrong:
-     * 
-     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189
+     * <p>
+     * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189">
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189</a>
      * 
      * @param s  the clip shape (<code>null</code> not permitted). 
      */
@@ -714,13 +855,24 @@ public class PDFGraphics2D extends Graphics2D {
         clip(this.rect);
     }
 
+    /**
+     * Sets the user clipping region to the specified rectangle.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * 
+     * @see #getClip() 
+     */
     @Override
     public void setClip(int x, int y, int width, int height) {
         setClip(new Rectangle(x, y, width, height));
     }
 
     /**
-     * Draws a line from (x1, y1) to (x2, y2).
+     * Draws a line from <code>(x1, y1)</code> to <code>(x2, y2)</code> using 
+     * the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x1  the x-coordinate of the start point.
      * @param y1  the y-coordinate of the start point.
@@ -738,7 +890,7 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills a rectangle with the current paint.
+     * Fills the specified rectangle with the current <code>paint</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -755,9 +907,9 @@ public class PDFGraphics2D extends Graphics2D {
         fill(this.rect);
     }
 
-
     /**
-     * Fills the specified rectangle with the current background color.
+     * Clears the specified rectangle by filling it with the current 
+     * background color.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -777,19 +929,9 @@ public class PDFGraphics2D extends Graphics2D {
         setPaint(saved);
     }
 
-    private void setRoundRect(int x, int y, int width, int height, int arcWidth, 
-            int arcHeight) {
-        if (this.roundRect == null) {
-            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
-                    arcWidth, arcHeight);
-        } else {
-            this.roundRect.setRoundRect(x, y, width, height, 
-                    arcWidth, arcHeight);
-        }        
-    }
-    
     /**
-     * Draws a rectangle with rounded corners.
+     * Draws a rectangle with rounded corners using the current 
+     * <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -797,6 +939,8 @@ public class PDFGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
+     * 
+     * @see #fillRoundRect(int, int, int, int, int, int) 
      */
     @Override
     public void drawRoundRect(int x, int y, int width, int height, 
@@ -822,21 +966,16 @@ public class PDFGraphics2D extends Graphics2D {
         fill(this.roundRect);
     }
 
-    private void setOval(int x, int y, int width, int height) {
-        if (this.oval == null) {
-            this.oval = new Ellipse2D.Double(x, y, width, height);
-        } else {
-            this.oval.setFrame(x, y, width, height);
-        }
-    }
-    
     /**
-     * Draws an oval framed by the rectangle (x, y, width, height).
+     * Draws an oval framed by the rectangle <code>(x, y, width, height)</code>
+     * using the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
+     * 
+     * @see #fillOval(int, int, int, int) 
      */
     @Override
     public void drawOval(int x, int y, int width, int height) {
@@ -845,12 +984,14 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an oval framed by the rectangle (x, y, width, height).
+     * Fills an oval framed by the rectangle <code>(x, y, width, height)</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
+     * 
+     * @see #drawOval(int, int, int, int) 
      */
     @Override
     public void fillOval(int x, int y, int width, int height) {
@@ -858,17 +999,21 @@ public class PDFGraphics2D extends Graphics2D {
         fill(this.oval);
     }
 
-    private void setArc(int x, int y, int width, int height, int startAngle, 
-            int arcAngle) {
-        if (this.arc == null) {
-            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.OPEN);
-        } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.OPEN);
-        }        
-    }
-    
+    /**
+     * Draws an arc contained within the rectangle 
+     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
+     * and continuing through <code>arcAngle</code> degrees using 
+     * the current <code>paint</code> and <code>stroke</code>.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
+     * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #fillArc(int, int, int, int, int, int) 
+     */
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
@@ -876,38 +1021,31 @@ public class PDFGraphics2D extends Graphics2D {
         draw(this.arc);
     }
 
+    /**
+     * Fills an arc contained within the rectangle 
+     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
+     * and continuing through <code>arcAngle</code> degrees, using 
+     * the current <code>paint</code>
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
+     * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #drawArc(int, int, int, int, int, int) 
+     */
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
         setArc(x, y, width, height, startAngle, arcAngle);
         fill(this.arc);
     }
-
-    /**
-     * A utility method used to create a polygon for rendering.
-     * 
-     * @param xPoints  the x-points.
-     * @param yPoints  the y-points.
-     * @param nPoints  the number of points to use for the polyline.
-     * @param close  closed?
-     * 
-     * @return A polygon.
-     */
-    private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
-            int nPoints, boolean close) {
-        GeneralPath p = new GeneralPath();
-        p.moveTo(xPoints[0], yPoints[0]);
-        for (int i = 1; i < nPoints; i++) {
-            p.lineTo(xPoints[i], yPoints[i]);
-        }
-        if (close) {
-            p.closePath();
-        }
-        return p;
-    }
     
     /**
-     * Draws the specified multi-segment line.
+     * Draws the specified multi-segment line using the current 
+     * <code>paint</code> and <code>stroke</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -915,51 +1053,96 @@ public class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, false);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints,
+                false);
         draw(p);
     }
 
     /**
-     * Draws the specified polygon.
+     * Draws the specified polygon using the current <code>paint</code> and 
+     * <code>stroke</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
-     */
+     * 
+     * @see #fillPolygon(int[], int[], int)      */
     @Override
     public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         draw(p);
     }
 
     /**
-     * Fills the specified polygon.
+     * Fills the specified polygon using the current <code>paint</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
+     * 
+     * @see #drawPolygon(int[], int[], int) 
      */
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         fill(p);
     }
 
+    /**
+     * Draws an image with the specified transform. Note that the 
+     * <code>observer</code> is ignored.     
+     * 
+     * @param img  the image.
+     * @param xform  the transform.
+     * @param obs  the image observer (ignored).
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
-    public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+    public boolean drawImage(Image img, AffineTransform xform, 
+            ImageObserver obs) {
+        AffineTransform savedTransform = getTransform();
+        transform(xform);
+        boolean result = drawImage(img, 0, 0, obs);
+        setTransform(savedTransform);
+        return result;
     }
 
+    /**
+     * Draws the image resulting from applying the <code>BufferedImageOp</code>
+     * to the specified image at the location <code>(x, y)</code>.
+     * 
+     * @param img  the image.
+     * @param op  the operation.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     */
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        BufferedImage imageToDraw = op.filter(img, null);
+        drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
     }
 
+    /**
+     * Draws the rendered image.
+     * 
+     * @param img  the image.
+     * @param xform  the transform.
+     */
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        BufferedImage bi = GraphicsUtils.convertRenderedImage(img);
+        drawImage(bi, xform, null);
     }
 
+    /**
+     * Draws the renderable image.
+     * 
+     * @param img  the renderable image.
+     * @param xform  the transform.
+     */
     @Override
     public void drawRenderableImage(RenderableImage img, 
             AffineTransform xform) {
@@ -967,24 +1150,60 @@ public class PDFGraphics2D extends Graphics2D {
         drawRenderedImage(ri, xform);
     }
 
+    /**
+     * Draws an image at the location <code>(x, y)</code>.  Note that the 
+     * <code>observer</code> is ignored.
+     * 
+     * @param img  the image.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param observer  ignored.
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        int w = img.getWidth(observer);
+        if (w < 0) {
+            return false;
+        }
+        int h = img.getHeight(observer);
+        if (h < 0) {
+            return false;
+        }
+        return drawImage(img, x, y, w, h, observer);
     }
 
+    /**
+     * Draws the image into the rectangle defined by <code>(x, y, w, h)</code>.  
+     * Note that the <code>observer</code> is ignored (it is not useful in this
+     * context). <b>This is not yet implemented and since all the other
+     * image drawing methods delegate to this one, no image drawing works in
+     * this initial release</b>.
+     * 
+     * @param img  the image.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param w  the width.
+     * @param h  the height.
+     * @param observer  ignored.
+     * 
+     * @return {@code true} if the image is drawn. 
+     */
     @Override
-    public boolean drawImage(Image img, int x, int y, int width, int height, 
+    public boolean drawImage(Image img, int x, int y, int w, int h, 
             ImageObserver observer) {
         throw new UnsupportedOperationException("Not supported yet."); // TODO
     }
 
     /**
-     * Draws an image.
+     * Draws an image at the location <code>(x, y)</code>.  Note that the 
+     * <code>observer</code> is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1004,15 +1223,16 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image to the rectangle (x, y, w, h), first filling the 
-     * background with the specified color.
+     * Draws an image to the rectangle <code>(x, y, w, h)</code> (scaling it if
+     * required), first filling the background with the specified color.  Note 
+     * that the <code>observer</code> is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param w  the width.
      * @param h  the height.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn.      
@@ -1028,7 +1248,10 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image.
+     * Draws part of an image (defined by the source rectangle 
+     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
+     * <code>(dx1, dy1, dx2, dy2)</code>.  Note that the <code>observer</code> 
+     * is ignored.
      * 
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
@@ -1055,7 +1278,11 @@ public class PDFGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image.
+     * Draws part of an image (defined by the source rectangle 
+     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
+     * <code>(dx1, dy1, dx2, dy2)</code>.  The destination rectangle is first
+     * cleared by filling it with the specified <code>bgcolor</code>. Note that
+     * the <code>observer</code> is ignored. 
      * 
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
@@ -1066,7 +1293,7 @@ public class PDFGraphics2D extends Graphics2D {
      * @param sy1 the y-coordinate for the top left of the source.
      * @param sx2 the x-coordinate for the bottom right of the source.
      * @param sy2 the y-coordinate for the bottom right of the source.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1082,11 +1309,26 @@ public class PDFGraphics2D extends Graphics2D {
         return drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer);
     }
 
+    /**
+     * This method does nothing.  The operation assumes that the output is in 
+     * bitmap form, which is not the case for PDF, so we silently ignore
+     * this method call.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width of the area.
+     * @param height  the height of the area.
+     * @param dx  the delta x.
+     * @param dy  the delta y.
+     */
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        // do nothing, this operation is silently ignored.
     }
     
+    /**
+     * This method does nothing, there are no resources to dispose.
+     */
     @Override
     public void dispose() {
         // nothing to do
@@ -1109,4 +1351,69 @@ public class PDFGraphics2D extends Graphics2D {
             this.rect.setRect(x, y, width, height);
         }
     }
+
+    /**
+     * Sets the attributes of the reusable {@link RoundRectangle2D} object that
+     * is used by the {@link #drawRoundRect(int, int, int, int, int, int)} and
+     * {@link #fillRoundRect(int, int, int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param arcWidth  the arc width.
+     * @param arcHeight  the arc height.
+     */
+    private void setRoundRect(int x, int y, int width, int height, int arcWidth, 
+            int arcHeight) {
+        if (this.roundRect == null) {
+            this.roundRect = new RoundRectangle2D.Double(x, y, width, height, 
+                    arcWidth, arcHeight);
+        } else {
+            this.roundRect.setRoundRect(x, y, width, height, 
+                    arcWidth, arcHeight);
+        }        
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link Ellipse2D} object that is 
+     * used by the {@link #drawOval(int, int, int, int)} and
+     * {@link #fillOval(int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     */
+    private void setOval(int x, int y, int width, int height) {
+        if (this.oval == null) {
+            this.oval = new Ellipse2D.Double(x, y, width, height);
+        } else {
+            this.oval.setFrame(x, y, width, height);
+        }
+    }
+
+    /**
+     * Sets the attributes of the reusable {@link Arc2D} object that is used by
+     * {@link #drawArc(int, int, int, int, int, int)} and 
+     * {@link #fillArc(int, int, int, int, int, int)} methods.
+     * 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
+     * @param arcAngle  the angle (anticlockwise) in degrees.
+     */
+    private void setArc(int x, int y, int width, int height, int startAngle, 
+            int arcAngle) {
+        if (this.arc == null) {
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+                    arcAngle, Arc2D.OPEN);
+        } else {
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+                    Arc2D.OPEN);
+        }        
+    }
+ 
 }
