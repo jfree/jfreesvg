@@ -27,16 +27,18 @@ package org.jfree.graphics2d.svg;
 import java.awt.GradientPaint;
 
 /**
- * A wrapper for a GradientPaint that can be used as the key for a HashMap.
- * GradientPaint itself does not implement the equals() and hashCode() methods,
- * so it doesn't make an ideal key.
+ * A wrapper for a <code>GradientPaint</code> that can be used as the key for 
+ * a <code>HashMap</code>.  This class is used internally by 
+ * <code>SVGGraphics2D</code> to track and re-use gradient definitions.
+ * <code>GradientPaint</code> itself does not implement the equals() and 
+ * hashCode() methods, so it doesn't make an ideal key for a <code>Map</code>.
  */
 public final class GradientPaintKey {
 
     private GradientPaint paint;
     
     /**
-     * Creates a new instance.
+     * Creates a new instance based on the specified <code>paint</code>.
      * 
      * @param paint  the paint (<code>null</code> not permitted). 
      */
@@ -48,7 +50,8 @@ public final class GradientPaintKey {
     }
     
     /**
-     * Returns the GradientPaint that was supplied to the constructor.
+     * Returns the <code>GradientPaint</code> that was supplied to the 
+     * constructor.
      * 
      * @return The GradientPaint (never <code>null</code>). 
      */
@@ -56,6 +59,13 @@ public final class GradientPaintKey {
         return this.paint;
     }
     
+    /**
+     * Checks this instance for equality with an arbitrary object.
+     * 
+     * @param obj  the object to test against (<code>null</code> permitted).
+     * 
+     * @return A boolean. 
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -88,6 +98,11 @@ public final class GradientPaintKey {
         return true;
     }
 
+    /**
+     * Returns a hash code for this instance.
+     * 
+     * @return A hash code. 
+     */
     @Override
     public int hashCode() {
         int hash = 5;
