@@ -5,13 +5,16 @@ package org.jfree.graphics2d;
 
 import java.awt.BasicStroke;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -19,9 +22,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import org.jfree.graphics2d.pdf.PDFDocument;
-import org.jfree.graphics2d.pdf.Page;
-import org.junit.Assert;
+import java.awt.image.BufferedImage;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,15 +40,15 @@ public class TestGraphics2D {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
         //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
+       // this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
-        //this.g2 = new SVGGraphics2D(10, 20);
+        this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
-        PDFDocument pdfDoc = new PDFDocument();
-        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
-        this.g2 = page.getGraphics2D();
+        //PDFDocument pdfDoc = new PDFDocument();
+        //Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
+        //this.g2 = page.getGraphics2D();
 
         // Test CanvasGraphics2D...
         //this.g2 = new CanvasGraphics2D("id");
@@ -69,8 +71,8 @@ public class TestGraphics2D {
     public void checkGetTransformSafety() {
         AffineTransform t = g2.getTransform();
         t.rotate(Math.PI);
-        Assert.assertNotEquals(t, g2.getTransform());
-        Assert.assertEquals(new AffineTransform(), g2.getTransform());
+        assertNotEquals(t, g2.getTransform());
+        assertEquals(new AffineTransform(), g2.getTransform());
     }
     
     /**
@@ -80,11 +82,11 @@ public class TestGraphics2D {
     public void setTransform() {
         AffineTransform t = new AffineTransform(1, 2, 3, 4, 5, 6);
         g2.setTransform(t);
-        Assert.assertEquals(t, g2.getTransform());
+        assertEquals(t, g2.getTransform());
   
         t.setTransform(6, 5, 4, 3, 2, 1);
         g2.setTransform(t);
-        Assert.assertEquals(t, g2.getTransform());
+        assertEquals(t, g2.getTransform());
         
         // in spite of the docs saying that null is accepted this gives
         // a NullPointerException with SunGraphics2D.
@@ -103,25 +105,25 @@ public class TestGraphics2D {
     public void checkSetTransformSafety() {
         AffineTransform t = AffineTransform.getTranslateInstance(1.0, 2.0);
         g2.setTransform(t);
-        Assert.assertEquals(t, g2.getTransform());
+        assertEquals(t, g2.getTransform());
         t.setToRotation(Math.PI);
-        Assert.assertNotEquals(t, g2.getTransform());
+        assertNotEquals(t, g2.getTransform());
     }
     
     @Test
     public void checkSetNonInvertibleTransform() {
         AffineTransform t = AffineTransform.getScaleInstance(0.0, 0.0);
         g2.setTransform(t);
-        Assert.assertEquals(t, g2.getTransform());
+        assertEquals(t, g2.getTransform());
         
         // after setting the clip, we cannot retrieve it while the transform
         // is non-invertible...
         Rectangle2D clip = new Rectangle2D.Double(1, 2, 3, 4);
         g2.setClip(clip);
-        Assert.assertNull(g2.getClip());
+        assertNull(g2.getClip());
         
         g2.setTransform(new AffineTransform());
-        Assert.assertEquals(new Rectangle2D.Double(0, 0, 0, 0), 
+        assertEquals(new Rectangle2D.Double(0, 0, 0, 0), 
                 g2.getClip().getBounds2D());
     }
 
@@ -134,7 +136,8 @@ public class TestGraphics2D {
         AffineTransform t = new AffineTransform();
         this.g2.setTransform(t);
         this.g2.translate(30, 30);
-        AffineTransform rt = AffineTransform.getRotateInstance(Math.PI / 2.0, 300, 200);
+        AffineTransform rt = AffineTransform.getRotateInstance(Math.PI / 2.0, 
+                300, 200);
         this.g2.transform(rt);
         t = this.g2.getTransform();
         assertEquals(0, t.getScaleX(), EPSILON);
@@ -149,7 +152,7 @@ public class TestGraphics2D {
     public void checkTransformNull() {
         try {
             this.g2.transform(null);
-            Assert.fail("Expected a NullPointerException.");
+            fail("Expected a NullPointerException.");
         } catch (NullPointerException e) {
             // this exception is expected
         }
@@ -161,10 +164,10 @@ public class TestGraphics2D {
     @Test
     public void scale() {
         g2.scale(0.5, 2.0);
-        Assert.assertEquals(AffineTransform.getScaleInstance(0.5, 2.0), 
+        assertEquals(AffineTransform.getScaleInstance(0.5, 2.0), 
                 g2.getTransform());
         g2.scale(2.0, -1.0);
-        Assert.assertEquals(AffineTransform.getScaleInstance(1.0, -2.0), 
+        assertEquals(AffineTransform.getScaleInstance(1.0, -2.0), 
                 g2.getTransform());    
     }
     
@@ -175,10 +178,10 @@ public class TestGraphics2D {
     @Test
     public void translateFollowedByScale() {
         g2.translate(2, 3);
-        Assert.assertEquals(AffineTransform.getTranslateInstance(2.0, 3.0), 
+        assertEquals(AffineTransform.getTranslateInstance(2.0, 3.0), 
                 g2.getTransform());
         g2.scale(10, 20);
-        Assert.assertEquals(new AffineTransform(10.0, 0.0, 0.0, 20.0, 2.0, 3.0),
+        assertEquals(new AffineTransform(10.0, 0.0, 0.0, 20.0, 2.0, 3.0),
                 g2.getTransform());
     }
     
@@ -189,10 +192,10 @@ public class TestGraphics2D {
     @Test
     public void scaleFollowedByTranslate() {
         g2.scale(2, 2);
-        Assert.assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
+        assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
                 g2.getTransform());
         g2.translate(10, 20);
-        Assert.assertEquals(new AffineTransform(2.0, 0.0, 0.0, 2.0, 20.0, 40.0),
+        assertEquals(new AffineTransform(2.0, 0.0, 0.0, 2.0, 20.0, 40.0),
                 g2.getTransform());
     }
     
@@ -201,25 +204,25 @@ public class TestGraphics2D {
     @Test
     public void scaleFollowedByRotate() {
         g2.scale(2, 2);
-        Assert.assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
+        assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
                 g2.getTransform());
         g2.rotate(Math.PI / 3);
         AffineTransform t = g2.getTransform();
-        Assert.assertEquals(1.0, t.getScaleX(), EPSILON);
-        Assert.assertEquals(1.0, t.getScaleY(), EPSILON);
-        Assert.assertEquals(-1.7320508075688772, t.getShearX(), EPSILON);
-        Assert.assertEquals(1.7320508075688772, t.getShearY(), EPSILON);
-        Assert.assertEquals(0.0, t.getTranslateX(), EPSILON);
-        Assert.assertEquals(0.0, t.getTranslateY(), EPSILON);
+        assertEquals(1.0, t.getScaleX(), EPSILON);
+        assertEquals(1.0, t.getScaleY(), EPSILON);
+        assertEquals(-1.7320508075688772, t.getShearX(), EPSILON);
+        assertEquals(1.7320508075688772, t.getShearY(), EPSILON);
+        assertEquals(0.0, t.getTranslateX(), EPSILON);
+        assertEquals(0.0, t.getTranslateY(), EPSILON);
     }
     
     @Test
     public void rotateFollowedByScale() {
         g2.rotate(Math.PI);
-        Assert.assertEquals(AffineTransform.getRotateInstance(Math.PI), 
+        assertEquals(AffineTransform.getRotateInstance(Math.PI), 
                 g2.getTransform());
         g2.scale(2.0, 2.0);
-        Assert.assertEquals(new AffineTransform(-2.0, 0.0, 0.0, -2.0, 0.0, 0.0),
+        assertEquals(new AffineTransform(-2.0, 0.0, 0.0, -2.0, 0.0, 0.0),
                 g2.getTransform());
     }
     
@@ -233,9 +236,9 @@ public class TestGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(0, 0, 1, 1);
         this.g2.setClip(r);
         Shape s = this.g2.getClip();
-        Assert.assertFalse(r == s);
+        assertFalse(r == s);
         Shape s2 = this.g2.getClip();
-        Assert.assertFalse(s == s2);
+        assertFalse(s == s2);
     }
     
     /**
@@ -243,7 +246,7 @@ public class TestGraphics2D {
      */
     @Test
     public void checkDefaultClip() {
-        Assert.assertNull("Default user clip should be null.", g2.getClip());
+        assertNull("Default user clip should be null.", g2.getClip());
     }
     
     /**
@@ -254,7 +257,7 @@ public class TestGraphics2D {
     public void checkGetClipBounds() {
         Rectangle2D r = new Rectangle2D.Double(0.25, 0.25, 0.5, 0.5);
         this.g2.setClip(r);
-        Assert.assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClipBounds());       
+        assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClipBounds());       
     }
 
     /**
@@ -266,7 +269,7 @@ public class TestGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0));
-        Assert.assertEquals(new Rectangle2D.Double(1.0, 1.0, 1.0, 1.0), 
+        assertEquals(new Rectangle2D.Double(1.0, 1.0, 1.0, 1.0), 
                 this.g2.getClip().getBounds2D());
     }
     
@@ -275,7 +278,7 @@ public class TestGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Rectangle2D.Double(5.0, 5.0, 1.0, 1.0));
-        Assert.assertTrue(this.g2.getClip().getBounds2D().isEmpty());
+        assertTrue(this.g2.getClip().getBounds2D().isEmpty());
     }
 
     /**
@@ -286,16 +289,16 @@ public class TestGraphics2D {
     public void checkClipAfterScaling() {
         Rectangle2D r = new Rectangle2D.Double(1, 2, 3, 0.5);
         this.g2.setClip(r);
-        Assert.assertEquals(r, this.g2.getClip().getBounds2D());
+        assertEquals(r, this.g2.getClip().getBounds2D());
         this.g2.scale(0.5, 2.0);
-        Assert.assertEquals(new Rectangle2D.Double(2, 1, 6, 0.25), 
+        assertEquals(new Rectangle2D.Double(2, 1, 6, 0.25), 
                 this.g2.getClip().getBounds2D());
 
         // check that we get a good intersection when clipping after the
         // scaling has been done...
         r = new Rectangle2D.Double(3, 0, 2, 2);
         this.g2.clip(r);
-        Assert.assertEquals(new Rectangle2D.Double(3, 1, 2, 0.25), 
+        assertEquals(new Rectangle2D.Double(3, 1, 2, 0.25), 
                 this.g2.getClip().getBounds2D());
     }
     
@@ -306,9 +309,9 @@ public class TestGraphics2D {
     public void checkClipAfterTranslate() {
         Rectangle2D clip = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
         this.g2.setClip(clip);
-        Assert.assertEquals(clip, this.g2.getClip().getBounds2D());
+        assertEquals(clip, this.g2.getClip().getBounds2D());
         this.g2.translate(1.0, 2.0);
-        Assert.assertEquals(new Rectangle(-1, -2, 1 ,1), 
+        assertEquals(new Rectangle(-1, -2, 1 ,1), 
                 this.g2.getClip().getBounds2D());
     }
     
@@ -319,19 +322,19 @@ public class TestGraphics2D {
     public void checkClipAfterTransform() {
         Rectangle2D clip = new Rectangle2D.Double(0, 0, 1, 1);
         this.g2.setClip(clip);
-        Assert.assertEquals(clip, this.g2.getClip().getBounds2D());
+        assertEquals(clip, this.g2.getClip().getBounds2D());
         
         this.g2.transform(AffineTransform.getRotateInstance(Math.PI));
-        Assert.assertEquals(new Rectangle(-1, -1, 1 ,1), 
+        assertEquals(new Rectangle(-1, -1, 1 ,1), 
                 this.g2.getClip().getBounds2D());
         
         this.g2.setTransform(new AffineTransform());
-        Assert.assertEquals(clip, this.g2.getClip().getBounds2D());     
+        assertEquals(clip, this.g2.getClip().getBounds2D());     
     }
     
     /**
      * Clipping with a line makes no sense, but the API allows it so we should
-     * not fail.  In fact, running with a JDK Graphcis2D (from a BufferedImage)
+     * not fail.  In fact, running with a JDK Graphics2D (from a BufferedImage)
      * it seems that the bounding rectangle of the line is used for clipping...
      * does that make sense?  Switching off the test for now.
      */
@@ -341,9 +344,9 @@ public class TestGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Line2D.Double(1.0, 2.0, 3.0, 4.0));
-        //Assert.assertEquals(new Rectangle2D.Double(1.0, 2.0, 2.0, 2.0), 
+        //assertEquals(new Rectangle2D.Double(1.0, 2.0, 2.0, 2.0), 
         //        this.g2.getClip().getBounds2D());
-        //Assert.assertTrue(this.g2.getClip().getBounds2D().isEmpty());        
+        //assertTrue(this.g2.getClip().getBounds2D().isEmpty());        
     }
     
     /**
@@ -355,7 +358,7 @@ public class TestGraphics2D {
         this.g2.setClip(clip);
         
         this.g2.clipRect(2, 1, 4, 2);
-        Assert.assertEquals(new Rectangle(2, 1, 3, 2), 
+        assertEquals(new Rectangle(2, 1, 3, 2), 
                 g2.getClip().getBounds2D());
     }
     
@@ -366,25 +369,25 @@ public class TestGraphics2D {
         
         // negative width
         this.g2.clipRect(2, 1, -4, 2);
-        Assert.assertTrue(this.g2.getClip().getBounds2D().isEmpty());
+        assertTrue(this.g2.getClip().getBounds2D().isEmpty());
         
         // negative height
         this.g2.setClip(clip);
         this.g2.clipRect(2, 1, 4, -2);
-        Assert.assertTrue(this.g2.getClip().getBounds2D().isEmpty());    
+        assertTrue(this.g2.getClip().getBounds2D().isEmpty());    
     }
     
     @Test
     public void checkDrawStringWithNullString() {
         try {
             g2.drawString((String) null, 1, 2);
-            Assert.fail("There should be a NullPointerException.");
+            fail("There should be a NullPointerException.");
         } catch (NullPointerException e) {
             // this exception is expected
         }
         try {
             g2.drawString((String) null, 1.0f, 2.0f);
-            Assert.fail("There should be a NullPointerException.");
+            fail("There should be a NullPointerException.");
         } catch (NullPointerException e) {
             // this exception is expected
         }
@@ -423,7 +426,7 @@ public class TestGraphics2D {
         GradientPaint gp = new GradientPaint(pt1, Color.RED, pt2, Color.BLUE);
         this.g2.setPaint(gp);
         assertEquals(gp, this.g2.getPaint());
-        Assert.assertTrue(gp == this.g2.getPaint());
+        assertTrue(gp == this.g2.getPaint());
         pt1.setLocation(7.0, 7.0);
         assertEquals(gp, this.g2.getPaint());
     }
@@ -515,7 +518,7 @@ public class TestGraphics2D {
     public void checkSetCompositeNull() {
         try {
             this.g2.setComposite(null);
-            Assert.fail("Expected an IllegalArgumentException.");
+            fail("Expected an IllegalArgumentException.");
         } catch (IllegalArgumentException e) {
             // this exception is expected in the test   
         }
@@ -525,7 +528,7 @@ public class TestGraphics2D {
     public void checkSetStrokeNull() {
         try {
             this.g2.setStroke(null);
-            Assert.fail("Expected an IllegalArgumentException.");
+            fail("Expected an IllegalArgumentException.");
         } catch (IllegalArgumentException e) {
             // this exception is expected in the test   
         }
@@ -550,7 +553,7 @@ public class TestGraphics2D {
     public void checkSetRenderingHintWithNullKey() {
         try {
             this.g2.setRenderingHint(null, "XYZ");
-            Assert.fail("NullPointerException is expected here.");
+            fail("NullPointerException is expected here.");
         } catch (NullPointerException e) {
             // this is expected
         }
@@ -573,7 +576,7 @@ public class TestGraphics2D {
         try {
             this.g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, 
                     RenderingHints.VALUE_ANTIALIAS_DEFAULT);
-            Assert.fail("Expected an IllegalArgumentException.");
+            fail("Expected an IllegalArgumentException.");
         } catch (IllegalArgumentException e) {
             // we expect this exception
         }
@@ -598,7 +601,7 @@ public class TestGraphics2D {
     public void checkSetRenderingHintsNull() {
         try {
             this.g2.setRenderingHints(null);
-            Assert.fail("NullPointerException expected.");
+            fail("NullPointerException expected.");
         } catch (NullPointerException e) {
             // this is expected
         }
@@ -643,5 +646,45 @@ public class TestGraphics2D {
         assertEquals(BasicStroke.CAP_SQUARE, s.getEndCap());
         assertEquals(1.0f, s.getLineWidth(), EPSILON);
         assertEquals(BasicStroke.JOIN_MITER, s.getLineJoin());
+    }
+    
+    /**
+     * Check that a null GlyphVector throws a NullPointerException
+     */
+    @Test
+    public void drawGlyphVectorNull() {
+        try {
+            g2.drawGlyphVector(null, 10, 10);
+            fail("Expecting a NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * Check the shear() method.
+     */
+    @Test
+    public void shear() {
+        g2.setTransform(new AffineTransform());
+        g2.shear(2.0, 3.0);
+        assertEquals(new AffineTransform(1, 3, 2, 1, 0, 0), g2.getTransform());
+    }
+    
+    /**
+     * Checks a translate() followed by a shear().
+     */
+    @Test
+    public void shearFollowingTranslate() {
+        g2.setTransform(new AffineTransform());
+        g2.translate(10.0, 20.0);
+        g2.shear(2.0, 3.0);
+        assertEquals(new AffineTransform(1, 3, 2, 1, 10, 20), g2.getTransform());
+    }
+    
+    @Test
+    public void drawImageWithNullBackground() {
+        Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(img, 10, 10, null, null);
     }
 }
