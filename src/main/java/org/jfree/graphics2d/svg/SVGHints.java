@@ -27,12 +27,17 @@ package org.jfree.graphics2d.svg;
 import java.awt.RenderingHints;
 
 /**
- * Rendering hints that can be used with the SVGGraphics2D implementation.
- * For the moment, there is a single hint that controls how images are
- * handled (embedded in the SVG, or referenced externally).
+ * Defines the rendering hints that can be used with the {@link SVGGraphics2D} 
+ * class.  For the moment, there is a single hint (see 
+ * {@link #KEY_IMAGE_HANDLING}) that controls how images are handled (embedded
+ * in the SVG, or referenced externally).
  */
 public class SVGHints {
 
+    private SVGHints() {
+        // no need to instantiate this    
+    }
+    
     /**
      * The key for the hint that controls whether images are embedded in the
      * SVG or referenced externally.
@@ -42,7 +47,7 @@ public class SVGHints {
     
     /**
      * Hint value to say that images should be embedded in the SVG output
-     * using PNG data Base64 encoded.
+     * using PNG data <code>Base64</code> encoded.
      */
     public static final Object VALUE_IMAGE_HANDLING_EMBED 
             = "VALUE_IMAGE_HANDLING_EMBED";
@@ -54,7 +59,7 @@ public class SVGHints {
             = "VALUE_IMAGE_HANDLING_REFERENCE";
     
     /**
-     * A key for hints used by the SVGGraphics2D class.
+     * A key for hints used by the {@link SVGGraphics2D} class.
      */
     public static class Key extends RenderingHints.Key {
 
@@ -63,7 +68,8 @@ public class SVGHints {
         }
     
         /**
-         * Returns true for values that are compatible with this key.
+         * Returns <code>true</code> if <code>val</code> is a value that is
+         * compatible with this key, and <code>false</code> otherwise.
          * 
          * @param val  the value.
          * 
