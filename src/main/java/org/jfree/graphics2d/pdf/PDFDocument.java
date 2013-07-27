@@ -62,6 +62,9 @@ public class PDFDocument {
     /** The outlines (placeholder, outline support is not implemented). */
     private DictionaryObject outlines;
     
+    /** Document info. */
+    private DictionaryObject info;
+    
     /** The pages of the document. */
     private Pages pages;
     
@@ -74,6 +77,8 @@ public class PDFDocument {
     public PDFDocument() {
         this.catalog = new DictionaryObject(this.nextNumber++, 0, "/Catalog");
         this.outlines = new DictionaryObject(this.nextNumber++, 0, "/Outlines");
+        this.info = new DictionaryObject(this.nextNumber++, 0, "/Info");
+        this.info.put("Producer", "(JFreeGraphics2D 1.0)");
         this.outlines.put("Count", Integer.valueOf(0));
         this.catalog.put("Outlines", this.outlines);
         this.pages = new Pages(this.nextNumber++, 0, this);
@@ -121,7 +126,9 @@ public class PDFDocument {
             xref[obj++] = bos.size();  // offset to catalog
             bos.write(toBytes(this.catalog.toPDF()));
             xref[obj++] = bos.size();  // offset to outlines
-            bos.write(toBytes(this.outlines.toPDF()));
+            bos.write(toBytes(this.outlines.toPDF()));            
+            xref[obj++] = bos.size();  // offset to info
+            bos.write(toBytes(this.info.toPDF()));
             xref[obj++] = bos.size();  // offset to pages
             bos.write(toBytes(this.pages.toPDF()));
             xref[obj++] = bos.size();
@@ -154,6 +161,7 @@ public class PDFDocument {
             Dictionary trailer = new Dictionary();
             trailer.put("/Size", Integer.valueOf(this.nextNumber - 1));
             trailer.put("/Root", this.catalog);
+            trailer.put("/Info", this.info);
             bos.write(toBytes(trailer.toPDFString()));
             bos.write(toBytes("startxref\n"));
             bos.write(toBytes(String.valueOf(xref[this.nextNumber - 1]) 

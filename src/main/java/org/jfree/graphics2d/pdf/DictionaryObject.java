@@ -50,7 +50,7 @@ public class DictionaryObject extends PDFObject {
     /**
      * Puts an item in the dictionary.
      * 
-     * @param name  the name.
+     * @param name  the name (without the leading "/").
      * @param value  the value.
      */
     public void put(String name, Object value) {
