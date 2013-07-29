@@ -50,13 +50,28 @@ public class DictionaryObject extends PDFObject {
     /**
      * Puts an item in the dictionary.
      * 
-     * @param name  the name (without the leading "/").
-     * @param value  the value.
+     * @param name  the name (without the leading "/", <code>null</code> not 
+     *     permitted).
+     * @param value  the value (<code>null</code> not permitted).
      */
     public void put(String name, Object value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Null 'value' argument.");
+        }
         this.dictionary.put("/" + name, value);
     }
     
+    /**
+     * Removes an item from the dictionary.
+     * 
+     * @param name  the name (without the leading "/").
+     * 
+     * @return The value that was previously stored with the given name.
+     */
+    public Object remove(String name) {
+        return this.dictionary.remove("/" + name);
+    }
+
     /**
      * Returns a string containing the PDF entry for this object.
      * 
