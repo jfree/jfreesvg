@@ -35,10 +35,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jfree.graphics2d.Args;
         
 /**
  * Represents a PDF document.  The current focus of this implementation is to
@@ -78,6 +81,9 @@ public class PDFDocument {
     /** The pages of the document. */
     private Pages pages;
     
+    /** A list of other objects added to the document. */
+    private List<PDFObject> otherObjects;
+    
     /** The next PDF object number in the document. */
     private int nextNumber = 1;
 
@@ -90,13 +96,14 @@ public class PDFDocument {
         this.info = new DictionaryObject(this.nextNumber++, 0, "/Info");
         this.info.put("Producer", "(JFreeGraphics2D 1.0)");
         Date now = new Date();
-        String creationDateStr = "(" + toPDFDateFormat(now) + ")";
+        String creationDateStr = "(" + PDFUtils.toDateFormat(now) + ")";
         this.info.put("CreationDate", creationDateStr);
         this.info.put("ModDate", creationDateStr);
         this.outlines.put("Count", Integer.valueOf(0));
         this.catalog.put("Outlines", this.outlines);
         this.pages = new Pages(this.nextNumber++, 0, this);
         this.catalog.put("Pages", this.pages);
+        this.otherObjects = new ArrayList<PDFObject>();
     }
     
     /**
@@ -115,6 +122,7 @@ public class PDFDocument {
      * @param title  the title (<code>null</code> permitted).
      */
     public void setTitle(String title) {
+        this.title = title;
         if (title != null) {
             this.info.put("Title", "(" + title + ")");                    
         } else {
@@ -129,7 +137,7 @@ public class PDFDocument {
      * @return The author for the document (possibly <code>null</code>).
      */
     public String getAuthor() {
-        return this.title;
+        return this.author;
     }
     
     /**
@@ -138,8 +146,9 @@ public class PDFDocument {
      * @param author  the author (<code>null</code> permitted). 
      */
     public void setAuthor(String author) {
+        this.author = author;
         if (author != null) {
-            this.info.put("Author", "(" + author + ")");                    
+            this.info.put("Author", "(" + this.author + ")");                    
         } else {
             this.info.remove("Author");
         }
@@ -157,6 +166,16 @@ public class PDFDocument {
         Page page = new Page(this.nextNumber++, 0, this.pages, bounds);
         this.pages.add(page);
         return page;
+    }
+    
+    /**
+     * Adds an object to the document.
+     * 
+     * @param object  the object (<code>null</code> not permitted). 
+     */
+    public void addObject(PDFObject object) {
+        Args.nullNotPermitted(object, "object");
+        this.otherObjects.add(object);
     }
 
     /**
@@ -201,6 +220,10 @@ public class PDFDocument {
             }
             for (PDFFont font: this.pages.getFonts()) {
                 bos.write(toBytes(font.toPDF()));
+                xref[obj++] = bos.size();
+            }
+            for (PDFObject object: this.otherObjects) {
+                bos.write(toBytes(object.toPDF()));
                 xref[obj++] = bos.size();
             }
             
@@ -250,7 +273,9 @@ public class PDFDocument {
             LOGGER.log(Level.SEVERE, null, ex);
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
@@ -274,42 +299,4 @@ public class PDFDocument {
         return result;
     }
 
-    private static final DateFormat DF1 = new SimpleDateFormat("yyyyMMddHHmmss");
-    
-    private static final DateFormat DF2 = new SimpleDateFormat("XX");
-    
-    /**
-     * Returns a string in standard PDF date format representing the specified 
-     * date (in the default timezone).
-     * 
-     * @param date  the date (<code>null</code> not permitted).
-     * 
-     * @return A string in standard PDF date format. 
-     */
-    public static String toPDFDateFormat(Date date) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        return toPDFDateFormat(c);
-    }
-    
-    /**
-     * Returns a string in standard PDF date format representing the date 
-     * contained by the specified calendar.
-     * 
-     * @param date  the date (<code>null</code> not permitted).
-     * 
-     * @return A string in standard PDF date format. 
-     */
-    public static String toPDFDateFormat(Calendar calendar) {
-        Date d = calendar.getTime(); 
-        String part1 = DF1.format(d);
-        String part2 = DF2.format(d);
-        String tzinfo;
-        if (part2.equals("z")) {
-            tzinfo = "Z00'00'";
-        } else {
-            tzinfo = part2.substring(0, 3) + "'" + part2.substring(3) + "'";
-        }
-        return "D:" + part1 + tzinfo;
-    }
 }
