@@ -26,6 +26,7 @@
 
 package org.jfree.graphics2d.svg;
 
+import org.jfree.graphics2d.GradientPaintKey;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
