@@ -73,6 +73,18 @@ public class Dictionary {
     public void put(String key, Object value) {
         this.map.put(key, value);
     }
+    
+    /**
+     * Removes an entry from the dictionary, returning the value that was 
+     * stored previously.
+     * 
+     * @param key  the key.
+     * 
+     * @return The value that was associated with the key. 
+     */
+    public Object remove(String key) {
+        return this.map.remove(key);
+    }
 
     /**
      * Returns a string containing the PDF text describing the dictionary.
