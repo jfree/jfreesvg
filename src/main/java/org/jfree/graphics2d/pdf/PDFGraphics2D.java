@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -213,6 +214,10 @@ public final class PDFGraphics2D extends Graphics2D {
         this.paint = paint;
         if (paint instanceof Color) {
             setColor((Color) paint);
+        } else if (paint instanceof GradientPaint) {
+            GradientPaint gp = (GradientPaint) paint;
+            this.gs.applyStrokeGradient(gp);
+            this.gs.applyFillGradient(gp);
         }
     }
 
