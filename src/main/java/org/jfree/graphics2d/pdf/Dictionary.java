@@ -32,7 +32,9 @@ import java.util.Map;
 
 /**
  * A dictionary is a map and supports writing the bytes for the dictionary
- * in the PDF syntax.
+ * in the PDF syntax.  The dictionary has an optional <code>type</code> entry 
+ * which is treated as a special case (to ensure it comes first in the output 
+ * if it is specified).
  */
 public class Dictionary {
     
@@ -62,6 +64,27 @@ public class Dictionary {
     public Dictionary(String type) {
         this.type = type;
         this.map = new HashMap();    
+    }
+
+    /**
+     * Returns <code>true</code> if the dictionary has no entries, and 
+     * <code>false</code> otherwise.
+     * 
+     * @return A boolean.
+     * 
+     * @see #size() 
+     */
+    public boolean isEmpty() {
+        return this.map.isEmpty();
+    }
+    
+    /**
+     * Returns the number of items in the dictionary.
+     * 
+     * @return The number of items in the dictionary.
+     */
+    public int size() {
+        return this.map.size();
     }
     
     /**
