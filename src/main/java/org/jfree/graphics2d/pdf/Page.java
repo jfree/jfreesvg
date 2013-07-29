@@ -27,9 +27,17 @@
 package org.jfree.graphics2d.pdf;
 
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.jfree.graphics2d.GradientPaintKey;
+import org.jfree.graphics2d.pdf.Function.ExponentialInterpolationFunction;
+import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
+import org.jfree.graphics2d.pdf.Shading.AxialShading;
 
 /**
  * Represents a page in a {@link PDFDocument}.  Our objective is to be able
@@ -60,6 +68,18 @@ public class Page extends PDFObject {
     private List<String> fontsOnPage;
     
     /**
+     * A map between gradient paints and the names used to define the
+     * associated pattern in the page resources.
+     */
+    private Map<GradientPaintKey, String> gradientPaintsOnPage;
+    
+    /** The pattern dictionary for this page. */
+    private Dictionary patterns;
+    
+    /** The transform between Page and Java2D coordinates. */
+    private AffineTransform j2DTransform;
+    
+    /**
      * Creates a new page.
      * 
      * @param number  the PDF object number.
@@ -80,8 +100,15 @@ public class Page extends PDFObject {
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
         this.contents = new GraphicsStream(n, 0, this);
+        this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
+        this.patterns = new Dictionary();
+        
+        this.j2DTransform = AffineTransform.getTranslateInstance(0.0, 
+                bounds.getHeight());
+        j2DTransform.concatenate(AffineTransform.getScaleInstance(1.0, -1.0));
+        
     }
-    
+
     /**
      * Returns the <code>PDFObject</code> that represents the page content.
      * 
@@ -131,6 +158,41 @@ public class Page extends PDFObject {
     }
     
     /**
+     * Returns the name of the pattern for the specified GradientPaint,
+     * creating a new pattern if necessary.
+     * 
+     * @param gp  the gradient (<code>null</code> not permitted).
+     * 
+     * @return The pattern name. 
+     */
+    public String findOrCreateGradientPaintResource(GradientPaint gp) {
+        GradientPaintKey key = new GradientPaintKey(gp);
+        String patternName = this.gradientPaintsOnPage.get(key);
+        if (patternName == null) {
+            PDFDocument doc = this.parent.getDocument();
+            Function f = new ExponentialInterpolationFunction(
+                    doc.getNextNumber(), 
+                    gp.getColor1().getRGBColorComponents(null), 
+                    gp.getColor2().getRGBColorComponents(null));
+            doc.addObject(f);
+            double[] coords = new double[4];
+            coords[0] = gp.getPoint1().getX();
+            coords[1] = gp.getPoint1().getY();
+            coords[2] = gp.getPoint2().getX();
+            coords[3] = gp.getPoint2().getY();
+            Shading s = new AxialShading(doc.getNextNumber(), coords, f);
+            doc.addObject(s);
+            Pattern p = new ShadingPattern(doc.getNextNumber(), s, 
+                    this.j2DTransform);
+            doc.addObject(p);
+            patternName = "/P" + (this.patterns.size() + 1);
+            this.patterns.put(patternName, p);
+            this.gradientPaintsOnPage.put(key, patternName);
+        }
+        return patternName; 
+    }
+    
+    /**
      * Returns the PDF string describing this page.  This will eventually
      * be written to the byte array for the PDF document.
      * 
@@ -146,8 +208,12 @@ public class Page extends PDFObject {
         if (!this.fontsOnPage.isEmpty()) {
             this.resources.put("/Font", createFontDictionary());
         }
+        if (!this.patterns.isEmpty()) {
+            this.resources.put("/Pattern", this.patterns);
+        }
         String result = dictionary.toPDFString();
-        this.resources.put("/Font", null);
+        this.resources.remove("/Font");
+        this.resources.remove("/Pattern");
         return result;
     }
 }
