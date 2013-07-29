@@ -61,6 +61,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
+import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
 
 /**
@@ -72,6 +73,7 @@ import org.jfree.graphics2d.GraphicsUtils;
  * <ul>
  * <li>font support is very limited in this initial release;</li>
  * <li>drawing images is not yet supported;</li>
+ * <li>transparency is not yet supported.</li>
  * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
@@ -150,9 +152,7 @@ public final class PDFGraphics2D extends Graphics2D {
      * @param height  the height.
      */
     public PDFGraphics2D(GraphicsStream gs, int width, int height) {
-        if (gs == null) {
-            throw new IllegalArgumentException("Null 'gs' argument.");
-        }
+        Args.nullNotPermitted(gs, "gs");
         this.width = width;
         this.height = height;
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
@@ -304,9 +304,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setComposite(Composite comp) {
-        if (comp == null) {
-            throw new IllegalArgumentException("Null 'comp' argument.");
-        }
+        Args.nullNotPermitted(comp, "comp");
         this.composite = comp;
     }
     
@@ -332,9 +330,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setStroke(Stroke s) {
-        if (s == null) {
-            throw new IllegalArgumentException("Null 's' argument.");
-        }
+        Args.nullNotPermitted(s, "s");
         if (this.stroke.equals(s)) {
             return;
         }
