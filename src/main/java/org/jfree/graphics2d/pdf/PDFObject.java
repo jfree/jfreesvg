@@ -39,6 +39,16 @@ public abstract class PDFObject {
     private int generation;
     
     /**
+     * Creates a new instance with the specified object number and the default
+     * generation number (0).
+     * 
+     * @param number  the object number. 
+     */
+    protected PDFObject(int number) {
+        this(number, 0);
+    }
+    
+    /**
      * Creates a new instance.
      * 
      * @param number  the PDF object number (must be unique within the 
