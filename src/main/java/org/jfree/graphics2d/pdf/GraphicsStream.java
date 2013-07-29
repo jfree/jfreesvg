@@ -29,6 +29,7 @@ package org.jfree.graphics2d.pdf;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
@@ -137,7 +138,7 @@ public class GraphicsStream extends Stream {
         this.content.append(bs.getLineJoin()).append(" j\n");
         float[] dashArray = bs.getDashArray();
         if (dashArray != null) {
-            this.content.append(toPDFArray(dashArray)).append(" 0 d\n");
+            this.content.append(PDFUtils.toPDFArray(dashArray)).append(" 0 d\n");
         } else {
             this.content.append("[] 0 d\n");
         }
@@ -167,6 +168,18 @@ public class GraphicsStream extends Stream {
         float blue = c.getBlue() / 255f;
         this.content.append(red).append(" ").append(green).append(" ")
                 .append(blue).append(" rg\n");
+    }
+    
+    public void applyStrokeGradient(GradientPaint gp) {
+        String patternName = this.page.findOrCreateGradientPaintResource(gp);
+        this.content.append("/Pattern CS\n");
+        this.content.append(patternName).append(" SCN\n");
+    }
+    
+    public void applyFillGradient(GradientPaint gp) {
+        String patternName = this.page.findOrCreateGradientPaintResource(gp);
+        this.content.append("/Pattern cs\n");
+        this.content.append(patternName).append(" scn\n");
     }
     
     /**
@@ -199,7 +212,7 @@ public class GraphicsStream extends Stream {
      */
     public void fillPath2D(Path2D path) {
         this.content.append(getPDFPath(path));
-        this.content.append("F\n");
+        this.content.append("f\n");
     }
     
     /**
@@ -244,24 +257,6 @@ public class GraphicsStream extends Stream {
       b.append(this.content.toString());
       b.append("endstream\n");
       return b.toString();
-    }
-    
-    /**
-     * A utility method to convert a float[] to a PDF array string.
-     * 
-     * @param f  the array.
-     * 
-     * @return The string. 
-     */
-    private String toPDFArray(float[] f) {
-        StringBuilder b = new StringBuilder("[");
-        for (int i = 0; i < f.length; i++) {
-            if (i != 0) {
-                b.append(" ");
-            }
-            b.append(String.valueOf(f[i]));
-        }
-        return b.append("]").toString();
     }
 
     /**
