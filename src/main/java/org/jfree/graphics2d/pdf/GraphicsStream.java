@@ -327,4 +327,8 @@ public class GraphicsStream extends Stream {
         return PDFUtils.toBytes(getStreamContentString());
     }
     
+    public byte[] getFilteredStreamData() {
+        return getRawStreamData();
+    }
+    
 }

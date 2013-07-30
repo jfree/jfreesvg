@@ -30,8 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import org.jfree.graphics2d.demo.Ascii85OutputStream;
+import org.jfree.graphics2d.Ascii85OutputStream;
 
 /**
  * A PDFImage.
@@ -42,35 +41,13 @@ public class PDFImage extends Stream {
     
     int height;
 
-    byte[] data;
+    Image image;
     
     public PDFImage(int number, Image img) {
         super(number);
         this.width = img.getWidth(null);
         this.height = img.getHeight(null);
-        BufferedImage bi;
-        if (!(img instanceof BufferedImage)) {
-            bi = new BufferedImage(this.width, this.height, 
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2 = bi.createGraphics();
-            g2.drawImage(img, 0, 0, null);
-        } else {
-            bi = (BufferedImage) img;
-        }
-        // take the image and encode it Ascii85
-        this.data = new byte[this.width * this.height * 3];
-        int i = 0;
-        for (int hh = this.height - 1; hh >= 0; hh--) {
-            for (int ww = 0; ww < this.width; ww++) {
-                int rgb = bi.getRGB(ww, hh);
-                byte r = (byte) (rgb >> 16);
-                byte g = (byte) (rgb >> 8);
-                byte b = (byte) rgb;
-                this.data[i++] = r;
-                this.data[i++] = g;
-                this.data[i++] = b;
-            }
-        }
+        this.image = img;
     }
     
     @Override
@@ -78,7 +55,7 @@ public class PDFImage extends Stream {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Ascii85OutputStream out = new Ascii85OutputStream(baos);
         try {
-            out.write(this.data);
+            out.write(getRawStreamData());
             out.flush();
             out.close();
         } catch (Exception e) {
@@ -89,7 +66,48 @@ public class PDFImage extends Stream {
 
     @Override
     public byte[] getRawStreamData() {
-        return this.data;
+        return getFilteredStreamData();
+        //return getImageData();
+    }
+    
+    private byte[] getImageData() {
+        BufferedImage bi;
+        if (!(this.image instanceof BufferedImage)) {
+            bi = new BufferedImage(this.width, this.height, 
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = bi.createGraphics();
+            g2.drawImage(this.image, 0, 0, null);
+        } else {
+            bi = (BufferedImage) this.image;
+        }
+        // take the image and encode it Ascii85
+        byte[] result = new byte[this.width * this.height * 3];
+        int i = 0;
+        for (int hh = this.height - 1; hh >= 0; hh--) {
+            for (int ww = 0; ww < this.width; ww++) {
+                int rgb = bi.getRGB(ww, hh);
+                byte r = (byte) (rgb >> 16);
+                byte g = (byte) (rgb >> 8);
+                byte b = (byte) rgb;
+                result[i++] = r;
+                result[i++] = g;
+                result[i++] = b;
+            }
+        }
+        return result;
+    }
+    
+    public byte[] getFilteredStreamData() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Ascii85OutputStream out = new Ascii85OutputStream(baos);
+        try {
+            out.write(getImageData());
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            // oh no!
+        }
+        return baos.toByteArray();
     }
     
     @Override
@@ -101,7 +119,7 @@ public class PDFImage extends Stream {
         dictionary.put("/BitsPerComponent", 8);
         dictionary.put("/Width", this.width);
         dictionary.put("/Height", this.height);
-        //this.dictionary.put("/Filter", "/ASCII85Decode");
+        dictionary.put("/Filter", "/ASCII85Decode");
         return dictionary;
     }
 }

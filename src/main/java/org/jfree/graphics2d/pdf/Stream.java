@@ -92,4 +92,6 @@ public abstract class Stream extends PDFObject {
      * @return The raw data for the stream. 
      */
     public abstract byte[] getRawStreamData();
+    
+    public abstract byte[] getFilteredStreamData();
 }
