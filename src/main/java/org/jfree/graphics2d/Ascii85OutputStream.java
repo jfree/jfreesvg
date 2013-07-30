@@ -1,5 +1,3 @@
-package org.jfree.graphics2d;
-
 /*
  * Copyright (c) 2009-2013, i Data Connect!
  * All rights reserved.
@@ -31,6 +29,7 @@ package org.jfree.graphics2d;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+package org.jfree.graphics2d;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
