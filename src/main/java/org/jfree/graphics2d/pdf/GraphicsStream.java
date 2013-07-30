@@ -292,11 +292,12 @@ public class GraphicsStream extends Stream {
         // we need to get the reference for the current font (creating a 
         // new font object if there isn't already one)
         String fontRef = this.page.findOrCreateFontReference(this.font);
-        StringBuilder b = new StringBuilder();
-        b.append("BT ");
+        StringBuilder b = new StringBuilder("BT ");
+        addContent(b.toString());
         AffineTransform t = new AffineTransform(1.0, 0.0, 0.0, -1.0, 0.0, 
                 y * 2); 
         applyTextTransform(t);
+        b = new StringBuilder();
         b.append(fontRef).append(" ").append(this.font.getSize())
                 .append(" Tf ");
         b.append(x).append(" ").append(y).append(" Td (").append(text)
@@ -322,16 +323,6 @@ public class GraphicsStream extends Stream {
         b.append(imageRef).append(" Do\n");
         b.append("Q\n");
         addContent(b.toString());
-    }
-    
-    /**
-     * Returns a string representing the PDF content of this stream.
-     * 
-     * @return A string representing the PDF content of this stream. 
-     */
-    @Override
-    public String getStreamContentString() {
-        return this.content.toString();
     }
 
     /**
