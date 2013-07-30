@@ -106,13 +106,24 @@ public abstract class PDFObject {
         return b.toString();
     }
 
-    private String objectIntroString() {
-        StringBuilder b = new StringBuilder();
-        b.append(this.number).append(" ").append(this.generation).append(" ");
-        b.append("obj\n");
-        return b.toString();       
-    }
+    /**
+     * Returns the PDF object string (a complete description of the object
+     * in string format) that goes between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return The PDF object string.
+     * 
+     * @see #toPDFString()  
+     */
+    public abstract String getObjectString();
     
+    /**
+     * Returns the PDF bytes representing this object.
+     * 
+     * @return The PDF bytes representing this object.
+     * 
+     * @throws IOException 
+     */
     public byte[] toPDFBytes() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(PDFUtils.toBytes(objectIntroString()));
@@ -120,17 +131,7 @@ public abstract class PDFObject {
         baos.write(PDFUtils.toBytes("endobj\n"));
         return baos.toByteArray();
     }
-    
-    /**
-     * Returns the PDF object string (a complete description of the object
-     * in string format).
-     * 
-     * @return The PDF object string.
-     * 
-     * @see #toPDF() 
-     */
-    public abstract String getObjectString();
-    
+
     /**
      * Returns the bytes that go between the 'obj' and 'endobj' in the
      * PDF output for this object.
@@ -138,5 +139,12 @@ public abstract class PDFObject {
      * @return A byte array.
      */
     public abstract byte[] getObjectBytes() throws IOException;
-
+    
+    private String objectIntroString() {
+        StringBuilder b = new StringBuilder();
+        b.append(this.number).append(" ").append(this.generation).append(" ");
+        b.append("obj\n");
+        return b.toString();       
+    }
+    
 }
