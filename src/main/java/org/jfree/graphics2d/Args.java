@@ -58,6 +58,24 @@ public class Args {
      * @param ref  the text name of the array parameter (to include in the 
      *     exception message).
      */
+    public static void arrayMustHaveLength(int length, boolean[] array, 
+            String ref) {
+        nullNotPermitted(array, "array");
+        if (array.length != length) {
+            throw new IllegalArgumentException("Array '" + ref 
+                    + "' requires length " + length);
+        }
+    }
+
+    /**
+     * Checks an array to ensure it has the correct length and throws an
+     * <code>IllegalArgumentException</code> if it does not.
+     * 
+     * @param length  the required length.
+     * @param array  the array to check.
+     * @param ref  the text name of the array parameter (to include in the 
+     *     exception message).
+     */
     public static void arrayMustHaveLength(int length, double[] array, 
             String ref) {
         nullNotPermitted(array, "array");
