@@ -35,6 +35,18 @@ import java.util.zip.DeflaterOutputStream;
  */
 public class FlateFilter implements Filter {
 
+    /**
+     * Default constructor.
+     */
+    public FlateFilter() {
+        
+    }
+    
+    /**
+     * Returns the filter type.
+     * 
+     * @return {@link FilterType#FLATE} 
+     */
     @Override
     public FilterType getFilterType() {
         return FilterType.FLATE;
