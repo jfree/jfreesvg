@@ -122,17 +122,32 @@ public abstract class Shading extends PDFObject {
             return this.domain.clone();
         }
         
+        /**
+         * Sets the domain.
+         * 
+         * @param domain  the domain (array must have length 2). 
+         */
         public void setDomain(double[] domain) {
             Args.arrayMustHaveLength(2, domain, "domain");
             this.domain = domain.clone();
             this.dictionary.put("/Domain", PDFUtils.toPDFArray(this.domain));
         }
         
+        /**
+         * Returns the extend array. 
+         * 
+         * @return The extend array. 
+         */
         public boolean[] getExtend() {
             return this.extend.clone();
         }
         
+        /**
+         * Sets the extend array.
+         * @param extend 
+         */
         public void setExtend(boolean[] extend) {
+            Args.arrayMustHaveLength(2, extend, "extend");
             this.extend = extend.clone();
             this.dictionary.put("/Extend", PDFUtils.toPDFArray(this.extend));
         }
@@ -141,6 +156,7 @@ public abstract class Shading extends PDFObject {
     
     private ShadingType shadingType;
     
+    /** The dictionary. */
     protected Dictionary dictionary;
     
     /**
