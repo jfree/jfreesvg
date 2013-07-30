@@ -65,13 +65,15 @@ import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
 
 /**
- * A Graphics2D implementation that writes to PDF format.  For typical usage,
- * see the documentation for the {@link PDFDocument} class.
+ * A <code>Graphics2D</code> implementation that writes to PDF format.  For 
+ * typical usage, see the documentation for the {@link PDFDocument} class.
  * <p>
  * Some implementation notes:
  * <p>
  * <ul>
  * <li>font support is quite limited in this initial release;</li>
+ * <li>this is a version 1.0 release, so not everything is fully road-tested 
+ * yet, your feedback is most appreciated.</li>
  * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
