@@ -27,6 +27,7 @@
 package org.jfree.graphics2d.demo;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -117,12 +118,21 @@ public class PDFBarChartDemo1 {
         renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
                 ItemLabelAnchor.INSIDE6, TextAnchor.BOTTOM_CENTER));
 
+        // set up gradient paints for series...
+        GradientPaint gp0 = new GradientPaint(0.0f, 0.0f, Color.blue,
+                0.0f, 0.0f, new Color(0, 0, 64));
+        GradientPaint gp1 = new GradientPaint(0.0f, 0.0f, Color.green,
+                0.0f, 0.0f, new Color(0, 64, 0));
+        renderer.setSeriesPaint(0, gp0);
+        renderer.setSeriesPaint(1, gp1);
         return chart;
     }
  
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         PDFDocument pdfDoc = new PDFDocument();
+        pdfDoc.setTitle("PDFBarChartDemo1");
+        pdfDoc.setAuthor("Object Refinery Limited");
         Page page = pdfDoc.createPage(new Rectangle(612, 468));
         PDFGraphics2D g2 = page.getGraphics2D();
         chart.draw(g2, new Rectangle(0, 0, 612, 468));
