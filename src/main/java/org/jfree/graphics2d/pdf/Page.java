@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.pdf.Function.ExponentialInterpolationFunction;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
@@ -201,7 +202,16 @@ public class Page extends PDFObject {
     
     private Map<AlphaComposite, String> alphaDictionaries = new HashMap<AlphaComposite, String>();
     
+    /**
+     * Returns the name of the Graphics State Dictionary that can be used
+     * for the specified alpha composite - if there is no existing dictionary
+     * then a new one is created.
+     * 
+     * @param alphaComp  the alpha composite (<code>null</code> not permitted).
+     * @return 
+     */
     public String findOrCreateGSDictionary(AlphaComposite alphaComp) {
+        Args.nullNotPermitted(alphaComp, "alphaComp");
         String name = this.alphaDictionaries.get(alphaComp);
         if (name == null) {
             PDFDocument pdfDoc = this.parent.getDocument();
@@ -217,27 +227,27 @@ public class Page extends PDFObject {
         return name;
     }
     
+    /**
+     * Adds an image to the page.  This creates the required PDF object, 
+     * as well as adding a reference in the <code>xObjects</code> resources.
+     * You should not call this method directly, it exists for the use of the
+     * {@link PDFGraphics2D#drawImage(java.awt.Image, int, int, int, int, java.awt.image.ImageObserver)} 
+     * method.
+     * 
+     * @param img  the image (<code>null</code> not permitted).
+     * 
+     * @return The image reference name.
+     */
     public String addImage(Image img) {
+        Args.nullNotPermitted(img, "img");
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
         image.addFilter(new FlateFilter());
-        image.addFilter(new ASCII85Filter());
         
         pdfDoc.addObject(image);
         String reference = "/Image" + this.xObjects.size();
         this.xObjects.put(reference, image);
         return reference;
-    }
-    
-    /**
-     * Returns the PDF string describing this page.  This will eventually
-     * be written to the byte array for the PDF document.
-     * 
-     * @return The PDF string. 
-     */
-    @Override
-    public String getObjectString() {
-        return createDictionary().toPDFString();
     }
     
     @Override
