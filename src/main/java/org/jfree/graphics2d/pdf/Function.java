@@ -179,16 +179,6 @@ public abstract class Function extends PDFObject {
         this.domain = domain.clone();
         this.dictionary.put("/Domain", PDFUtils.toPDFArray(this.domain));
     }
-    
-    /**
-     * Returns the PDF object string.
-     * 
-     * @return The PDF object string. 
-     */
-    @Override
-    public String getObjectString() {
-        return this.dictionary.toPDFString();
-    }
 
     /**
      * Returns the bytes that go between the 'obj' and 'endobj' in the
