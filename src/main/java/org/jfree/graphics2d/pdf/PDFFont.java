@@ -102,16 +102,6 @@ public class PDFFont extends PDFObject {
     }
 
     /**
-     * Returns the PDF string describing this object.
-     * 
-     * @return The PDF string. 
-     */
-    @Override
-    public String getObjectString() {
-        return createDictionary().toPDFString();
-    }
-
-    /**
      * Returns the bytes that go between the 'obj' and 'endobj' in the
      * PDF output for this object.
      * 
