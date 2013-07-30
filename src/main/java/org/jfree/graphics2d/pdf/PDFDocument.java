@@ -199,6 +199,8 @@ public class PDFDocument {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             bos.write(toBytes("%PDF-1.4\n"));
+            bos.write(new byte[] { (byte) 37, (byte) 128, (byte) 129, (byte) 130, 
+                (byte) 131, (byte) 10});
             xref[obj++] = bos.size();  // offset to catalog
             bos.write(this.catalog.toPDFBytes());
             xref[obj++] = bos.size();  // offset to outlines
