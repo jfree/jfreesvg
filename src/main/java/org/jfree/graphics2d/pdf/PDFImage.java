@@ -29,6 +29,7 @@ package org.jfree.graphics2d.pdf;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import org.jfree.graphics2d.Args;
 
 /**
  * Represents an image in a PDF document.
@@ -44,8 +45,15 @@ public class PDFImage extends Stream {
     /** The image. */
     Image image;
     
+    /**
+     * Creates a new image object.
+     * 
+     * @param number  the PDF object number.
+     * @param img  the AWT image object (<code>null</code> not permitted).
+     */
     public PDFImage(int number, Image img) {
         super(number);
+        Args.nullNotPermitted(img, "img");
         this.width = img.getWidth(null);
         this.height = img.getHeight(null);
         this.image = img;
@@ -62,9 +70,11 @@ public class PDFImage extends Stream {
     }
 
     /**
-     * Returns the raw image data.  If filters have been added to the 
-     * stream, then this raw image data will be encoded.
-     * @return 
+     * Returns the raw image data.  Each call will resample the image data
+     * and populate a new array.  Note that the stream may encode this
+     * data before it is written to the PDF output.
+     * 
+     * @return The raw stream data. 
      */
     @Override
     public byte[] getRawStreamData() {
@@ -77,23 +87,28 @@ public class PDFImage extends Stream {
         } else {
             bi = (BufferedImage) this.image;
         }
-        // take the image and encode it Ascii85
+        // create a byte array of the image data to go in the PDF
         byte[] result = new byte[this.width * this.height * 3];
         int i = 0;
         for (int hh = this.height - 1; hh >= 0; hh--) {
             for (int ww = 0; ww < this.width; ww++) {
                 int rgb = bi.getRGB(ww, hh);
-                byte r = (byte) (rgb >> 16);
-                byte g = (byte) (rgb >> 8);
-                byte b = (byte) rgb;
-                result[i++] = r;
-                result[i++] = g;
-                result[i++] = b;
+                result[i++] = (byte) (rgb >> 16);;
+                result[i++] = (byte) (rgb >> 8);
+                result[i++] = (byte) rgb;
             }
         }
         return result;
     }
     
+    /**
+     * Creates a dictionary reflecting the current configuration for this
+     * image.
+     * 
+     * @param streamLength  the stream length.
+     * 
+     * @return A dictionary. 
+     */
     @Override
     protected Dictionary createDictionary(int streamLength) {
         Dictionary dictionary = super.createDictionary(streamLength);
