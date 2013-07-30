@@ -58,16 +58,6 @@ public class PDFImage extends Stream {
         this.height = img.getHeight(null);
         this.image = img;
     }
-    
-    /**
-     * Returns the image data as a string.
-     * 
-     * @return The image data as a string.
-     */
-    @Override
-    public String getStreamContentString() {
-        return getRawStreamData().toString(); 
-    }
 
     /**
      * Returns the raw image data.  Each call will resample the image data

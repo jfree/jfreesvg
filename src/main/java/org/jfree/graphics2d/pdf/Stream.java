@@ -74,22 +74,6 @@ public abstract class Stream extends PDFObject {
     }
     
     /**
-     * Returns the PDF string describing this stream.
-     * 
-     * @return The PDF string. 
-     */
-    @Override
-    public String getObjectString() {
-        String streamContent = getStreamContentString();
-        StringBuilder b = new StringBuilder();
-        b.append(createDictionary(streamContent.length()).toPDFString());
-        b.append("stream\n");
-        b.append(streamContent);
-        b.append("endstream\n");
-        return b.toString();   
-    }
-    
-    /**
      * Returns the PDF bytes for this stream object, with all current filters
      * applied.
      * 
@@ -135,13 +119,6 @@ public abstract class Stream extends PDFObject {
         }
         return dictionary;
     }
-    
-    /**
-     * Returns the PDF string describing the stream content.
-     * 
-     * @return The PDF string describing the stream content. 
-     */
-    public abstract String getStreamContentString();
     
     /**
      * Returns the raw data for the stream.
