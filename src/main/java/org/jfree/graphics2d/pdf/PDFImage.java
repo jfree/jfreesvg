@@ -29,18 +29,19 @@ package org.jfree.graphics2d.pdf;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import org.jfree.graphics2d.Ascii85OutputStream;
 
 /**
- * A PDFImage.
+ * Represents an image in a PDF document.
  */
 public class PDFImage extends Stream {
 
+    /** The width. */
     int width;
     
+    /** The height. */
     int height;
 
+    /** The image. */
     Image image;
     
     public PDFImage(int number, Image img) {
@@ -50,27 +51,23 @@ public class PDFImage extends Stream {
         this.image = img;
     }
     
+    /**
+     * Returns the image data as a string.
+     * 
+     * @return The image data as a string.
+     */
     @Override
     public String getStreamContentString() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Ascii85OutputStream out = new Ascii85OutputStream(baos);
-        try {
-            out.write(getRawStreamData());
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            // oh no!
-        }
-        return baos.toString();
+        return getRawStreamData().toString(); 
     }
 
+    /**
+     * Returns the raw image data.  If filters have been added to the 
+     * stream, then this raw image data will be encoded.
+     * @return 
+     */
     @Override
     public byte[] getRawStreamData() {
-        return getFilteredStreamData();
-        //return getImageData();
-    }
-    
-    private byte[] getImageData() {
         BufferedImage bi;
         if (!(this.image instanceof BufferedImage)) {
             bi = new BufferedImage(this.width, this.height, 
@@ -97,19 +94,6 @@ public class PDFImage extends Stream {
         return result;
     }
     
-    public byte[] getFilteredStreamData() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Ascii85OutputStream out = new Ascii85OutputStream(baos);
-        try {
-            out.write(getImageData());
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            // oh no!
-        }
-        return baos.toByteArray();
-    }
-    
     @Override
     protected Dictionary createDictionary(int streamLength) {
         Dictionary dictionary = super.createDictionary(streamLength);
@@ -119,7 +103,6 @@ public class PDFImage extends Stream {
         dictionary.put("/BitsPerComponent", 8);
         dictionary.put("/Width", this.width);
         dictionary.put("/Height", this.height);
-        dictionary.put("/Filter", "/ASCII85Decode");
         return dictionary;
     }
 }
