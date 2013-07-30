@@ -49,7 +49,7 @@ public class FontKey {
      * 
      * @param f  the font (<code>null</code> not permitted).
      * 
-     * @return The font key. 
+     * @return The font key.
      */
     public static FontKey createFontKey(Font f) {
         if (f == null) {
@@ -67,6 +67,8 @@ public class FontKey {
      * @param name  the name.
      * @param bold  the bold flag.
      * @param italic  the italic flag.
+     * 
+     * @see FontKey#createFontKey(java.awt.Font) 
      */
     public FontKey(String name, boolean bold, boolean italic) {
         this.name = name;
