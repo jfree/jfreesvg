@@ -158,11 +158,6 @@ public final class Pages extends PDFObject {
         dictionary.put("/Count", Integer.valueOf(pages.size()));
         return dictionary;        
     }
-    
-    @Override
-    public String getObjectString() {
-        return createDictionary().toPDFString();
-    }
 
     @Override
     public byte[] getObjectBytes() {
