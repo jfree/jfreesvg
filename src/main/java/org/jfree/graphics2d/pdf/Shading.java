@@ -169,16 +169,6 @@ public abstract class Shading extends PDFObject {
     }
 
     /**
-     * Returns the PDF object string.
-     * 
-     * @return The PDF object string. 
-     */
-    @Override
-    public String getObjectString() {
-        return this.dictionary.toPDFString();
-    }
-
-    /**
      * Returns the bytes that go between the 'obj' and 'endobj' in the
      * PDF output for this object.
      * 
