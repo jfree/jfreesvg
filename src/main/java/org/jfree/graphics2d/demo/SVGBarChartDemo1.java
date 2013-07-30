@@ -127,6 +127,13 @@ public class SVGBarChartDemo1 {
         return chart;
     }
 
+    /**
+     * Starting point for the demo.
+     * 
+     * @param args  ignored.
+     * 
+     * @throws IOException 
+     */
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         SVGGraphics2D g2 = new SVGGraphics2D(600, 400);

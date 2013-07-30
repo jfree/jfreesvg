@@ -419,6 +419,13 @@ public class PDFTimeSeriesChartDemo1 {
         return dataset;
     }
 
+    /**
+     * Starting point for the demo.
+     * 
+     * @param args  ignored.
+     * 
+     * @throws IOException 
+     */
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         PDFDocument pdfDoc = new PDFDocument();

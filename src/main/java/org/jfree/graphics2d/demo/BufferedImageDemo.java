@@ -42,6 +42,13 @@ import javax.swing.ImageIcon;
  */
 public class BufferedImageDemo {
     
+    /**
+     * Starting point for the demo.
+     * 
+     * @param args  ignored.
+     * 
+     * @throws IOException 
+     */
     public static void main(String[] args) throws IOException {
         BufferedImage image = new BufferedImage(600, 400, 
                 BufferedImage.TYPE_INT_ARGB);

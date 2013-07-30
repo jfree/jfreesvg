@@ -416,6 +416,13 @@ public class CanvasTimeSeriesChartDemo1 {
         return dataset;
     }
 
+    /**
+     * Starting point for the demo.
+     * 
+     * @param args  ignored.
+     * 
+     * @throws IOException 
+     */
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         CanvasGraphics2D g2 = new CanvasGraphics2D("id");
