@@ -119,10 +119,6 @@ public class PDFUtils {
         return b.append("]").toString();
     }
 
-    private static final DateFormat DF1 = new SimpleDateFormat("yyyyMMddHHmmss");
-    
-    private static final DateFormat DF2 = new SimpleDateFormat("XX");
-
     /**
      * Returns a string in standard PDF date format representing the specified 
      * date (in the default timezone).
@@ -147,8 +143,10 @@ public class PDFUtils {
      */
     public static String toPDFDateFormat(Calendar calendar) {
         Date d = calendar.getTime(); 
-        String part1 = DF1.format(d);
-        String part2 = DF2.format(d);
+        DateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
+        DateFormat df2 = new SimpleDateFormat("XX");
+        String part1 = df1.format(d);
+        String part2 = df2.format(d);
         String tzinfo;
         if (part2.equals("z")) {
             tzinfo = "Z00'00'";
