@@ -38,6 +38,10 @@ import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jfree.graphics2d.Args;
 
 /**
@@ -55,7 +59,7 @@ public class GraphicsStream extends Stream {
     private Page page;
     
     /** The stream content. */
-    private StringBuilder content;
+    private ByteArrayOutputStream content;
     
     /** The most recent font applied. */
     private Font font;
@@ -69,10 +73,10 @@ public class GraphicsStream extends Stream {
      * @param page  the parent page (<code>null</code> not permitted).
      */
     GraphicsStream(int number, Page page) {
-      super(number);
-      this.page = page;
-      this.content = new StringBuilder();
-      this.font = new Font("Dialog", Font.PLAIN, 12);
+        super(number);
+        this.page = page;
+        this.content = new ByteArrayOutputStream();
+        this.font = new Font("Dialog", Font.PLAIN, 12);
     }
 
     /**
@@ -81,14 +85,24 @@ public class GraphicsStream extends Stream {
      * @param t  the transform.
      */
     public void applyTransform(AffineTransform t) {
-      this.content.append(t.getScaleX()).append(" ");
-      this.content.append(t.getShearY()).append(" ");
-      this.content.append(t.getShearX()).append(" ");
-      this.content.append(t.getScaleY()).append(" ");
-      this.content.append(t.getTranslateX()).append(" ");
-      this.content.append(t.getTranslateY()).append(" cm\n");
+        StringBuilder b = new StringBuilder();
+        b.append(t.getScaleX()).append(" ");
+        b.append(t.getShearY()).append(" ");
+        b.append(t.getShearX()).append(" ");
+        b.append(t.getScaleY()).append(" ");
+        b.append(t.getTranslateX()).append(" ");
+        b.append(t.getTranslateY()).append(" cm\n");
+        addContent(b.toString());
     }
     
+    private void addContent(String s) {
+        try {
+            this.content.write(PDFUtils.toBytes(s));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Sets the transform.
      * 
@@ -118,12 +132,14 @@ public class GraphicsStream extends Stream {
      * @param t  the transform.
      */
     public void applyTextTransform(AffineTransform t) {
-          this.content.append(t.getScaleX()).append(" ");
-          this.content.append(t.getShearY()).append(" ");
-          this.content.append(t.getShearX()).append(" ");
-          this.content.append(t.getScaleY()).append(" ");
-          this.content.append(t.getTranslateX()).append(" ");
-          this.content.append(t.getTranslateY()).append(" Tm\n");
+        StringBuilder b = new StringBuilder();
+        b.append(t.getScaleX()).append(" ");
+        b.append(t.getShearY()).append(" ");
+        b.append(t.getShearX()).append(" ");
+        b.append(t.getScaleY()).append(" ");
+        b.append(t.getTranslateX()).append(" ");
+        b.append(t.getTranslateY()).append(" Tm\n");
+        addContent(b.toString());
     }
     
     /**
@@ -136,15 +152,17 @@ public class GraphicsStream extends Stream {
             return;
         }
         BasicStroke bs = (BasicStroke) s;
-        this.content.append(bs.getLineWidth()).append(" ").append("w\n");
-        this.content.append(bs.getEndCap()).append(" J\n");
-        this.content.append(bs.getLineJoin()).append(" j\n");
+        StringBuilder b = new StringBuilder();
+        b.append(bs.getLineWidth()).append(" ").append("w\n");
+        b.append(bs.getEndCap()).append(" J\n");
+        b.append(bs.getLineJoin()).append(" j\n");
         float[] dashArray = bs.getDashArray();
         if (dashArray != null) {
-            this.content.append(PDFUtils.toPDFArray(dashArray)).append(" 0 d\n");
+            b.append(PDFUtils.toPDFArray(dashArray)).append(" 0 d\n");
         } else {
-            this.content.append("[] 0 d\n");
+            b.append("[] 0 d\n");
         }
+        addContent(b.toString());
     }
     
     /**
@@ -156,8 +174,10 @@ public class GraphicsStream extends Stream {
         float red = c.getRed() / 255f;
         float green = c.getGreen() / 255f;
         float blue = c.getBlue() / 255f;
-        this.content.append(red).append(" ").append(green).append(" ")
-                .append(blue).append(" RG\n");
+        StringBuilder b = new StringBuilder();
+        b.append(red).append(" ").append(green).append(" ").append(blue)
+                .append(" RG\n");
+        addContent(b.toString());
     }
     
     /**
@@ -169,8 +189,10 @@ public class GraphicsStream extends Stream {
         float red = c.getRed() / 255f;
         float green = c.getGreen() / 255f;
         float blue = c.getBlue() / 255f;
-        this.content.append(red).append(" ").append(green).append(" ")
-                .append(blue).append(" rg\n");
+        StringBuilder b = new StringBuilder();
+        b.append(red).append(" ").append(green).append(" ").append(blue)
+                .append(" rg\n");
+        addContent(b.toString());
     }
     
     /**
@@ -181,8 +203,9 @@ public class GraphicsStream extends Stream {
     public void applyStrokeGradient(GradientPaint gp) {
         // delegate arg checking
         String patternName = this.page.findOrCreatePattern(gp);
-        this.content.append("/Pattern CS\n");
-        this.content.append(patternName).append(" SCN\n");
+        StringBuilder b = new StringBuilder("/Pattern CS\n");
+        b.append(patternName).append(" SCN\n");
+        addContent(b.toString());
     }
     
     /**
@@ -194,8 +217,9 @@ public class GraphicsStream extends Stream {
         // delegate arg checking
         Args.nullNotPermitted(gp, "gp");
         String patternName = this.page.findOrCreatePattern(gp);
-        this.content.append("/Pattern cs\n");
-        this.content.append(patternName).append(" scn\n");
+        StringBuilder b = new StringBuilder("/Pattern cs\n");
+        b.append(patternName).append(" scn\n");
+        addContent(b.toString());
     }
     
     /**
@@ -205,7 +229,9 @@ public class GraphicsStream extends Stream {
      */
     public void applyComposite(AlphaComposite alphaComp) {
         String name = this.page.findOrCreateGSDictionary(alphaComp);
-        this.content.append(name).append(" gs\n");
+        StringBuilder b = new StringBuilder();
+        b.append(name).append(" gs\n");
+        addContent(b.toString());
     }
     
     /**
@@ -214,11 +240,13 @@ public class GraphicsStream extends Stream {
      * @param line  the line. 
      */
     public void drawLine(Line2D line) {
-        this.content.append(line.getX1()).append(" ").append(line.getY1())
+        StringBuilder b = new StringBuilder();
+        b.append(line.getX1()).append(" ").append(line.getY1())
                 .append(" ").append("m\n");
-        this.content.append(line.getX2()).append(" ").append(line.getY2())
+        b.append(line.getX2()).append(" ").append(line.getY2())
                 .append(" ").append("l\n");
-        this.content.append("S\n");
+        b.append("S\n");
+        addContent(b.toString());
     }
     
     /**
@@ -227,8 +255,9 @@ public class GraphicsStream extends Stream {
      * @param path  the path. 
      */
     public void drawPath2D(Path2D path) {
-        this.content.append(getPDFPath(path));
-        this.content.append("S\n");
+        StringBuilder b = new StringBuilder();
+        b.append(getPDFPath(path)).append("S\n");
+        addContent(b.toString());
     }
     
     /**
@@ -237,8 +266,9 @@ public class GraphicsStream extends Stream {
      * @param path  the path. 
      */
     public void fillPath2D(Path2D path) {
-        this.content.append(getPDFPath(path));
-        this.content.append("f\n");
+        StringBuilder b = new StringBuilder();
+        b.append(getPDFPath(path)).append("f\n");
+        addContent(b.toString());
     }
     
     /**
@@ -262,14 +292,16 @@ public class GraphicsStream extends Stream {
         // we need to get the reference for the current font (creating a 
         // new font object if there isn't already one)
         String fontRef = this.page.findOrCreateFontReference(this.font);
-        this.content.append("BT ");
+        StringBuilder b = new StringBuilder();
+        b.append("BT ");
         AffineTransform t = new AffineTransform(1.0, 0.0, 0.0, -1.0, 0.0, 
                 y * 2); 
         applyTextTransform(t);
-        this.content.append(fontRef).append(" ")
-                .append(this.font.getSize()).append(" Tf ");
-        this.content.append(x).append(" ").append(y).append(" Td (")
-                .append(text).append(") Tj ET\n");
+        b.append(fontRef).append(" ").append(this.font.getSize())
+                .append(" Tf ");
+        b.append(x).append(" ").append(y).append(" Td (").append(text)
+                .append(") Tj ET\n");
+        addContent(b.toString());
     }
 
     /**
@@ -283,11 +315,13 @@ public class GraphicsStream extends Stream {
      */
     public void drawImage(Image img, int x, int y, int w, int h) {
         String imageRef = this.page.addImage(img);
-        this.content.append("q\n");
-        this.content.append(w).append(" 0 0 ").append(h).append(" ");
-        this.content.append(x).append(" ").append(y).append(" cm\n");
-        this.content.append(imageRef).append(" Do\n");
-        this.content.append("Q\n");
+        StringBuilder b = new StringBuilder();
+        b.append("q\n");
+        b.append(w).append(" 0 0 ").append(h).append(" ");
+        b.append(x).append(" ").append(y).append(" cm\n");
+        b.append(imageRef).append(" Do\n");
+        b.append("Q\n");
+        addContent(b.toString());
     }
     
     /**
@@ -348,7 +382,7 @@ public class GraphicsStream extends Stream {
 
     @Override
     public byte[] getRawStreamData() {
-        return PDFUtils.toBytes(getStreamContentString());
+        return this.content.toByteArray();
     }
 
 }
