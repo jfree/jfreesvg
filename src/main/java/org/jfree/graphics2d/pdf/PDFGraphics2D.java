@@ -71,9 +71,7 @@ import org.jfree.graphics2d.GraphicsUtils;
  * Some implementation notes:
  * <p>
  * <ul>
- * <li>font support is very limited in this initial release;</li>
- * <li>drawing images is not yet supported;</li>
- * <li>transparency is not yet supported.</li>
+ * <li>font support is quite limited in this initial release;</li>
  * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
@@ -140,6 +138,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     private Arc2D arc;
     
+    /** The content created by the Graphics2D instance. */
     private GraphicsStream gs;
     
     /**
@@ -708,7 +707,7 @@ public final class PDFGraphics2D extends Graphics2D {
         } else {
             this.transform = new AffineTransform(t);
         }
-        this.gs.setTransform(t);
+        this.gs.setTransform(this.transform);
     }
 
     /**
