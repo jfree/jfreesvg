@@ -1,7 +1,7 @@
 JFreeGraphics2D
 ===============
 
-Version 1.0, 26 July 2013
+Version 1.0, 30 July 2013
 
 (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
 
