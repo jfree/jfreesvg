@@ -72,17 +72,6 @@ public class DictionaryObject extends PDFObject {
     }
 
     /**
-     * Returns a string containing the PDF description for this object (the
-     * text that goes between the 'obj' and 'endobj' in the PDF output).
-     * 
-     * @return A string containing the PDF entry for this object. 
-     */
-    @Override
-    public String getObjectString() {
-        return this.dictionary.toPDFString();
-    }
-    
-    /**
      * Returns the bytes that go between the 'obj' and 'endobj' in the
      * PDF output for this object.
      * 
