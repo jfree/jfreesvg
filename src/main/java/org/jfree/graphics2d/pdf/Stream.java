@@ -26,24 +26,22 @@
 
 package org.jfree.graphics2d.pdf;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  * A <code>Stream</code> is a {@link PDFObject} that has a {@link Dictionary} 
  * and a byte stream.
  */
 public abstract class Stream extends PDFObject {
-
-    /** The dictionary. */
-    private Dictionary dictionary;
     
     /**
-     * Creates a new stream with an empty dictionary.
+     * Creates a new stream.
      * 
      * @param number  the PDF object number.
-     * @param generation  the PDF object generation number.
      */
-    Stream(int number, int generation) {
-        super(number, generation);
-        this.dictionary = new Dictionary();
+    Stream(int number) {
+        super(number);
     }
     
     /**
@@ -55,11 +53,30 @@ public abstract class Stream extends PDFObject {
     @Override
     public String getObjectString() {
         String streamContent = getStreamContentString();
-        this.dictionary.put("/Length", Integer.valueOf(streamContent.length()));
         StringBuilder b = new StringBuilder();
-        b.append(this.dictionary.toPDFString());
+        b.append(createDictionary(streamContent.length()).toPDFString());
+        b.append("stream\n");
         b.append(streamContent);
+        b.append("endstream\n");
         return b.toString();   
+    }
+    
+    @Override
+    public byte[] getObjectBytes() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] streamData = getRawStreamData();
+        Dictionary dictionary = createDictionary(streamData.length);
+        baos.write(dictionary.toPDFBytes());
+        baos.write(PDFUtils.toBytes("stream\n"));
+        baos.write(streamData);
+        baos.write(PDFUtils.toBytes("endstream\n"));
+        return baos.toByteArray();
+    }
+
+    protected Dictionary createDictionary(int streamLength) {
+        Dictionary dictionary = new Dictionary();
+        dictionary.put("/Length", Integer.valueOf(streamLength));
+        return dictionary;
     }
     
     /**
@@ -69,4 +86,10 @@ public abstract class Stream extends PDFObject {
      */
     public abstract String getStreamContentString();
     
+    /**
+     * Returns the raw data for the stream.
+     * 
+     * @return The raw data for the stream. 
+     */
+    public abstract byte[] getRawStreamData();
 }

@@ -189,4 +189,16 @@ public abstract class Function extends PDFObject {
     public String getObjectString() {
         return this.dictionary.toPDFString();
     }
+
+    /**
+     * Returns the bytes that go between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return A byte array.
+     */
+    @Override
+    public byte[] getObjectBytes() {
+        return this.dictionary.toPDFBytes(); 
+    }
+
 }

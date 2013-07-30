@@ -27,6 +27,7 @@
 package org.jfree.graphics2d.pdf;
 
 import java.awt.geom.AffineTransform;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -156,4 +157,22 @@ public class PDFUtils {
         }
         return "D:" + part1 + tzinfo;
     }
+ 
+    /**
+     * A utility method to convert a string to US-ASCII byte format.
+     * 
+     * @param s  the string.
+     * 
+     * @return The corresponding byte array.
+     */
+    public static byte[] toBytes(String s) {
+        byte[] result = null;
+        try {
+            result = s.getBytes("US-ASCII");
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex);
+        }
+        return result;
+    }
+    
 }

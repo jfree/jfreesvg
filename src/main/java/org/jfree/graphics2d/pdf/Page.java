@@ -26,8 +26,10 @@
 
 package org.jfree.graphics2d.pdf;
 
+import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.awt.GradientPaint;
+import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -58,9 +60,6 @@ public class Page extends PDFObject {
     /** The Graphics2D for writing to the page contents. */
     private PDFGraphics2D graphics2d;
     
-    /** Page resources. */
-    private Dictionary resources;
-    
     /**
      * The list of font (names) used on the page.  We let the parent take
      * care of tracking the font objects.
@@ -76,9 +75,14 @@ public class Page extends PDFObject {
     /** The pattern dictionary for this page. */
     private Dictionary patterns;
     
+    /** The ExtGState dictionary for the page. */
+    private Dictionary graphicsStates;
+    
     /** The transform between Page and Java2D coordinates. */
     private AffineTransform j2DTransform;
-    
+
+    private Dictionary xObjects = new Dictionary();
+
     /**
      * Creates a new page.
      * 
@@ -95,13 +99,12 @@ public class Page extends PDFObject {
         }
         this.parent = parent;
         this.bounds = bounds;
-        this.resources = new Dictionary();
-        this.resources.put("/ProcSet", "[/PDF /Text]");
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
-        this.contents = new GraphicsStream(n, 0, this);
+        this.contents = new GraphicsStream(n, this);
         this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
         this.patterns = new Dictionary();
+        this.graphicsStates = new Dictionary();
         
         this.j2DTransform = AffineTransform.getTranslateInstance(0.0, 
                 bounds.getHeight());
@@ -158,14 +161,15 @@ public class Page extends PDFObject {
     }
     
     /**
-     * Returns the name of the pattern for the specified GradientPaint,
-     * creating a new pattern if necessary.
+     * Returns the name of the pattern for the specified 
+     * <code>GradientPaint</code>, reusing an existing pattern if possible, 
+     * otherwise creating a new pattern if necessary.
      * 
      * @param gp  the gradient (<code>null</code> not permitted).
      * 
      * @return The pattern name. 
      */
-    public String findOrCreateGradientPaintResource(GradientPaint gp) {
+    public String findOrCreatePattern(GradientPaint gp) {
         GradientPaintKey key = new GradientPaintKey(gp);
         String patternName = this.gradientPaintsOnPage.get(key);
         if (patternName == null) {
@@ -192,6 +196,33 @@ public class Page extends PDFObject {
         return patternName; 
     }
     
+    private Map<AlphaComposite, String> alphaDictionaries = new HashMap<AlphaComposite, String>();
+    
+    public String findOrCreateGSDictionary(AlphaComposite alphaComp) {
+        String name = this.alphaDictionaries.get(alphaComp);
+        if (name == null) {
+            PDFDocument pdfDoc = this.parent.getDocument();
+            GraphicsStateDictionary gsd = new GraphicsStateDictionary(
+                    pdfDoc.getNextNumber());
+            gsd.setNonStrokeAlpha(alphaComp.getAlpha());
+            gsd.setStrokeAlpha(alphaComp.getAlpha());
+            pdfDoc.addObject(gsd);
+            name = "/GS" + (this.graphicsStates.size() + 1);
+            this.graphicsStates.put(name, gsd);
+            this.alphaDictionaries.put(alphaComp, name);
+        }
+        return name;
+    }
+    
+    public String addImage(Image img) {
+        PDFDocument pdfDoc = this.parent.getDocument();
+        PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
+        pdfDoc.addObject(image);
+        String reference = "/Image" + this.xObjects.size();
+        this.xObjects.put(reference, image);
+        return reference;
+    }
+    
     /**
      * Returns the PDF string describing this page.  This will eventually
      * be written to the byte array for the PDF document.
@@ -200,20 +231,33 @@ public class Page extends PDFObject {
      */
     @Override
     public String getObjectString() {
+        return createDictionary().toPDFString();
+    }
+    
+    @Override
+    public byte[] getObjectBytes() {
+        return createDictionary().toPDFBytes();
+    }
+
+    private Dictionary createDictionary() {
         Dictionary dictionary = new Dictionary("/Page");
         dictionary.put("/Parent", this.parent);
         dictionary.put("/MediaBox", this.bounds);
         dictionary.put("/Contents", this.contents);
-        dictionary.put("/Resources", this.resources);
+        Dictionary resources = new Dictionary();
+        resources.put("/ProcSet", "[/PDF /Text /ImageB /ImageC /ImageI]");
+        resources.put("/XObject", this.xObjects);
         if (!this.fontsOnPage.isEmpty()) {
-            this.resources.put("/Font", createFontDictionary());
+            resources.put("/Font", createFontDictionary());
         }
         if (!this.patterns.isEmpty()) {
-            this.resources.put("/Pattern", this.patterns);
+            resources.put("/Pattern", this.patterns);
         }
-        String result = dictionary.toPDFString();
-        this.resources.remove("/Font");
-        this.resources.remove("/Pattern");
-        return result;
+        if (!this.graphicsStates.isEmpty()) {
+            resources.put("/ExtGState", this.graphicsStates);
+        }        
+        dictionary.put("/Resources", resources);
+        return dictionary;
     }
+
 }

@@ -26,10 +26,12 @@
 
 package org.jfree.graphics2d.pdf;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
+import java.awt.Image;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
@@ -61,11 +63,10 @@ public class GraphicsStream extends Stream {
      * Creates a new instance.
      * 
      * @param number  the PDF object number.
-     * @param generation  the PDF generation number.
      * @param page  the parent page (<code>null</code> not permitted).
      */
-    GraphicsStream(int number, int generation, Page page) {
-      super(number, generation);
+    GraphicsStream(int number, Page page) {
+      super(number);
       this.page = page;
       this.content = new StringBuilder();    
     }
@@ -171,15 +172,25 @@ public class GraphicsStream extends Stream {
     }
     
     public void applyStrokeGradient(GradientPaint gp) {
-        String patternName = this.page.findOrCreateGradientPaintResource(gp);
+        String patternName = this.page.findOrCreatePattern(gp);
         this.content.append("/Pattern CS\n");
         this.content.append(patternName).append(" SCN\n");
     }
     
     public void applyFillGradient(GradientPaint gp) {
-        String patternName = this.page.findOrCreateGradientPaintResource(gp);
+        String patternName = this.page.findOrCreatePattern(gp);
         this.content.append("/Pattern cs\n");
         this.content.append(patternName).append(" scn\n");
+    }
+    
+    /**
+     * Applies the specified alpha composite.
+     * 
+     * @param alphaComp  the alpha composite (<code>null</code> not permitted). 
+     */
+    public void applyComposite(AlphaComposite alphaComp) {
+        String name = this.page.findOrCreateGSDictionary(alphaComp);
+        this.content.append(name).append(" gs\n");
     }
     
     /**
@@ -246,6 +257,15 @@ public class GraphicsStream extends Stream {
                 .append(text).append(") Tj ET\n");
     }
 
+    public void drawImage(Image img, int x, int y, int w, int h) {
+        String imageRef = this.page.addImage(img);
+        this.content.append("q\n");
+        this.content.append(w).append(" 0 0 ").append(h).append(" ");
+        this.content.append(x).append(" ").append(y).append(" cm\n");
+        this.content.append(imageRef + " Do\n");
+        this.content.append("Q\n");
+    }
+    
     /**
      * Returns a string representing the PDF content of this stream.
      * 
@@ -253,10 +273,7 @@ public class GraphicsStream extends Stream {
      */
     @Override
     public String getStreamContentString() {
-      StringBuilder b = new StringBuilder("stream\n");
-      b.append(this.content.toString());
-      b.append("endstream\n");
-      return b.toString();
+        return this.content.toString();
     }
 
     /**
@@ -303,6 +320,11 @@ public class GraphicsStream extends Stream {
             iterator.next();
         }
         return b.toString();
+    }
+
+    @Override
+    public byte[] getRawStreamData() {
+        return PDFUtils.toBytes(getStreamContentString());
     }
     
 }

@@ -26,6 +26,8 @@
 
 package org.jfree.graphics2d.pdf;
 
+import org.jfree.graphics2d.Args;
+
 /**
  * A PDF object that is represented by a dictionary.  This is used to
  * represent the <code>Catalog</code> and the <code>Outlines</code> (the latter 
@@ -33,17 +35,16 @@ package org.jfree.graphics2d.pdf;
  */
 public class DictionaryObject extends PDFObject {
     
-    private Dictionary dictionary;
+    protected Dictionary dictionary;
 
     /**
      * Creates a new instance.
      * 
      * @param number  the object number.
-     * @param generation  the generation number.
      * @param type  the object type (for example, "/Catalog"). 
      */
-    DictionaryObject(int number, int generation, String type) {
-        super(number, generation);
+    DictionaryObject(int number, String type) {
+        super(number);
         this.dictionary = new Dictionary(type);
     }
     
@@ -55,9 +56,7 @@ public class DictionaryObject extends PDFObject {
      * @param value  the value (<code>null</code> not permitted).
      */
     public void put(String name, Object value) {
-        if (value == null) {
-            throw new IllegalArgumentException("Null 'value' argument.");
-        }
+        Args.nullNotPermitted(value, "value");
         this.dictionary.put("/" + name, value);
     }
     
@@ -73,12 +72,24 @@ public class DictionaryObject extends PDFObject {
     }
 
     /**
-     * Returns a string containing the PDF entry for this object.
+     * Returns a string containing the PDF description for this object (the
+     * text that goes between the 'obj' and 'endobj' in the PDF output).
      * 
      * @return A string containing the PDF entry for this object. 
      */
     @Override
     public String getObjectString() {
         return this.dictionary.toPDFString();
+    }
+    
+    /**
+     * Returns the bytes that go between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return A byte array.
+     */
+    @Override
+    public byte[] getObjectBytes() {
+        return this.dictionary.toPDFBytes(); 
     }
 }

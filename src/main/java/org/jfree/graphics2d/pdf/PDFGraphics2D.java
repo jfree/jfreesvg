@@ -306,6 +306,10 @@ public final class PDFGraphics2D extends Graphics2D {
     public void setComposite(Composite comp) {
         Args.nullNotPermitted(comp, "comp");
         this.composite = comp;
+        if (comp instanceof AlphaComposite) {
+            AlphaComposite ac = (AlphaComposite) comp;
+            this.gs.applyComposite(ac);
+        }
     }
     
     /**
@@ -1178,9 +1182,7 @@ public final class PDFGraphics2D extends Graphics2D {
     /**
      * Draws the image into the rectangle defined by <code>(x, y, w, h)</code>.  
      * Note that the <code>observer</code> is ignored (it is not useful in this
-     * context). <b>This is not yet implemented and since all the other
-     * image drawing methods delegate to this one, no image drawing works in
-     * this initial release</b>.
+     * context).
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
@@ -1194,7 +1196,8 @@ public final class PDFGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             ImageObserver observer) {
-        throw new UnsupportedOperationException("Not supported yet."); // TODO
+        this.gs.drawImage(img, x, y, w, h);
+        return true;
     }
 
     /**

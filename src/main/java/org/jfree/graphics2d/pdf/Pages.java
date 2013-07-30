@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jfree.graphics2d.Args;
 
 /**
  * A <code>PDFObject</code> that maintains the list of pages for the document.
@@ -63,9 +64,7 @@ public final class Pages extends PDFObject {
      */
     Pages(int number, int generation, PDFDocument parent) {
         super(number, generation);
-        if (parent == null) {
-            throw new IllegalArgumentException("Null 'parent' argument.");
-        }
+        Args.nullNotPermitted(parent, "parent");
         this.parent = parent;
         this.pages = new ArrayList<Page>();
         this.fonts = new ArrayList<PDFFont>();
@@ -149,8 +148,7 @@ public final class Pages extends PDFObject {
         return pdfFont.getName();
     }
 
-    @Override
-    public String getObjectString() {
+    private Dictionary createDictionary() {
         Dictionary dictionary = new Dictionary("/Pages");
         Page[] pagesArray = new Page[this.pages.size()];
         for (int i = 0; i < this.pages.size(); i++) {
@@ -158,7 +156,17 @@ public final class Pages extends PDFObject {
         }
         dictionary.put("/Kids", pagesArray);
         dictionary.put("/Count", Integer.valueOf(pages.size()));
-        return dictionary.toPDFString();
+        return dictionary;        
+    }
+    
+    @Override
+    public String getObjectString() {
+        return createDictionary().toPDFString();
+    }
+
+    @Override
+    public byte[] getObjectBytes() {
+        return createDictionary().toPDFBytes();
     }
 
 }

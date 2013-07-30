@@ -33,6 +33,9 @@ import org.jfree.graphics2d.Args;
  */
 public abstract class Shading extends PDFObject {
 
+    /**
+     * An axial shading.
+     */
     public static final class AxialShading extends Shading {
        
         /** Coordinates (x0, y0, x1, y1) defining the axis. */
@@ -41,13 +44,24 @@ public abstract class Shading extends PDFObject {
         /** The shading function. */
         private Function function;
         
+        /** The domain. */
         private double[] domain;
         
         /** The extend flags (two of them). */
         private boolean[] extend;
         
+        /**
+         * Creates a new axial shading.
+         * 
+         * @param number  the object number.
+         * @param coords  the coordinates of the axis (x1, y1, x2, y2).
+         * @param function  the function object for the shading 
+         *     (<code>null</code> not permitted). 
+         */
         public AxialShading(int number, double[] coords, Function function) {
             super(number, ShadingType.AXIAL);
+            Args.arrayMustHaveLength(4, coords, "coords");
+            Args.nullNotPermitted(function, "function");
             this.dictionary.put("/ColorSpace", "/DeviceRGB");
             this.dictionary.put("/Extend", "[true true]");
             setCoords(coords);
@@ -55,27 +69,55 @@ public abstract class Shading extends PDFObject {
             this.domain = new double[] {0.0, 1.0};
             this.extend = new boolean[] {false, false};
         }
-        
+
+        /**
+         * Returns a copy of the axis coordinates array (x1, y1, x2, y2).
+         * 
+         * @return A copy of the axis coordinates array (never 
+         *     <code>null</code>). 
+         */
         public double[] getCoords() {
             return this.coords.clone();
         }
         
+        /**
+         * Sets the axis coordinates array (x1, y1, x2, y2).
+         * 
+         * @param coords  the axis coordinates (<code>null</code> not 
+         *     permitted).
+         */
         public void setCoords(double[] coords) {
             Args.arrayMustHaveLength(4, coords, "coords");
             this.coords = coords.clone();
             this.dictionary.put("/Coords", PDFUtils.toPDFArray(this.coords));
         }
         
+        /**
+         * Returns the function for this shading.
+         * 
+         * @return The function (never <code>null</code>). 
+         */
         public Function getFunction() {
             return this.function;
         }
         
+        /**
+         * Sets the function for this shading.
+         * 
+         * @param function  the function (<code>null</code> not permitted). 
+         */
         public void setFunction(Function function) {
             Args.nullNotPermitted(function, "function");
             this.function = function;
             this.dictionary.put("/Function", this.function);
         }
         
+        /**
+         * Returns the function domain.  The default value is 
+         * <code>[0.0, 1.0]</code>.
+         * 
+         * @return The function domain. 
+         */
         public double[] getDomain() {
             return this.domain.clone();
         }
@@ -134,5 +176,16 @@ public abstract class Shading extends PDFObject {
     @Override
     public String getObjectString() {
         return this.dictionary.toPDFString();
+    }
+
+    /**
+     * Returns the bytes that go between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return A byte array.
+     */
+    @Override
+    public byte[] getObjectBytes() {
+        return this.dictionary.toPDFBytes(); 
     }
 }

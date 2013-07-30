@@ -33,10 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -91,9 +88,9 @@ public class PDFDocument {
      * Creates a new <code>PDFDocument</code>, initially with no content.
      */
     public PDFDocument() {
-        this.catalog = new DictionaryObject(this.nextNumber++, 0, "/Catalog");
-        this.outlines = new DictionaryObject(this.nextNumber++, 0, "/Outlines");
-        this.info = new DictionaryObject(this.nextNumber++, 0, "/Info");
+        this.catalog = new DictionaryObject(this.nextNumber++, "/Catalog");
+        this.outlines = new DictionaryObject(this.nextNumber++, "/Outlines");
+        this.info = new DictionaryObject(this.nextNumber++, "/Info");
         this.info.put("Producer", "(JFreeGraphics2D 1.0)");
         Date now = new Date();
         String creationDateStr = "(" + PDFUtils.toDateFormat(now) + ")";
@@ -203,27 +200,27 @@ public class PDFDocument {
         try {
             bos.write(toBytes("%PDF-1.4\n"));
             xref[obj++] = bos.size();  // offset to catalog
-            bos.write(toBytes(this.catalog.toPDF()));
+            bos.write(this.catalog.toPDFBytes());
             xref[obj++] = bos.size();  // offset to outlines
-            bos.write(toBytes(this.outlines.toPDF()));            
+            bos.write(this.outlines.toPDFBytes());            
             xref[obj++] = bos.size();  // offset to info
-            bos.write(toBytes(this.info.toPDF()));
+            bos.write(this.info.toPDFBytes());
             xref[obj++] = bos.size();  // offset to pages
-            bos.write(toBytes(this.pages.toPDF()));
+            bos.write(this.pages.toPDFBytes());
             xref[obj++] = bos.size();
             for (Page page : this.pages.getPages()) {
-                bos.write(toBytes(page.toPDF()));
+                bos.write(page.toPDFBytes());
                 xref[obj++] = bos.size();
                 PDFObject contents = page.getContents();
-                bos.write(toBytes(contents.toPDF()));
+                bos.write(contents.toPDFBytes());
                 xref[obj++] = bos.size();
             }
             for (PDFFont font: this.pages.getFonts()) {
-                bos.write(toBytes(font.toPDF()));
+                bos.write(font.toPDFBytes());
                 xref[obj++] = bos.size();
             }
             for (PDFObject object: this.otherObjects) {
-                bos.write(toBytes(object.toPDF()));
+                bos.write(object.toPDFBytes());
                 xref[obj++] = bos.size();
             }
             
@@ -245,7 +242,7 @@ public class PDFDocument {
             trailer.put("/Size", Integer.valueOf(this.nextNumber - 1));
             trailer.put("/Root", this.catalog);
             trailer.put("/Info", this.info);
-            bos.write(toBytes(trailer.toPDFString()));
+            bos.write(trailer.toPDFBytes());
             bos.write(toBytes("startxref\n"));
             bos.write(toBytes(String.valueOf(xref[this.nextNumber - 1]) 
                     + "\n"));

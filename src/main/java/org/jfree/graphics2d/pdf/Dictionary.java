@@ -27,8 +27,12 @@
 package org.jfree.graphics2d.pdf;
 
 import java.awt.geom.Rectangle2D;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A dictionary is a map and supports writing the bytes for the dictionary
@@ -64,6 +68,24 @@ public class Dictionary {
     public Dictionary(String type) {
         this.type = type;
         this.map = new HashMap();    
+    }
+    
+    /**
+     * Returns the dictionary type.
+     * 
+     * @return The dictionary type (possibly (<code>null</code>). 
+     */
+    public String getType() {
+        return this.type;
+    }
+    
+    /**
+     * Sets the type.
+     * 
+     * @param type  the type (<code>null</code> permitted). 
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
@@ -107,6 +129,24 @@ public class Dictionary {
      */
     public Object remove(String key) {
         return this.map.remove(key);
+    }
+    
+    /**
+     * Returns a byte array containing the ASCII encoding of the dictionary.
+     * 
+     * @return A byte array. 
+     */
+    public byte[] toPDFBytes() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            // here we are first creating the String version, then encoding
+            // to bytes...it would be more efficient to go direct to bytes
+            // but this will do for now
+            baos.write(PDFUtils.toBytes(toPDFString()));
+        } catch (IOException ex) {
+            throw new RuntimeException("Dictionary.toPDFBytes() failed.");
+        }
+        return baos.toByteArray();
     }
 
     /**

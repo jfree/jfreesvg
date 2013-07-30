@@ -26,6 +26,9 @@
 
 package org.jfree.graphics2d.pdf;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  * A PDF Object (also referred to as an 'Indirect Object' in the PDF
  * specification).  Objects are identified within a document by their
@@ -94,13 +97,28 @@ public abstract class PDFObject {
      * 
      * @return A string describing this object in PDF format.
      */
-    public String toPDF() {
+    public String toPDFString() {
         StringBuilder b = new StringBuilder();
         b.append(this.number).append(" ").append(this.generation).append(" ");
         b.append("obj\n");
         b.append(getObjectString());
         b.append("endobj\n");
         return b.toString();
+    }
+
+    private String objectIntroString() {
+        StringBuilder b = new StringBuilder();
+        b.append(this.number).append(" ").append(this.generation).append(" ");
+        b.append("obj\n");
+        return b.toString();       
+    }
+    
+    public byte[] toPDFBytes() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos.write(PDFUtils.toBytes(objectIntroString()));
+        baos.write(getObjectBytes());
+        baos.write(PDFUtils.toBytes("endobj\n"));
+        return baos.toByteArray();
     }
     
     /**
@@ -112,5 +130,13 @@ public abstract class PDFObject {
      * @see #toPDF() 
      */
     public abstract String getObjectString();
+    
+    /**
+     * Returns the bytes that go between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return A byte array.
+     */
+    public abstract byte[] getObjectBytes() throws IOException;
 
 }

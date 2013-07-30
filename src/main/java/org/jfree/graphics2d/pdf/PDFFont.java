@@ -108,11 +108,27 @@ public class PDFFont extends PDFObject {
      */
     @Override
     public String getObjectString() {
+        return createDictionary().toPDFString();
+    }
+
+    /**
+     * Returns the bytes that go between the 'obj' and 'endobj' in the
+     * PDF output for this object.
+     * 
+     * @return A byte array.
+     */
+    @Override
+    public byte[] getObjectBytes() {
+        return createDictionary().toPDFBytes(); 
+    }
+
+    private Dictionary createDictionary() {
         Dictionary dictionary = new Dictionary("/Font");
         dictionary.put("/Subtype", "/Type1");
         dictionary.put("/Name", this.name);
         dictionary.put("/BaseFont", this.baseFont);
         dictionary.put("/Encoding", this.encoding);
-        return dictionary.toPDFString();
+        return dictionary;        
     }
+    
 }
