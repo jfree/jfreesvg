@@ -38,6 +38,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import org.jfree.graphics2d.Args;
 
 /**
  * A <code>Stream</code> that contains graphics for the PDF document that
@@ -59,6 +60,8 @@ public class GraphicsStream extends Stream {
     /** The most recent font applied. */
     private Font font;
     
+    private AffineTransform prevTransInv;
+    
     /**
      * Creates a new instance.
      * 
@@ -68,7 +71,8 @@ public class GraphicsStream extends Stream {
     GraphicsStream(int number, Page page) {
       super(number);
       this.page = page;
-      this.content = new StringBuilder();    
+      this.content = new StringBuilder();
+      this.font = new Font("Dialog", Font.PLAIN, 12);
     }
 
     /**
@@ -85,8 +89,6 @@ public class GraphicsStream extends Stream {
       this.content.append(t.getTranslateY()).append(" cm\n");
     }
     
-    private AffineTransform prevTransInv;
-    
     /**
      * Sets the transform.
      * 
@@ -96,7 +98,7 @@ public class GraphicsStream extends Stream {
         AffineTransform tt = new AffineTransform(t);
         try {
           AffineTransform inv = tt.createInverse();
-          AffineTransform comb = null;
+          AffineTransform comb;
           if (this.prevTransInv != null) {
             comb = new AffineTransform(this.prevTransInv);
             comb.concatenate(tt);
@@ -171,13 +173,26 @@ public class GraphicsStream extends Stream {
                 .append(blue).append(" rg\n");
     }
     
+    /**
+     * Applies a <code>GradientPaint</code> for stroking.
+     * 
+     * @param gp  the gradient paint (<code>null</code> not permitted). 
+     */
     public void applyStrokeGradient(GradientPaint gp) {
+        // delegate arg checking
         String patternName = this.page.findOrCreatePattern(gp);
         this.content.append("/Pattern CS\n");
         this.content.append(patternName).append(" SCN\n");
     }
     
+    /**
+     * Applies a <code>GradientPaint</code> for filling.
+     * 
+     * @param gp  the gradient paint (<code>null</code> not permitted). 
+     */
     public void applyFillGradient(GradientPaint gp) {
+        // delegate arg checking
+        Args.nullNotPermitted(gp, "gp");
         String patternName = this.page.findOrCreatePattern(gp);
         this.content.append("/Pattern cs\n");
         this.content.append(patternName).append(" scn\n");
@@ -257,12 +272,21 @@ public class GraphicsStream extends Stream {
                 .append(text).append(") Tj ET\n");
     }
 
+    /**
+     * Draws the specified image into the rectangle <code>(x, y, w, h)</code>.
+     * 
+     * @param img  the image.
+     * @param x  the x-coordinate of the destination.
+     * @param y  the y-coordinate of the destination.
+     * @param w  the width of the destination.
+     * @param h  the height of the destination.
+     */
     public void drawImage(Image img, int x, int y, int w, int h) {
         String imageRef = this.page.addImage(img);
         this.content.append("q\n");
         this.content.append(w).append(" 0 0 ").append(h).append(" ");
         this.content.append(x).append(" ").append(y).append(" cm\n");
-        this.content.append(imageRef + " Do\n");
+        this.content.append(imageRef).append(" Do\n");
         this.content.append("Q\n");
     }
     
@@ -326,9 +350,5 @@ public class GraphicsStream extends Stream {
     public byte[] getRawStreamData() {
         return PDFUtils.toBytes(getStreamContentString());
     }
-    
-    public byte[] getFilteredStreamData() {
-        return getRawStreamData();
-    }
-    
+
 }
