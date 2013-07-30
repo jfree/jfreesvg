@@ -40,6 +40,13 @@ import org.jfree.graphics2d.pdf.Page;
  */
 public class PDFTest {
  
+    /**
+     * Starting point for the demo.
+     * 
+     * @param args  ignored.
+     * 
+     * @throws IOException 
+     */
     public static void main(String[] args) throws IOException {
         PDFDocument pdfDoc = new PDFDocument();
         Page page = pdfDoc.createPage(new Rectangle(612, 468));
