@@ -27,7 +27,6 @@
 package org.jfree.graphics2d.pdf;
 
 import org.jfree.graphics2d.pdf.filter.FlateFilter;
-import org.jfree.graphics2d.pdf.filter.ASCII85Filter;
 import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -208,7 +207,8 @@ public class Page extends PDFObject {
      * then a new one is created.
      * 
      * @param alphaComp  the alpha composite (<code>null</code> not permitted).
-     * @return 
+     * 
+     * @return The graphics state dictionary reference. 
      */
     public String findOrCreateGSDictionary(AlphaComposite alphaComp) {
         Args.nullNotPermitted(alphaComp, "alphaComp");
