@@ -116,6 +116,7 @@ public class Ascii85OutputStream extends FilterOutputStream {
      * @throws java.io.IOException If an I/O error occurs in the underlying
      * output stream.
      */
+    @Override
     public void write(int b) throws IOException {
         if (!encoding)
             startEncoding();
@@ -236,6 +237,7 @@ public class Ascii85OutputStream extends FilterOutputStream {
      * method should only be called if it is intended that the ascii85 block
      * should be closed.
      */
+    @Override
     public void flush() throws IOException {
         // Add padding if required.
         if (encoding) {
