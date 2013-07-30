@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import org.jfree.graphics2d.Args;
         
 /**
- * Represents a PDF document.  The current focus of this implementation is to
+ * Represents a PDF document.  The focus of this implementation is to
  * allow the use of the {@link PDFGraphics2D} class to generate PDF content, 
  * typically in the following manner:
  * <p>
@@ -52,8 +52,8 @@ import org.jfree.graphics2d.Args;
  * <code>g2.draw(new Rectangle(10, 10, 40, 50));<br></code>
  * <code>pdfDoc.writeToFile(new File("demo.pdf"));<br></code>
  * <p>
- * The implementation is light-weight and even this initial release shows
- * promising results working alongside packages such as <b>JFreeChart</b>.
+ * The implementation is light-weight and works very well alongside packages 
+ * such as <b>JFreeChart</b>.
  */
 public class PDFDocument {
     
@@ -250,7 +250,7 @@ public class PDFDocument {
                     + "\n"));
             bos.write(toBytes("%%EOF"));
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
         return bos.toByteArray();
     }
