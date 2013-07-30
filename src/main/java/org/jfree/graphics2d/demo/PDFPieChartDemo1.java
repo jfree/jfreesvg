@@ -86,6 +86,8 @@ public class PDFPieChartDemo1 {
     public static void main(String[] args) throws IOException {
         JFreeChart chart = createChart(createDataset());
         PDFDocument pdfDoc = new PDFDocument();
+        pdfDoc.setTitle("PDFBarChartDemo1");
+        pdfDoc.setAuthor("Object Refinery Limited");
         Page page = pdfDoc.createPage(new Rectangle(612, 468));
         PDFGraphics2D g2 = page.getGraphics2D();
         chart.draw(g2, new Rectangle(0, 0, 612, 468));
