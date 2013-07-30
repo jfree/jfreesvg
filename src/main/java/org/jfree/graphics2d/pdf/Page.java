@@ -26,6 +26,8 @@
 
 package org.jfree.graphics2d.pdf;
 
+import org.jfree.graphics2d.pdf.filter.FlateFilter;
+import org.jfree.graphics2d.pdf.filter.ASCII85Filter;
 import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -102,6 +104,7 @@ public class Page extends PDFObject {
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
         this.contents = new GraphicsStream(n, this);
+        this.contents.addFilter(new FlateFilter());
         this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
         this.patterns = new Dictionary();
         this.graphicsStates = new Dictionary();
@@ -217,6 +220,9 @@ public class Page extends PDFObject {
     public String addImage(Image img) {
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
+        image.addFilter(new FlateFilter());
+        image.addFilter(new ASCII85Filter());
+        
         pdfDoc.addObject(image);
         String reference = "/Image" + this.xObjects.size();
         this.xObjects.put(reference, image);
