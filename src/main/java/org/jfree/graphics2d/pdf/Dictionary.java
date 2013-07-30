@@ -31,8 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A dictionary is a map and supports writing the bytes for the dictionary
@@ -172,6 +170,17 @@ public class Dictionary {
                 PDFObject pdfObj = (PDFObject) value;
                 b.append(key.toString()).append(" ");
                 b.append(pdfObj.getReference()).append("\n");
+            } else if (value instanceof String[]) {
+                b.append(key.toString()).append(" ");
+                String[] array = (String[]) value;
+                b.append("[");
+                for (int i = 0; i < array.length; i++) {
+                    if (i != 0) {
+                        b.append(" ");
+                    }
+                    b.append(array[i]);
+                }
+                b.append("]\n");                
             } else if (value instanceof PDFObject[]) {
                 b.append(key.toString()).append(" ");
                 PDFObject[] array = (PDFObject[]) value;
