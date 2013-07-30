@@ -30,7 +30,7 @@ import java.awt.geom.AffineTransform;
 import org.jfree.graphics2d.Args;
 
 /**
- * A pattern object.
+ * A pattern object (see the concrete subclass {@link ShadingPattern}).
  */
 public abstract class Pattern extends PDFObject {
     
@@ -86,16 +86,6 @@ public abstract class Pattern extends PDFObject {
     protected Pattern(int number) {
         super(number);
         this.dictionary = new Dictionary("/Pattern");
-    }
-
-    /**
-     * Returns the PDF object string.
-     * 
-     * @return The PDF object string. 
-     */
-    @Override
-    public String getObjectString() {
-        return this.dictionary.toPDFString();
     }
 
     /**
