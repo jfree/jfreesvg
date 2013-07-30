@@ -57,7 +57,7 @@ public abstract class Stream extends PDFObject {
      * 
      * @param f  the filter (<code>null</code> not permitted).
      * 
-     * @see #clearFilters() 
+     * @see #removeFilters() 
      */
     public void addFilter(Filter f) {
         Args.nullNotPermitted(f, "f");
