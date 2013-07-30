@@ -26,15 +26,22 @@
 
 package org.jfree.graphics2d.pdf;
 
+import org.jfree.graphics2d.pdf.filter.Filter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jfree.graphics2d.Args;
 
 /**
  * A <code>Stream</code> is a {@link PDFObject} that has a {@link Dictionary} 
- * and a byte stream.
+ * and a byte stream.  
  */
 public abstract class Stream extends PDFObject {
     
+    /** Filters (if any) to apply to the stream data. */
+    private List<Filter> filters;
+
     /**
      * Creates a new stream.
      * 
@@ -42,11 +49,32 @@ public abstract class Stream extends PDFObject {
      */
     Stream(int number) {
         super(number);
+        this.filters = new ArrayList<Filter>();
+    }
+
+    /**
+     * Adds a filter to the stream.
+     * 
+     * @param f  the filter (<code>null</code> not permitted).
+     * 
+     * @see #clearFilters() 
+     */
+    public void addFilter(Filter f) {
+        Args.nullNotPermitted(f, "f");
+        this.filters.add(f);    
     }
     
     /**
-     * Returns the PDF string describing this stream. This will eventually
-     * be written to the byte array for the PDF document.
+     * Removes any filters that were previously added.
+     * 
+     * @see #addFilter(org.jfree.graphics2d.pdf.filter.Filter) 
+     */
+    public void removeFilters() {
+        this.filters.clear();
+    }
+    
+    /**
+     * Returns the PDF string describing this stream.
      * 
      * @return The PDF string. 
      */
@@ -61,10 +89,21 @@ public abstract class Stream extends PDFObject {
         return b.toString();   
     }
     
+    /**
+     * Returns the PDF bytes for this stream object, with all current filters
+     * applied.
+     * 
+     * @return The PDF bytes for this stream object.
+     * 
+     * @throws IOException 
+     */
     @Override
     public byte[] getObjectBytes() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] streamData = getRawStreamData();
+        for (Filter f: this.filters) {
+            streamData = f.encode(streamData);
+        }
         Dictionary dictionary = createDictionary(streamData.length);
         baos.write(dictionary.toPDFBytes());
         baos.write(PDFUtils.toBytes("stream\n"));
@@ -73,9 +112,27 @@ public abstract class Stream extends PDFObject {
         return baos.toByteArray();
     }
 
+    /**
+     * Creates the dictionary for this stream object.  The dictionary will
+     * be populated with the stream length and the decode values for any
+     * filters that are currently applied.
+     * 
+     * @param streamLength  the stream length.
+     * 
+     * @return The dictionary. 
+     */
     protected Dictionary createDictionary(int streamLength) {
         Dictionary dictionary = new Dictionary();
         dictionary.put("/Length", Integer.valueOf(streamLength));
+        if (!this.filters.isEmpty()) {
+            String[] decodes = new String[this.filters.size()];
+            int count = this.filters.size();
+            for (int i = 0; i < count; i++) {
+                Filter f = this.filters.get(count - i - 1);
+                decodes[i] = f.getFilterType().getDecode();
+            }
+            dictionary.put("/Filter", decodes);
+        }
         return dictionary;
     }
     
@@ -92,6 +149,5 @@ public abstract class Stream extends PDFObject {
      * @return The raw data for the stream. 
      */
     public abstract byte[] getRawStreamData();
-    
-    public abstract byte[] getFilteredStreamData();
+
 }
