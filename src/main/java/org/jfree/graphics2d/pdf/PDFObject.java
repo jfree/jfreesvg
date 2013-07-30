@@ -93,31 +93,6 @@ public abstract class PDFObject {
     }
     
     /**
-     * Returns a string describing this object in PDF format.
-     * 
-     * @return A string describing this object in PDF format.
-     */
-    public String toPDFString() {
-        StringBuilder b = new StringBuilder();
-        b.append(this.number).append(" ").append(this.generation).append(" ");
-        b.append("obj\n");
-        b.append(getObjectString());
-        b.append("endobj\n");
-        return b.toString();
-    }
-
-    /**
-     * Returns the PDF object string (a complete description of the object
-     * in string format) that goes between the 'obj' and 'endobj' in the
-     * PDF output for this object.
-     * 
-     * @return The PDF object string.
-     * 
-     * @see #toPDFString()  
-     */
-    public abstract String getObjectString();
-    
-    /**
      * Returns the PDF bytes representing this object.
      * 
      * @return The PDF bytes representing this object.
