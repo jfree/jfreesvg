@@ -77,6 +77,7 @@ import org.jfree.graphics2d.GraphicsUtils;
  * <code>AttributedCharacterIterator</code> currently ignore the formatting 
  * information.</li>
  * </ul>
+ * <p>
  * For some demos of the use of this class, please look in the
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
