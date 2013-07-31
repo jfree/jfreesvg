@@ -63,11 +63,20 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
+import org.jfree.graphics2d.GraphicsUtils;
 
 /**
  * A <code>Graphics2D</code> implementation that writes out Javascript code 
- * that will draw to an HTML5 Canvas.
+ * that will draw to an HTML5 Canvas. 
  * <p>
+ * Implementation notes:
+ * <ul>
+ * <li>all rendering hints are ignored;</li>
+ * <li>images are not yet supported;</li>
+ * <li>the <code>drawString()</code> methods that work with an 
+ * <code>AttributedCharacterIterator</code> currently ignore the formatting 
+ * information.</li>
+ * </ul>
  * For some demos of the use of this class, please look in the
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
@@ -814,19 +823,23 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies a shear transformation.
+     * Applies a shear transformation. This is equivalent to the following 
+     * call to the <code>transform</code> method:
+     * <p>
+     * <ul><li>
+     * <code>transform(AffineTransform.getShearInstance(shx, shy));</code>
+     * </ul>
      * 
      * @param shx  the x-shear factor.
      * @param shy  the y-shear factor.
      */
     @Override
     public void shear(double shx, double shy) {
-        AffineTransform t = AffineTransform.getShearInstance(shx, shy);
-        transform(t);
+        transform(AffineTransform.getShearInstance(shx, shy));
     }
 
     /**
-     * Applies this transform to the existing transform.
+     * Applies this transform to the existing transform by concatenating it.
      * 
      * @param t  the transform (<code>null</code> not permitted). 
      */
@@ -882,8 +895,8 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Returns <code>true</code> if the rectangle (in device space) intersects
-     * with the shape (the interior, if onStroke is false, otherwise the 
-     * stroked outline of the shape).
+     * with the shape (the interior, if <code>onStroke</code> is false, 
+     * otherwise the stroked outline of the shape).
      * 
      * @param rect  a rectangle (in device space).
      * @param s the shape.
@@ -909,11 +922,19 @@ public final class CanvasGraphics2D extends Graphics2D {
         return !a1.isEmpty();
     }
 
+    /**
+     * Not yet implemented.
+     */
     @Override
     public void setPaintMode() {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
+    /**
+     * Not yet implemented.
+     * 
+     * @param c1 
+     */
     @Override
     public void setXORMode(Color c1) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
@@ -958,6 +979,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Sets the user clipping region.
      * 
      * @param shape  the new user clipping region (<code>null</code> permitted).
+     * 
+     * @see #getClip()
      */
     @Override
     public void setClip(Shape shape) {
@@ -1025,13 +1048,24 @@ public final class CanvasGraphics2D extends Graphics2D {
         setClip(this.rect);
     }
 
+    /**
+     * Not yet implemented.
+     * 
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param dx
+     * @param dy 
+     */
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
         throw new UnsupportedOperationException("Not supported yet."); //TODO
     }
 
     /**
-     * Draws a line from (x1, y1) to (x2, y2).
+     * Draws a line from <code>(x1, y1)</code> to <code>(x2, y2)</code> using 
+     * the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x1  the x-coordinate of the start point.
      * @param y1  the y-coordinate of the start point.
@@ -1049,7 +1083,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills a rectangle with the current paint.
+     * Fills the specified rectangle with the current <code>paint</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1063,7 +1097,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified rectangle with the current background color.
+     * Clears the specified rectangle by filling it with the current 
+     * background color.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1084,7 +1119,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
     
     /**
-     * Fills a rectangle with rounded corners.
+     * Draws a rectangle with rounded corners using the current 
+     * <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1092,6 +1128,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
+     * 
+     * @see #fillRoundRect(int, int, int, int, int, int) 
      */
     @Override
     public void drawRoundRect(int x, int y, int width, int height, 
@@ -1101,7 +1139,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills a rectangle with rounded corners.
+     * Fills a rectangle with rounded corners using the current 
+     * <code>paint</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1109,6 +1148,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
+     * 
+     * @see #drawRoundRect(int, int, int, int, int, int) 
      */
     @Override
     public void fillRoundRect(int x, int y, int width, int height, 
@@ -1118,12 +1159,15 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
     
     /**
-     * Draws an oval framed by the rectangle (x, y, width, height).
+     * Draws an oval framed by the rectangle <code>(x, y, width, height)</code>
+     * using the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
+     * 
+     * @see #fillOval(int, int, int, int) 
      */
     @Override
     public void drawOval(int x, int y, int width, int height) {
@@ -1132,12 +1176,14 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an oval framed by the rectangle (x, y, width, height).
+     * Fills an oval framed by the rectangle <code>(x, y, width, height)</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
+     * 
+     * @see #drawOval(int, int, int, int) 
      */
     @Override
     public void fillOval(int x, int y, int width, int height) {
@@ -1146,7 +1192,10 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an arc.
+     * Draws an arc contained within the rectangle 
+     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
+     * and continuing through <code>arcAngle</code> degrees using 
+     * the current <code>paint</code> and <code>stroke</code>.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1154,6 +1203,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #fillArc(int, int, int, int, int, int) 
      */
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
@@ -1163,7 +1214,10 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an arc.
+     * Fills an arc contained within the rectangle 
+     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
+     * and continuing through <code>arcAngle</code> degrees, using 
+     * the current <code>paint</code>
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1171,6 +1225,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
+     * 
+     * @see #drawArc(int, int, int, int, int, int) 
      */
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
@@ -1178,32 +1234,10 @@ public final class CanvasGraphics2D extends Graphics2D {
         setArc(x, y, width, height, startAngle, arcAngle);
         fill(this.arc);
     }
-
-    /**
-     * A utility method used to create a polygon for rendering.
-     * 
-     * @param xPoints  the x-points.
-     * @param yPoints  the y-points.
-     * @param nPoints  the number of points to use for the polyline.
-     * @param close  closed?
-     * 
-     * @return A polygon. 
-     */
-    private GeneralPath createPolygon(int[] xPoints, int[] yPoints, 
-            int nPoints, boolean close) {
-        GeneralPath p = new GeneralPath();
-        p.moveTo(xPoints[0], yPoints[0]);
-        for (int i = 1; i < nPoints; i++) {
-            p.lineTo(xPoints[i], yPoints[i]);
-        }
-        if (close) {
-            p.closePath();
-        }
-        return p;
-    }
     
     /**
-     * Draws the specified multi-segment line.
+     * Draws the specified multi-segment line using the current 
+     * <code>paint</code> and <code>stroke</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -1211,79 +1245,95 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, false);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                false);
         draw(p);
     }
 
     /**
-     * Draws the specified polygon.
+     * Draws the specified polygon using the current <code>paint</code> and 
+     * <code>stroke</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
-     */
+     * 
+     * @see #fillPolygon(int[], int[], int)      */
     @Override
     public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         draw(p);
     }
 
     /**
-     * Fills the specified polygon.
+     * Fills the specified polygon using the current <code>paint</code>.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
+     * 
+     * @see #drawPolygon(int[], int[], int) 
      */
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = createPolygon(xPoints, yPoints, nPoints, true);
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+                true);
         fill(p);
     }
 
     /**
-     * Not yet supported.
+     * Draws an image with the specified transform. Note that the 
+     * <code>observer</code> is ignored.     
      * 
-     * @param img
-     * @param xform
-     * @param obs
+     * @param img  the image.
+     * @param xform  the transform.
+     * @param obs  the image observer (ignored).
      * 
-     * @return A boolean. 
+     * @return {@code true} if the image is drawn. 
      */
     @Override
-    public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+    public boolean drawImage(Image img, AffineTransform xform, 
+            ImageObserver obs) {
+        AffineTransform savedTransform = getTransform();
+        transform(xform);
+        boolean result = drawImage(img, 0, 0, obs);
+        setTransform(savedTransform);
+        return result;
     }
 
     /**
-     * Not yet supported.
+     * Draws the image resulting from applying the <code>BufferedImageOp</code>
+     * to the specified image at the location <code>(x, y)</code>.
      * 
-     * @param img
-     * @param op
-     * @param x
-     * @param y 
+     * @param img  the image.
+     * @param op  the operation.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
      */
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        BufferedImage imageToDraw = op.filter(img, null);
+        drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
     }
 
     /**
-     * Not yet supported.
+     * Draws the rendered image.
      * 
-     * @param img
-     * @param xform 
+     * @param img  the image.
+     * @param xform  the transform.
      */
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        BufferedImage bi = GraphicsUtils.convertRenderedImage(img);
+        drawImage(bi, xform, null);
     }
 
     /**
-     * Not yet supported.
+     * Draws the renderable image.
      * 
-     * @param img
-     * @param xform 
+     * @param img  the renderable image.
+     * @param xform  the transform.
      */
     @Override
     public void drawRenderableImage(RenderableImage img, 
@@ -1293,7 +1343,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image.
+     * Draws an image at the location <code>(x, y)</code>.  Note that the 
+     * <code>observer</code> is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
@@ -1330,17 +1381,18 @@ public final class CanvasGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int width, int height, 
             ImageObserver observer) {
-        System.err.println("drawImage(Image, int, int, int, int, ImageObserver");
+        // TODO : implement this
         return false;
     }
 
     /**
-     * Draws an image.
+     * Draws an image at the location <code>(x, y)</code>.  Note that the 
+     * <code>observer</code> is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1360,15 +1412,16 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image to the rectangle (x, y, w, h), first filling the 
-     * background with the specified color.
+     * Draws an image to the rectangle <code>(x, y, w, h)</code> (scaling it if
+     * required), first filling the background with the specified color.  Note 
+     * that the <code>observer</code> is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param w  the width.
      * @param h  the height.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn.      
@@ -1384,7 +1437,10 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image.
+     * Draws part of an image (defined by the source rectangle 
+     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
+     * <code>(dx1, dy1, dx2, dy2)</code>.  Note that the <code>observer</code> 
+     * is ignored.
      * 
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
@@ -1411,7 +1467,11 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image.
+     * Draws part of an image (defined by the source rectangle 
+     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
+     * <code>(dx1, dy1, dx2, dy2)</code>.  The destination rectangle is first
+     * cleared by filling it with the specified <code>bgcolor</code>. Note that
+     * the <code>observer</code> is ignored. 
      * 
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
@@ -1422,7 +1482,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param sy1 the y-coordinate for the top left of the source.
      * @param sx2 the x-coordinate for the bottom right of the source.
      * @param sy2 the y-coordinate for the bottom right of the source.
-     * @param bgcolor  the background color.
+     * @param bgcolor  the background color (<code>null</code> permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1458,8 +1518,8 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Sets the attributes of the reusable {@link Rectangle2D} object that is
-     * used by the {@link SVGGraphics2D#drawRect(int, int, int, int)} and 
-     * {@link SVGGraphics2D#fillRect(int, int, int, int)} methods.
+     * used by the {@link CanvasGraphics2D#drawRect(int, int, int, int)} and 
+     * {@link CanvasGraphics2D#fillRect(int, int, int, int)} methods.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
