@@ -44,6 +44,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -62,7 +63,9 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.text.DecimalFormat;
 import java.util.Map;
+import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
 
 /**
@@ -145,6 +148,28 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     private Arc2D arc;
 
+    /** 
+     * The number of decimal places to use when writing the matrix values
+     * for transformations. 
+     */
+    private int transformDP;
+    
+    /**
+     * The decimal formatter for transform matrices.
+     */
+    private DecimalFormat transformFormat = new DecimalFormat("0.######");
+    
+    /**
+     * The number of decimal places to use when writing coordinates for
+     * geometrical shapes.
+     */
+    private int geometryDP;
+
+    /**
+     * The decimal formatter for coordinates of geometrical shapes.
+     */
+    private DecimalFormat geometryFormat = new DecimalFormat("0.##");
+
     /**
      * Creates a new instance.  The canvas ID is stored but not used in the
      * current implementation.
@@ -166,6 +191,84 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     public String getCanvasID() {
         return this.canvasID;
+    }
+    
+    /**
+     * Returns the number of decimal places used to write the transformation
+     * matrices in the Javascript output.  The default value is 6.
+     * <p>
+     * Note that there is a separate attribute to control the number of decimal
+     * places for geometrical elements in the output (see 
+     * {@link #getGeometryDP()}).
+     * 
+     * @return The number of decimal places.
+     * 
+     * @see #setTransformDP(int) 
+     */
+    public int getTransformDP() {
+        return this.transformDP;    
+    }
+    
+    /**
+     * Sets the number of decimal places used to write the transformation
+     * matrices in the Javascript output.  Values in the range 1 to 10 will be 
+     * used to configure a formatter to that number of decimal places, for all 
+     * other values we revert to the normal <code>String</code> conversion of 
+     * <coode>double</code> primitives (approximately 16 decimals places).
+     * <p>
+     * Note that there is a separate attribute to control the number of decimal
+     * places for geometrical elements in the output (see 
+     * {@link #setGeometryDP(int)}).
+     * 
+     * @param dp  the number of decimal places (normally 1 to 10).
+     * 
+     * @see #getTransformDP() 
+     */
+    public void setTransformDP(int dp) {
+        this.transformDP = dp;
+        if (dp < 1 || dp > 10) {
+            this.transformFormat = null;
+            return;
+        }
+        this.transformFormat = new DecimalFormat("0." 
+                + "##########".substring(0, dp));
+    }
+    
+    /**
+     * Returns the number of decimal places used to write the coordinates
+     * of geometrical shapes.  The default value is 2.
+     * <p>
+     * Note that there is a separate attribute to control the number of decimal
+     * places for transform matrices in the output (see 
+     * {@link #getTransformDP()}).
+     * 
+     * @return The number of decimal places.
+     */
+    public int getGeometryDP() {
+        return this.geometryDP;    
+    }
+    
+    /**
+     * Sets the number of decimal places used to write the coordinates of
+     * geometrical shapes in the Javascript output.  Values in the range 1 to 10
+     * will be used to configure a formatter to that number of decimal places, 
+     * for all other values we revert to the normal String conversion of double 
+     * primitives (approximately 16 decimals places).
+     * <p>
+     * Note that there is a separate attribute to control the number of decimal
+     * places for transform matrices in the output (see 
+     * {@link #setTransformDP(int)}).
+     * 
+     * @param dp  the number of decimal places (normally 1 to 10). 
+     */
+    public void setGeometryDP(int dp) {
+        this.geometryDP = dp;
+        if (dp < 1 || dp > 10) {
+            this.geometryFormat = null;
+            return;
+        }
+        this.geometryFormat = new DecimalFormat("0." 
+                + "##########".substring(0, dp));
     }
     
     /**
@@ -234,10 +337,11 @@ public final class CanvasGraphics2D extends Graphics2D {
             GradientPaint gp = (GradientPaint) paint;
             Point2D p1 = gp.getPoint1();
             Point2D p2 = gp.getPoint2();
-            this.sb.append("var g = ctx.createLinearGradient(").append(
-                    p1.getX()).append(",").append(p1.getY()).append(",")
-                    .append(p2.getX()).append(",").append(p2.getY())
-                    .append(");");
+            this.sb.append("var g = ctx.createLinearGradient(")
+                    .append(geomDP(p1.getX())).append(",")
+                    .append(geomDP(p1.getY())).append(",")
+                    .append(geomDP(p2.getX())).append(",")
+                    .append(geomDP(p2.getY())).append(");");
             this.sb.append("g.addColorStop(0,'").append(
                     toCSSColorValue(gp.getColor1())).append("');");
             this.sb.append("g.addColorStop(1,'").append(
@@ -278,7 +382,7 @@ public final class CanvasGraphics2D extends Graphics2D {
         this.color = c;
         this.paint = c;
         String cssColor = toCSSColorValue(c);
-        // FIXME: we could avoid writing both of these by tracking dirty
+        // TODO: we could avoid writing both of these by tracking dirty
         // flags and only writing the appropriate style when required
         this.sb.append("ctx.fillStyle=\"").append(cssColor).append("\";");        
         this.sb.append("ctx.strokeStyle=\"").append(cssColor).append("\";");
@@ -346,17 +450,13 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     @Override
     public void setComposite(Composite comp) {
-        if (comp == null) {
-            throw new IllegalArgumentException("Null 'comp' argument.");
-        }
+        Args.nullNotPermitted(comp, "comp");
         this.composite = comp;
         if (comp instanceof AlphaComposite) {
             AlphaComposite ac = (AlphaComposite) comp;
             sb.append("ctx.globalAlpha=").append(ac.getAlpha()).append(";");
             sb.append("ctx.globalCompositeOperation=\"").append(
                     toJSCompositeRuleName(ac.getRule())).append("\";");
-        } else {
-            System.err.println("setComposite(" + comp + ")");        
         }
     }
 
@@ -408,9 +508,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     @Override
     public void setStroke(Stroke s) {
-        if (s == null) {
-            throw new IllegalArgumentException("Null 's' argument.");
-        }
+        Args.nullNotPermitted(s, "s");
         this.stroke = s;
         if (s instanceof BasicStroke) {
             BasicStroke bs = (BasicStroke) s;
@@ -427,8 +525,6 @@ public final class CanvasGraphics2D extends Graphics2D {
             } else {
                sb.append("ctx.setLineDash([]);");
             }
-        } else {
-            System.err.println("setStroke(" + s + ");");
         }
     }
 
@@ -538,9 +634,10 @@ public final class CanvasGraphics2D extends Graphics2D {
             if (r.isEmpty()) {
                 return;
             }
-            sb.append("ctx.fillRect(").append(r.getX()).append(",")
-                    .append(r.getY()).append(",").append(r.getWidth())
-                    .append(",").append(r.getHeight()).append(");");
+            sb.append("ctx.fillRect(").append(geomDP(r.getX())).append(",")
+                    .append(geomDP(r.getY())).append(",")
+                    .append(geomDP(r.getWidth())).append(",")
+                    .append(geomDP(r.getHeight())).append(");");
         } else if (s instanceof Path2D) {
             shapeToPath(s);
             sb.append("ctx.fill();");
@@ -553,17 +650,18 @@ public final class CanvasGraphics2D extends Graphics2D {
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
             sb.append("ctx.beginPath();");
-            sb.append("ctx.moveTo(").append(l.getX1()).append(",")
-                    .append(l.getY1()).append(");");
-            sb.append("ctx.lineTo(").append(l.getX2()).append(",")
-                    .append(l.getY2()).append(");");
+            sb.append("ctx.moveTo(").append(geomDP(l.getX1())).append(",")
+                    .append(geomDP(l.getY1())).append(");");
+            sb.append("ctx.lineTo(").append(geomDP(l.getX2())).append(",")
+                    .append(geomDP(l.getY2())).append(");");
             sb.append("ctx.closePath();");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
             sb.append("ctx.beginPath();");
-            sb.append("ctx.rect(").append(r.getX()).append(",")
-                    .append(r.getY()).append(",").append(r.getWidth())
-                    .append(",").append(r.getHeight()).append(");");
+            sb.append("ctx.rect(").append(geomDP(r.getX())).append(",")
+                    .append(geomDP(r.getY())).append(",")
+                    .append(geomDP(r.getWidth())).append(",")
+                    .append(geomDP(r.getHeight())).append(");");
             sb.append("ctx.closePath();");
         } 
         else if (s instanceof Path2D) {
@@ -579,31 +677,34 @@ public final class CanvasGraphics2D extends Graphics2D {
                     closePt = new double[2];
                     closePt[0] = coords[0];
                     closePt[1] = coords[1];
-                    sb.append("ctx.moveTo(").append(coords[0]).append(",")
-                            .append(coords[1]).append(");");
+                    sb.append("ctx.moveTo(").append(geomDP(coords[0]))
+                            .append(",").append(geomDP(coords[1])).append(");");
                     break;
                 case (PathIterator.SEG_LINETO):
-                    sb.append("ctx.lineTo(").append(coords[0]).append(",")
-                            .append(coords[1]).append(");");
+                    sb.append("ctx.lineTo(").append(geomDP(coords[0]))
+                            .append(",").append(geomDP(coords[1])).append(");");
                     break;
                 case (PathIterator.SEG_QUADTO):
-                    sb.append("ctx.quadraticCurveTo(").append(coords[0])
-                            .append(",").append(coords[1]).append(coords[2])
-                            .append(",").append(coords[3]).append(");");
+                    sb.append("ctx.quadraticCurveTo(")
+                            .append(geomDP(coords[0])).append(",")
+                            .append(geomDP(coords[1])).append(",")
+                            .append(geomDP(coords[2])).append(",")
+                            .append(geomDP(coords[3])).append(");");
                     break;
                 case (PathIterator.SEG_CUBICTO):
                     sb.append("ctx.bezierCurveTo(")
-                            .append(coords[0]).append(",")
-                            .append(coords[1]).append(",")
-                            .append(coords[2]).append(",")
-                            .append(coords[3]).append(",")
-                            .append(coords[4]).append(",")
-                            .append(coords[5]).append(");");
+                            .append(geomDP(coords[0])).append(",")
+                            .append(geomDP(coords[1])).append(",")
+                            .append(geomDP(coords[2])).append(",")
+                            .append(geomDP(coords[3])).append(",")
+                            .append(geomDP(coords[4])).append(",")
+                            .append(geomDP(coords[5])).append(");");
                     break;
                 case (PathIterator.SEG_CLOSE):
                     if (closePt != null) {
-                        sb.append("ctx.lineTo(").append(closePt[0])
-                                .append(",").append(closePt[1]).append(");");
+                        sb.append("ctx.lineTo(")
+                                .append(geomDP(closePt[0])).append(",")
+                                .append(geomDP(closePt[1])).append(");");
                     }
                     break;
                 default:
@@ -705,8 +806,8 @@ public final class CanvasGraphics2D extends Graphics2D {
         } else {
             setPaint(this.paint);
         }
-        sb.append("ctx.fillText(\"").append(str).append("\",").append(x)
-                .append(",").append(y).append(");");
+        sb.append("ctx.fillText(\"").append(str).append("\",")
+                .append(geomDP(x)).append(",").append(geomDP(y)).append(");");
         sb.append("ctx.restore();");
     }
 
@@ -726,9 +827,6 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Draws a string of attributed characters at <code>(x, y)</code>. 
-     * <p>
-     * <b>LIMITATION</b>: in the current implementation, the string is drawn 
-     * using the current font and the formatting is ignored.
      * 
      * @param iterator  an iterator over the characters (<code>null</code> not 
      *     permitted).
@@ -738,14 +836,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, 
             float y) {
-        StringBuilder builder = new StringBuilder();
-        int count = iterator.getEndIndex() - iterator.getBeginIndex();
-        char c = iterator.first();
-        for (int i = 0; i < count; i++) {
-            builder.append(c);
-            c = iterator.next();
-        }
-        drawString(builder.toString(), x, y);
+        TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+        layout.draw(this, x, y);
     }
 
     /**
@@ -757,7 +849,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     @Override
     public void drawGlyphVector(GlyphVector g, float x, float y) {
-        draw(g.getOutline(x, y));
+        fill(g.getOutline(x, y));
     }
 
     /**
@@ -847,12 +939,12 @@ public final class CanvasGraphics2D extends Graphics2D {
     @Override
     public void transform(AffineTransform t) {
         this.sb.append("ctx.transform(");
-        this.sb.append(t.getScaleX()).append(","); // m00
-        this.sb.append(t.getShearY()).append(","); // m10
-        this.sb.append(t.getShearX()).append(","); // m01
-        this.sb.append(t.getScaleY()).append(",");  // m11
-        this.sb.append(t.getTranslateX()).append(","); // m02
-        this.sb.append(t.getTranslateY()); // m12
+        this.sb.append(transformDP(t.getScaleX())).append(","); // m00
+        this.sb.append(transformDP(t.getShearY())).append(","); // m10
+        this.sb.append(transformDP(t.getShearX())).append(","); // m01
+        this.sb.append(transformDP(t.getScaleY())).append(",");  // m11
+        this.sb.append(transformDP(t.getTranslateX())).append(","); // m02
+        this.sb.append(transformDP(t.getTranslateY())); // m12
         this.sb.append(");");
         AffineTransform tx = getTransform();
         tx.concatenate(t);
@@ -885,12 +977,12 @@ public final class CanvasGraphics2D extends Graphics2D {
             this.transform = new AffineTransform(t);
         }
         this.sb.append("ctx.setTransform(");
-        this.sb.append(transform.getScaleX()).append(","); // m00
-        this.sb.append(transform.getShearY()).append(","); // m10
-        this.sb.append(transform.getShearX()).append(","); // m01
-        this.sb.append(transform.getScaleY()).append(",");  // m11
-        this.sb.append(transform.getTranslateX()).append(","); // m02
-        this.sb.append(transform.getTranslateY()); // m12
+        this.sb.append(transformDP(transform.getScaleX())).append(","); // m00
+        this.sb.append(transformDP(transform.getShearY())).append(","); // m10
+        this.sb.append(transformDP(transform.getShearX())).append(","); // m01
+        this.sb.append(transformDP(transform.getScaleY())).append(",");  // m11
+        this.sb.append(transformDP(transform.getTranslateX())).append(","); // m02
+        this.sb.append(transformDP(transform.getTranslateY())); // m12
         this.sb.append(");");
     }
 
@@ -1515,6 +1607,22 @@ public final class CanvasGraphics2D extends Graphics2D {
      */
     public String getScript() {
         return this.sb.toString();
+    }
+ 
+    private String transformDP(double d) {
+        if (this.transformFormat != null) {
+            return transformFormat.format(d);            
+        } else {
+            return String.valueOf(d);
+        }
+    }
+    
+    private String geomDP(double d) {
+        if (this.geometryFormat != null) {
+            return geometryFormat.format(d);            
+        } else {
+            return String.valueOf(d);
+        }
     }
 
     /**
