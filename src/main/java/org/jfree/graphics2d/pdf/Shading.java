@@ -29,7 +29,8 @@ package org.jfree.graphics2d.pdf;
 import org.jfree.graphics2d.Args;
 
 /**
- * A shading object.
+ * A PDF shading object (this class is abstract, subclasses implement 
+ * particular shading types).
  */
 public abstract class Shading extends PDFObject {
 
@@ -144,7 +145,8 @@ public abstract class Shading extends PDFObject {
         
         /**
          * Sets the extend array.
-         * @param extend 
+         * 
+         * @param extend  the extend array (must have length 2). 
          */
         public void setExtend(boolean[] extend) {
             Args.arrayMustHaveLength(2, extend, "extend");
@@ -154,6 +156,7 @@ public abstract class Shading extends PDFObject {
         
     }
     
+    /** The shading type. */
     private ShadingType shadingType;
     
     /** The dictionary. */
@@ -178,7 +181,7 @@ public abstract class Shading extends PDFObject {
     /**
      * Returns the shading type.
      * 
-     * @return The shading type. 
+     * @return The shading type (never <code>null</code>). 
      */
     public ShadingType getShadingType() {
         return this.shadingType;
