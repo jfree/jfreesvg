@@ -40,8 +40,6 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.graphics2d.Args;
 
 /**
