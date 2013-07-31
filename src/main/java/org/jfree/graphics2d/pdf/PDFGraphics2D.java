@@ -44,6 +44,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -565,14 +566,8 @@ public final class PDFGraphics2D extends Graphics2D {
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, 
             float y) {
-        StringBuilder builder = new StringBuilder();
-        int count = iterator.getEndIndex() - iterator.getBeginIndex();
-        char c = iterator.first();
-        for (int i = 0; i < count; i++) {
-            builder.append(c);
-            c = iterator.next();
-        }
-        drawString(builder.toString(), x, y);
+        TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+        layout.draw(this, x, y);
     }
 
     /**
@@ -584,7 +579,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void drawGlyphVector(GlyphVector g, float x, float y) {
-        draw(g.getOutline(x, y));
+        fill(g.getOutline(x, y));
     }
 
     /**

@@ -45,6 +45,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -107,10 +108,6 @@ import org.jfree.graphics2d.GraphicsUtils;
  * <li>there are settings to control the number of decimal places used to
  * write the coordinates for geometrical elements (default 2dp) and transform
  * matrices (default 6dp).  These defaults may change in a future release.</li>
- * 
- * <li>the <code>drawString()</code> methods that work with an 
- * <code>AttributedCharacterIterator</code> currently ignore the formatting 
- * information.</li>
  * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
@@ -132,6 +129,9 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private int transformDP;
     
+    /**
+     * The decimal formatter for transform matrices.
+     */
     private DecimalFormat transformFormat = new DecimalFormat("0.######");
     
     /**
@@ -140,6 +140,9 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private int geometryDP;
 
+    /**
+     * The decimal formatter for coordinates of geometrical shapes.
+     */
     private DecimalFormat geometryFormat = new DecimalFormat("0.##");
     
     /** The buffer that accumulates the SVG output. */
@@ -977,9 +980,6 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Draws a string of attributed characters at <code>(x, y)</code>. 
-     * <p>
-     * <b>LIMITATION</b>: in the current implementation, the string is drawn 
-     * using the current font and the formatting is ignored.
      * 
      * @param iterator  an iterator over the characters (<code>null</code> not 
      *     permitted).
@@ -989,14 +989,8 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, 
             float y) {
-        StringBuilder builder = new StringBuilder();
-        int count = iterator.getEndIndex() - iterator.getBeginIndex();
-        char c = iterator.first();
-        for (int i = 0; i < count; i++) {
-            builder.append(c);
-            c = iterator.next();
-        }
-        drawString(builder.toString(), x, y);
+        TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+        layout.draw(this, x, y);
     }
 
     /**
@@ -1008,7 +1002,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void drawGlyphVector(GlyphVector g, float x, float y) {
-        draw(g.getOutline(x, y));
+        fill(g.getOutline(x, y));
     }
 
     /**
