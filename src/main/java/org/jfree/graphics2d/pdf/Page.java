@@ -262,7 +262,9 @@ public class Page extends PDFObject {
         dictionary.put("/Contents", this.contents);
         Dictionary resources = new Dictionary();
         resources.put("/ProcSet", "[/PDF /Text /ImageB /ImageC /ImageI]");
-        resources.put("/XObject", this.xObjects);
+        if (!this.xObjects.isEmpty()) {
+            resources.put("/XObject", this.xObjects);
+        }
         if (!this.fontsOnPage.isEmpty()) {
             resources.put("/Font", createFontDictionary());
         }
