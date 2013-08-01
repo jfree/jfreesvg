@@ -910,7 +910,8 @@ public final class PDFGraphics2D extends Graphics2D {
 
     /**
      * Clears the specified rectangle by filling it with the current 
-     * background color.
+     * background color.  If the background color is <code>null</code>, this
+     * method will do nothing.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
