@@ -27,7 +27,7 @@
 package org.jfree.graphics2d.pdf;
 
 import java.awt.Font;
-import java.util.Objects;
+import org.jfree.graphics2d.ObjectUtils;
 
 /**
  * A key to represent a Java2D font.  This is used to maintain a mapping 
@@ -92,7 +92,7 @@ public class FontKey {
             return false;
         }
         final FontKey other = (FontKey) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (!ObjectUtils.equals(this.name, other.name)) {
             return false;
         }
         if (this.isBold != other.isBold) {
@@ -112,7 +112,7 @@ public class FontKey {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + ObjectUtils.hashCode(this.name);
         hash = 97 * hash + (this.isBold ? 1 : 0);
         hash = 97 * hash + (this.isItalic ? 1 : 0);
         return hash;
