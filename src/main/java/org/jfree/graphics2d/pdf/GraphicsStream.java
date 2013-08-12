@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Image;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
@@ -40,6 +41,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import org.jfree.graphics2d.Args;
 
 /**
@@ -63,6 +65,11 @@ public class GraphicsStream extends Stream {
     private Font font;
     
     private AffineTransform prevTransInv;
+    
+    /**
+     * The decimal formatter for coordinates of geometrical shapes.
+     */
+    private DecimalFormat geometryFormat = new DecimalFormat("0.##");
     
     /**
      * Creates a new instance.
@@ -140,8 +147,17 @@ public class GraphicsStream extends Stream {
         addContent(b.toString());
     }
     
+    public void applyClip(Shape clip) {
+        StringBuilder b = new StringBuilder();
+        Path2D p = new Path2D.Double(clip);
+        b.append(getPDFPath(p));
+        b.append("W n\n");
+        addContent(b.toString());
+    }
+    
     /**
-     * Applies a stroke.
+     * Applies a stroke.  If the stroke is not an instance of 
+     * <code>BasicStroke</code> this method will do nothing.
      * 
      * @param s  the stroke. 
      */
@@ -232,6 +248,14 @@ public class GraphicsStream extends Stream {
         addContent(b.toString());
     }
     
+    private String geomDP(double d) {
+        if (this.geometryFormat != null) {
+            return geometryFormat.format(d);            
+        } else {
+            return String.valueOf(d);
+        }
+    }
+
     /**
      * Draws the specified line.
      * 
@@ -239,9 +263,9 @@ public class GraphicsStream extends Stream {
      */
     public void drawLine(Line2D line) {
         StringBuilder b = new StringBuilder();
-        b.append(line.getX1()).append(" ").append(line.getY1())
+        b.append(geomDP(line.getX1())).append(" ").append(geomDP(line.getY1()))
                 .append(" ").append("m\n");
-        b.append(line.getX2()).append(" ").append(line.getY2())
+        b.append(geomDP(line.getX2())).append(" ").append(geomDP(line.getY2()))
                 .append(" ").append("l\n");
         b.append("S\n");
         addContent(b.toString());
@@ -298,8 +322,8 @@ public class GraphicsStream extends Stream {
         b = new StringBuilder();
         b.append(fontRef).append(" ").append(this.font.getSize())
                 .append(" Tf ");
-        b.append(x).append(" ").append(y).append(" Td (").append(text)
-                .append(") Tj ET\n");
+        b.append(geomDP(x)).append(" ").append(geomDP(y)).append(" Td (")
+                .append(text).append(") Tj ET\n");
         addContent(b.toString());
     }
 
@@ -316,8 +340,8 @@ public class GraphicsStream extends Stream {
         String imageRef = this.page.addImage(img);
         StringBuilder b = new StringBuilder();
         b.append("q\n");
-        b.append(w).append(" 0 0 ").append(h).append(" ");
-        b.append(x).append(" ").append(y).append(" cm\n");
+        b.append(geomDP(w)).append(" 0 0 ").append(geomDP(h)).append(" ");
+        b.append(geomDP(x)).append(" ").append(geomDP(y)).append(" cm\n");
         b.append(imageRef).append(" Do\n");
         b.append("Q\n");
         addContent(b.toString());
@@ -339,24 +363,29 @@ public class GraphicsStream extends Stream {
             int type = iterator.currentSegment(coords);
             switch (type) {
             case (PathIterator.SEG_MOVETO):
-                b.append(coords[0]).append(" ");
-                b.append(coords[1]).append(" m\n");
+                b.append(geomDP(coords[0])).append(" ");
+                b.append(geomDP(coords[1])).append(" m\n");
                 break;
             case (PathIterator.SEG_LINETO):
-                b.append(coords[0]).append(" ").append(coords[1]);
+                b.append(geomDP(coords[0])).append(" ");
+                b.append(geomDP(coords[1]));
                 b.append(" l\n");                
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append(coords[0]).append(" ").append(coords[1]).append(" ")
-                        .append(coords[0]).append(" ").append(coords[1])
-                        .append(" ").append(coords[2]).append(" ")
-                        .append(coords[3]).append(" c\n");
+                b.append(geomDP(coords[0])).append(" ");
+                b.append(geomDP(coords[1])).append(" ");
+                b.append(geomDP(coords[0])).append(" ");
+                b.append(geomDP(coords[1])).append(" ");
+                b.append(geomDP(coords[2])).append(" ");
+                b.append(geomDP(coords[3])).append(" c\n");
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append(coords[0]).append(" ").append(coords[1]).append(" ")
-                        .append(coords[2]).append(" ").append(coords[3])
-                        .append(" ").append(coords[4]).append(" ")
-                        .append(coords[5]).append(" c\n");
+                b.append(geomDP(coords[0])).append(" ");
+                b.append(geomDP(coords[1])).append(" ");
+                b.append(geomDP(coords[2])).append(" ");
+                b.append(geomDP(coords[3])).append(" ");
+                b.append(geomDP(coords[4])).append(" ");
+                b.append(geomDP(coords[5])).append(" c\n");
                 break;
             case (PathIterator.SEG_CLOSE):
                 b.append("h\n");
