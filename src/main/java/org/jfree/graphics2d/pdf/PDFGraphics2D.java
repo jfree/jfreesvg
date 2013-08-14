@@ -103,6 +103,7 @@ public final class PDFGraphics2D extends Graphics2D {
 
     private AffineTransform transform = new AffineTransform();
 
+    /** The user clip (can be null). */
     private Shape clip = null;
     
     private Font font = new Font("SansSerif", Font.PLAIN, 12);
@@ -426,11 +427,23 @@ public final class PDFGraphics2D extends Graphics2D {
     @Override
     public void draw(Shape s) {
         if (s instanceof Line2D) {
-            Line2D l = (Line2D) s;
-            this.gs.drawLine(l);
+            if (this.clip != null) {
+                this.gs.pushGraphicsState();
+                this.gs.applyClip(this.clip);
+                this.gs.drawLine((Line2D) s);
+                this.gs.popGraphicsState();
+            } else {
+                this.gs.drawLine((Line2D) s);
+            }
         } else if (s instanceof Path2D) {
-            Path2D p = (Path2D) s;
-            this.gs.drawPath2D(p);
+            if (this.clip != null) {
+                this.gs.pushGraphicsState();
+                this.gs.applyClip(this.clip);
+                this.gs.drawPath2D((Path2D) s);
+                this.gs.popGraphicsState();
+            } else {
+                this.gs.drawPath2D((Path2D) s);                
+            }
         } else {
             draw(new GeneralPath(s));  // fallback
         }
@@ -448,8 +461,14 @@ public final class PDFGraphics2D extends Graphics2D {
     @Override
     public void fill(Shape s) {
         if (s instanceof Path2D) {
-            Path2D p = (Path2D) s;
-            this.gs.fillPath2D(p);
+            if (this.clip != null) {
+                this.gs.pushGraphicsState();
+                this.gs.applyClip(this.clip);
+                this.gs.fillPath2D((Path2D) s);
+                this.gs.popGraphicsState();
+            } else {
+                this.gs.fillPath2D((Path2D) s);
+            }
         } else {
             fill(new GeneralPath(s));  // fallback
         }
@@ -535,7 +554,14 @@ public final class PDFGraphics2D extends Graphics2D {
         if (str == null) {
             throw new NullPointerException("Null 'str' argument.");
         }
-        this.gs.drawString(str, x, y);
+        if (this.clip != null) {
+            this.gs.pushGraphicsState();
+            this.gs.applyClip(this.clip);
+            this.gs.drawString(str, x, y);            
+            this.gs.popGraphicsState();
+        } else {
+            this.gs.drawString(str, x, y);
+        }
     }
 
     /**
@@ -797,6 +823,11 @@ public final class PDFGraphics2D extends Graphics2D {
     public void setClip(Shape shape) {
         // null is handled fine here...
         this.clip = this.transform.createTransformedShape(shape);
+        // the clip does not get applied to the PDF output immediately,
+        // instead it is applied with each draw (or fill) operation by
+        // pushing the current graphics state, applying the clip, doing the 
+        // draw/fill, then popping the graphics state to restore it to the
+        // previous clip
     }
 
     /**
@@ -814,7 +845,7 @@ public final class PDFGraphics2D extends Graphics2D {
     /**
      * Clips to the intersection of the current clipping region and the
      * specified shape. 
-     * 
+     * <p>
      * According to the Oracle API specification, this method will accept a 
      * <code>null</code> argument, but there is an open bug report (since 2004) 
      * that suggests this is wrong:
@@ -868,6 +899,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setClip(int x, int y, int width, int height) {
+        // delegate...
         setClip(new Rectangle(x, y, width, height));
     }
 
@@ -1193,7 +1225,14 @@ public final class PDFGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             ImageObserver observer) {
-        this.gs.drawImage(img, x, y, w, h);
+        if (this.clip != null) {
+            this.gs.pushGraphicsState();
+            this.gs.applyClip(this.clip);
+            this.gs.drawImage(img, x, y, w, h);
+            this.gs.popGraphicsState();
+        } else {
+            this.gs.drawImage(img, x, y, w, h);
+        }
         return true;
     }
 
