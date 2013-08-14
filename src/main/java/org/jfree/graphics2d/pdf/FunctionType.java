@@ -28,21 +28,36 @@ package org.jfree.graphics2d.pdf;
 
 /**
  * The PDF function types.  For the {@link PDFGraphics2D} class, only
- * <code>EXPONENTIAL_INTERPOLATION</code> is used so far (to support
- * gradient paint).
+ * <code>EXPONENTIAL_INTERPOLATION</code> and <code>STITCHING</code> are used 
+ * so far (to support gradient paint implementations).
  */
 public enum FunctionType {
 
     /** PDF function type 0. */
-    SAMPLED,
+    SAMPLED(0),
     
     /** PDF function type 2. */
-    EXPONENTIAL_INTERPOLATION,
+    EXPONENTIAL_INTERPOLATION(2),
     
     /** PDF function type 3. */
-    STITCHING,
+    STITCHING(3),
     
     /** PDF function type 4. */
-    POSTSCRIPT_CALCULATOR
+    POSTSCRIPT_CALCULATOR(4);
     
+    /** The PDF number for the function type. */
+    private int number;
+    
+    private FunctionType(int number) {
+        this.number = number;
+    }
+    
+    /**
+     * Returns the PDF number for the function type.
+     * 
+     * @return The PDF number.
+     */
+    public int getNumber() {
+        return this.number;
+    }
 }
