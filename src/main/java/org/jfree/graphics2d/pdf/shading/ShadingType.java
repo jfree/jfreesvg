@@ -31,18 +31,40 @@ package org.jfree.graphics2d.pdf.shading;
  */
 public enum ShadingType {
     
-    FUNCTION,
+    FUNCTION(1),
     
-    AXIAL,
+    /** Axial shading. */
+    AXIAL(2),
     
-    RADIAL,
+    /** Radial shading. */
+    RADIAL(3),
     
-    FREE_FORM,
+    FREE_FORM(4),
     
-    LATTICE_FORM,
+    LATTICE_FORM(5),
     
-    COONS,
+    COONS(6),
     
-    TENSOR
+    TENSOR(7);
     
+    /** The PDF number for this shading type. */
+    private int number;
+    
+    /**
+     * Creates a new shading type.
+     * 
+     * @param number  the PDF number for the shading type. 
+     */
+    private ShadingType(int number) {
+        this.number = number;
+    }
+    
+    /**
+     * Returns the PDF number for the shading type.
+     * 
+     * @return The PDF number for the shading type. 
+     */
+    public int getNumber() {
+        return this.number;
+    }
 }
