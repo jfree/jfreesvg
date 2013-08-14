@@ -31,6 +31,7 @@ import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Image;
+import java.awt.MultipleGradientPaint;
 import java.awt.RadialGradientPaint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -41,7 +42,6 @@ import java.util.Map;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.RadialGradientPaintKey;
-import org.jfree.graphics2d.pdf.Function.ExponentialInterpolationFunction;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
 import org.jfree.graphics2d.pdf.shading.AxialShading;
 import org.jfree.graphics2d.pdf.shading.RadialShading;
@@ -220,10 +220,7 @@ public class Page extends PDFObject {
         String patternName = this.radialGradientPaintsOnPage.get(key);
         if (patternName == null) {
             PDFDocument doc = this.parent.getDocument();
-            Function f = new ExponentialInterpolationFunction(
-                    doc.getNextNumber(),
-                    gp.getColors()[0].getRGBColorComponents(null), 
-                    gp.getColors()[1].getRGBColorComponents(null));
+            Function f = createFunctionForMultipleGradient(gp);
             doc.addObject(f);
             double[] coords = new double[6];
             coords[0] = gp.getFocusPoint().getX();
@@ -244,7 +241,40 @@ public class Page extends PDFObject {
         return patternName; 
     }
     
-    private Map<AlphaComposite, String> alphaDictionaries = new HashMap<AlphaComposite, String>();
+    private Function createFunctionForMultipleGradient(MultipleGradientPaint mgp) {
+            PDFDocument doc = this.parent.getDocument();
+
+        if (mgp.getColors().length == 2) {
+            Function f = new ExponentialInterpolationFunction(
+                    doc.getNextNumber(),
+                    mgp.getColors()[0].getRGBColorComponents(null), 
+                    mgp.getColors()[1].getRGBColorComponents(null));
+            return f;
+        } else {
+            int count = mgp.getColors().length - 1;
+            Function[] functions = new Function[count];
+            float[] fbounds = new float[count - 1];
+            float[] encode = new float[count * 2];
+            for (int i = 0; i < count; i++) {
+                // create a linear function for each pair of colors
+                functions[i] = new ExponentialInterpolationFunction(
+                    doc.getNextNumber(),
+                    mgp.getColors()[i].getRGBColorComponents(null), 
+                    mgp.getColors()[i + 1].getRGBColorComponents(null));
+                doc.addObject(functions[i]);
+                if (i < count - 1) {
+                    fbounds[i] = mgp.getFractions()[i + 1];
+                }
+                encode[i * 2] = 0;
+                encode[i * 2 + 1] = 1;
+            }
+            return new StitchingFunction(doc.getNextNumber(), functions, 
+                    fbounds, encode);
+        }
+    }
+    
+    private Map<AlphaComposite, String> alphaDictionaries 
+            = new HashMap<AlphaComposite, String>();
     
     /**
      * Returns the name of the Graphics State Dictionary that can be used
