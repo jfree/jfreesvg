@@ -38,6 +38,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -221,6 +222,10 @@ public final class PDFGraphics2D extends Graphics2D {
             GradientPaint gp = (GradientPaint) paint;
             this.gs.applyStrokeGradient(gp);
             this.gs.applyFillGradient(gp);
+        } else if (paint instanceof RadialGradientPaint) {
+            RadialGradientPaint rgp = (RadialGradientPaint) paint;
+            this.gs.applyStrokeGradient(rgp);
+            this.gs.applyFillGradient(rgp);
         }
     }
 

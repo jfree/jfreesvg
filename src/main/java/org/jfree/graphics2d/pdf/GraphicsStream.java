@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Image;
+import java.awt.RadialGradientPaint;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
@@ -239,14 +240,39 @@ public class GraphicsStream extends Stream {
     }
     
     /**
+     * Applies a <code>RadialGradientPaint</code> for stroking.
+     * 
+     * @param gp  the gradient paint (<code>null</code> not permitted). 
+     */    
+    void applyStrokeGradient(RadialGradientPaint rgp) {
+        // delegate arg checking
+        String patternName = this.page.findOrCreatePattern(rgp);
+        StringBuilder b = new StringBuilder("/Pattern CS\n");
+        b.append(patternName).append(" SCN\n");
+        addContent(b.toString());        
+    }
+
+    /**
      * Applies a <code>GradientPaint</code> for filling.
      * 
      * @param gp  the gradient paint (<code>null</code> not permitted). 
      */
     void applyFillGradient(GradientPaint gp) {
         // delegate arg checking
-        Args.nullNotPermitted(gp, "gp");
         String patternName = this.page.findOrCreatePattern(gp);
+        StringBuilder b = new StringBuilder("/Pattern cs\n");
+        b.append(patternName).append(" scn\n");
+        addContent(b.toString());
+    }
+
+    /**
+     * Applies a <code>RadialGradientPaint</code> for filling.
+     * 
+     * @param gp  the gradient paint (<code>null</code> not permitted). 
+     */
+    void applyFillGradient(RadialGradientPaint rgp) {
+        // delegate arg checking
+        String patternName = this.page.findOrCreatePattern(rgp);
         StringBuilder b = new StringBuilder("/Pattern cs\n");
         b.append(patternName).append(" scn\n");
         addContent(b.toString());

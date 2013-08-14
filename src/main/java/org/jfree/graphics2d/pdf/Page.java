@@ -27,11 +27,11 @@
 package org.jfree.graphics2d.pdf;
 
 import org.jfree.graphics2d.pdf.shading.Shading;
-import org.jfree.graphics2d.pdf.filter.FlateFilter;
 import java.awt.AlphaComposite;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Image;
+import java.awt.RadialGradientPaint;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -40,9 +40,11 @@ import java.util.List;
 import java.util.Map;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
+import org.jfree.graphics2d.RadialGradientPaintKey;
 import org.jfree.graphics2d.pdf.Function.ExponentialInterpolationFunction;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
-import org.jfree.graphics2d.pdf.shading.Shading.AxialShading;
+import org.jfree.graphics2d.pdf.shading.AxialShading;
+import org.jfree.graphics2d.pdf.shading.RadialShading;
 
 /**
  * Represents a page in a {@link PDFDocument}.  Our objective is to be able
@@ -74,6 +76,8 @@ public class Page extends PDFObject {
      * associated pattern in the page resources.
      */
     private Map<GradientPaintKey, String> gradientPaintsOnPage;
+    
+    private Map<RadialGradientPaintKey, String> radialGradientPaintsOnPage;
     
     /** The pattern dictionary for this page. */
     private Dictionary patterns;
@@ -107,6 +111,8 @@ public class Page extends PDFObject {
         this.contents = new GraphicsStream(n, this);
         //this.contents.addFilter(new FlateFilter());
         this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
+        this.radialGradientPaintsOnPage = new HashMap<RadialGradientPaintKey,
+                String>();
         this.patterns = new Dictionary();
         this.graphicsStates = new Dictionary();
         
@@ -147,7 +153,7 @@ public class Page extends PDFObject {
      * 
      * @return The font reference.
      */
-    public String findOrCreateFontReference(Font font) {
+    String findOrCreateFontReference(Font font) {
         String ref = this.parent.findOrCreateFontReference(font);
         if (!this.fontsOnPage.contains(ref)) {
             this.fontsOnPage.add(ref);
@@ -173,7 +179,7 @@ public class Page extends PDFObject {
      * 
      * @return The pattern name. 
      */
-    public String findOrCreatePattern(GradientPaint gp) {
+    String findOrCreatePattern(GradientPaint gp) {
         GradientPaintKey key = new GradientPaintKey(gp);
         String patternName = this.gradientPaintsOnPage.get(key);
         if (patternName == null) {
@@ -200,6 +206,44 @@ public class Page extends PDFObject {
         return patternName; 
     }
     
+    /**
+     * Returns the name of the pattern for the specified 
+     * <code>RadialGradientPaint</code>, reusing an existing pattern if 
+     * possible, otherwise creating a new pattern if necessary.
+     * 
+     * @param gp  the gradient (<code>null</code> not permitted).
+     * 
+     * @return The pattern name. 
+     */
+    String findOrCreatePattern(RadialGradientPaint gp) {
+        RadialGradientPaintKey key = new RadialGradientPaintKey(gp);
+        String patternName = this.radialGradientPaintsOnPage.get(key);
+        if (patternName == null) {
+            PDFDocument doc = this.parent.getDocument();
+            Function f = new ExponentialInterpolationFunction(
+                    doc.getNextNumber(),
+                    gp.getColors()[0].getRGBColorComponents(null), 
+                    gp.getColors()[1].getRGBColorComponents(null));
+            doc.addObject(f);
+            double[] coords = new double[6];
+            coords[0] = gp.getFocusPoint().getX();
+            coords[1] = gp.getFocusPoint().getY();
+            coords[2] = 0.0;
+            coords[3] = gp.getCenterPoint().getX();
+            coords[4] = gp.getCenterPoint().getX();
+            coords[5] = gp.getRadius();
+            Shading s = new RadialShading(doc.getNextNumber(), coords, f);
+            doc.addObject(s);
+            Pattern p = new ShadingPattern(doc.getNextNumber(), s, 
+                    this.j2DTransform);
+            doc.addObject(p);
+            patternName = "/P" + (this.patterns.size() + 1);
+            this.patterns.put(patternName, p);
+            this.radialGradientPaintsOnPage.put(key, patternName);
+        }
+        return patternName; 
+    }
+    
     private Map<AlphaComposite, String> alphaDictionaries = new HashMap<AlphaComposite, String>();
     
     /**
@@ -211,7 +255,7 @@ public class Page extends PDFObject {
      * 
      * @return The graphics state dictionary reference. 
      */
-    public String findOrCreateGSDictionary(AlphaComposite alphaComp) {
+    String findOrCreateGSDictionary(AlphaComposite alphaComp) {
         Args.nullNotPermitted(alphaComp, "alphaComp");
         String name = this.alphaDictionaries.get(alphaComp);
         if (name == null) {
@@ -239,7 +283,7 @@ public class Page extends PDFObject {
      * 
      * @return The image reference name.
      */
-    public String addImage(Image img) {
+    String addImage(Image img) {
         Args.nullNotPermitted(img, "img");
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
