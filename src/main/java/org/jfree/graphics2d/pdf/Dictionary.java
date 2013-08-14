@@ -202,6 +202,21 @@ public class Dictionary {
                 b.append(key.toString()).append(" ");
                 Dictionary d = (Dictionary) value;
                 b.append(d.toPDFString());
+            } else if (value instanceof float[]) {
+                b.append(key.toString()).append(" ");
+                float[] array = (float[]) value;
+                b.append("[");
+                for (int i = 0; i < array.length; i++) {
+                    if (i != 0) {
+                        b.append(" ");
+                    }
+                    b.append(array[i]);
+                }
+                b.append("]\n");
+                
+            } 
+            else {
+                throw new RuntimeException("Unrecognised value type: " + value);
             }
         }
         b.append(">>\n");
