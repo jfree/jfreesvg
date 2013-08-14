@@ -54,7 +54,7 @@ public final class GradientPaintKey {
      * Returns the <code>GradientPaint</code> that was supplied to the 
      * constructor.
      * 
-     * @return The GradientPaint (never <code>null</code>). 
+     * @return The <code>GradientPaint</code> (never <code>null</code>). 
      */
     public GradientPaint getPaint() {
         return this.paint;
