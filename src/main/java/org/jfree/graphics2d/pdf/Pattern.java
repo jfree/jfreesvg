@@ -26,6 +26,7 @@
 
 package org.jfree.graphics2d.pdf;
 
+import org.jfree.graphics2d.pdf.shading.Shading;
 import java.awt.geom.AffineTransform;
 import org.jfree.graphics2d.Args;
 
