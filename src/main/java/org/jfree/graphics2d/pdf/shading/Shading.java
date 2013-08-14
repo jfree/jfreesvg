@@ -24,9 +24,13 @@
  * 
  */
 
-package org.jfree.graphics2d.pdf;
+package org.jfree.graphics2d.pdf.shading;
 
 import org.jfree.graphics2d.Args;
+import org.jfree.graphics2d.pdf.Dictionary;
+import org.jfree.graphics2d.pdf.Function;
+import org.jfree.graphics2d.pdf.PDFObject;
+import org.jfree.graphics2d.pdf.PDFUtils;
 
 /**
  * A PDF shading object (this class is abstract, subclasses implement 

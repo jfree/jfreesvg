@@ -24,7 +24,7 @@
  * 
  */
 
-package org.jfree.graphics2d.pdf;
+package org.jfree.graphics2d.pdf.shading;
 
 /**
  * An enumeration of the PDF shading types.

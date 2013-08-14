@@ -26,6 +26,7 @@
 
 package org.jfree.graphics2d.pdf;
 
+import org.jfree.graphics2d.pdf.shading.Shading;
 import org.jfree.graphics2d.pdf.filter.FlateFilter;
 import java.awt.AlphaComposite;
 import java.awt.Font;
@@ -41,7 +42,7 @@ import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.pdf.Function.ExponentialInterpolationFunction;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
-import org.jfree.graphics2d.pdf.Shading.AxialShading;
+import org.jfree.graphics2d.pdf.shading.Shading.AxialShading;
 
 /**
  * Represents a page in a {@link PDFDocument}.  Our objective is to be able
@@ -104,7 +105,7 @@ public class Page extends PDFObject {
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
         this.contents = new GraphicsStream(n, this);
-        this.contents.addFilter(new FlateFilter());
+        //this.contents.addFilter(new FlateFilter());
         this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
         this.patterns = new Dictionary();
         this.graphicsStates = new Dictionary();
@@ -242,7 +243,7 @@ public class Page extends PDFObject {
         Args.nullNotPermitted(img, "img");
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
-        image.addFilter(new FlateFilter());
+        //image.addFilter(new FlateFilter());
         
         pdfDoc.addObject(image);
         String reference = "/Image" + this.xObjects.size();
