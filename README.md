@@ -1,7 +1,7 @@
 JFreeGraphics2D
 ===============
 
-Version 1.0, 30 July 2013
+Version 1.1, 16 August 2013
 
 (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
 
@@ -12,12 +12,12 @@ JFreeGraphics2D is a vector graphics library for the Java(tm) platform that allo
 
     http://www.jfree.org/jfreegraphics2d/
 
-This is the first public release of JFreeGraphics2D, your feedback is very welcome.
+Version 1.0 was released on 31 July 2013 and the most recent version (1.1) was released on 16 August 2013.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and PDFDocument classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreegraphics2d-1.0.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D and PDFDocument classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreegraphics2d-1.1.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
@@ -37,6 +37,19 @@ Other code distributed with JFreeGraphics2D:
     - JFreeGraphics2D integrates the Ascii85OutputStream class written by Ben Upsavs and distributed freely under the (BSD-style) terms listed in the Ascii85OutputStream.java source file;
 
     - the JFreeChart and JCommon libraries (required for the demos only) are licensed under the GNU Lesser General Public License (GNU LGPL), a copy of this license can be found in the lib folder (the LGPL is not the same as the AGPL).  To get the source code and other information about JFreeChart and JCommon, please visit http://www.jfree.org/jfreechart/ 
+
+
+Change History
+--------------
+
+Version 1.1 (16 August 2013)
+- reimplemented drawString(AttributedCharacterIterator, float, float) using TextLayout and modified drawGlyphVector() to fill rather than stroke shapes (for PDF/SVG/CanvasGraphics2D);
+- added degree elevation to the quadratic segments of Path2D objects to ensure correct output quality with PDFGraphics2D;
+- fixed Page (PDFGraphics2D) so it does not add /XObject to resources if there are no xObjects;
+- added geomDP and transformDP attributes to CanvasGraphics2D to control number of decimal places for numbers written to script; 
+
+Version 1.0 (31 July 2013)
+- Initial public release.
 
 
 Contact / Questions
