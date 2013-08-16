@@ -215,10 +215,12 @@ public final class PDFGraphics2D extends Graphics2D {
         if (paint == null) {
             return;
         }
-        this.paint = paint;
         if (paint instanceof Color) {
             setColor((Color) paint);
-        } else if (paint instanceof GradientPaint) {
+            return;
+        }
+        this.paint = paint;
+        if (paint instanceof GradientPaint) {
             GradientPaint gp = (GradientPaint) paint;
             this.gs.applyStrokeGradient(gp);
             this.gs.applyFillGradient(gp);
@@ -253,7 +255,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setColor(Color c) {
-        if (c == null || this.color.equals(c)) {
+        if (c == null || this.paint.equals(c)) {
             return;
         }
         this.color = c;
@@ -418,6 +420,16 @@ public final class PDFGraphics2D extends Graphics2D {
         this.hints.putAll(hints);
     }
 
+    private Shape invTransformedClip(Shape clip) {
+        Shape result = clip;
+        try {
+            AffineTransform inv = this.transform.createInverse();
+            result = inv.createTransformedShape(clip);
+        } catch (NoninvertibleTransformException e) {
+            //
+        }
+        return result;
+    }
     /**
      * Draws the specified shape with the current <code>paint</code> and 
      * <code>stroke</code>.  There is direct handling for <code>Line2D</code> 
@@ -434,7 +446,7 @@ public final class PDFGraphics2D extends Graphics2D {
         if (s instanceof Line2D) {
             if (this.clip != null) {
                 this.gs.pushGraphicsState();
-                this.gs.applyClip(this.clip);
+                this.gs.applyClip(invTransformedClip(this.clip));
                 this.gs.drawLine((Line2D) s);
                 this.gs.popGraphicsState();
             } else {
@@ -443,7 +455,7 @@ public final class PDFGraphics2D extends Graphics2D {
         } else if (s instanceof Path2D) {
             if (this.clip != null) {
                 this.gs.pushGraphicsState();
-                this.gs.applyClip(this.clip);
+                this.gs.applyClip(invTransformedClip(this.clip));
                 this.gs.drawPath2D((Path2D) s);
                 this.gs.popGraphicsState();
             } else {
@@ -468,7 +480,7 @@ public final class PDFGraphics2D extends Graphics2D {
         if (s instanceof Path2D) {
             if (this.clip != null) {
                 this.gs.pushGraphicsState();
-                this.gs.applyClip(this.clip);
+                this.gs.applyClip(invTransformedClip(this.clip));
                 this.gs.fillPath2D((Path2D) s);
                 this.gs.popGraphicsState();
             } else {
@@ -561,7 +573,7 @@ public final class PDFGraphics2D extends Graphics2D {
         }
         if (this.clip != null) {
             this.gs.pushGraphicsState();
-            this.gs.applyClip(this.clip);
+            this.gs.applyClip(invTransformedClip(this.clip));
             this.gs.drawString(str, x, y);            
             this.gs.popGraphicsState();
         } else {
@@ -730,14 +742,12 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setTransform(AffineTransform t) {
-        Shape savedClip = getClip();
         if (t == null) {
             this.transform = new AffineTransform();
         } else {
             this.transform = new AffineTransform(t);
         }
         this.gs.setTransform(this.transform);
-        setClip(savedClip);
     }
 
     /**
@@ -846,7 +856,7 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public Rectangle getClipBounds() {
-        return this.clip.getBounds();
+        return getClip().getBounds();
     }
 
     /**
@@ -1234,7 +1244,7 @@ public final class PDFGraphics2D extends Graphics2D {
             ImageObserver observer) {
         if (this.clip != null) {
             this.gs.pushGraphicsState();
-            this.gs.applyClip(this.clip);
+            this.gs.applyClip(invTransformedClip(this.clip));
             this.gs.drawImage(img, x, y, w, h);
             this.gs.popGraphicsState();
         } else {
