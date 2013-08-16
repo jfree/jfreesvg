@@ -14,7 +14,7 @@
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreeg2d.name" value="jfreegraphics2d" />
-        <property name="jfreeg2d.version" value="1.0" />
+        <property name="jfreeg2d.version" value="1.1" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.15" />
         <property name="jcommon.name" value="jcommon" />
