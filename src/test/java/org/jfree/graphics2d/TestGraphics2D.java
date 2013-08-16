@@ -25,7 +25,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.pdf.PDFDocument;
+import org.jfree.graphics2d.pdf.Page;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,15 +43,15 @@ public class TestGraphics2D {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
         //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-       // this.g2 = img.createGraphics();
+        //this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
-        this.g2 = new SVGGraphics2D(10, 20);
+        //this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
-        //PDFDocument pdfDoc = new PDFDocument();
-        //Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
-        //this.g2 = page.getGraphics2D();
+        PDFDocument pdfDoc = new PDFDocument();
+        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
+        this.g2 = page.getGraphics2D();
 
         // Test CanvasGraphics2D...
         //this.g2 = new CanvasGraphics2D("id");
@@ -315,6 +316,15 @@ public class TestGraphics2D {
         this.g2.translate(1.0, 2.0);
         assertEquals(new Rectangle(-1, -2, 1 ,1), 
                 this.g2.getClip().getBounds2D());
+    }
+    
+    @Test
+    public void checkSetClipAfterTranslate() {
+        this.g2.translate(1.0, 2.0);
+        this.g2.setClip(0, 0, 1, 1);
+        assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClip().getBounds());
+        this.g2.translate(1.0, 2.0);
+        assertEquals(new Rectangle(-1, -2, 1, 1), this.g2.getClip().getBounds());
     }
     
     /**
@@ -651,7 +661,7 @@ public class TestGraphics2D {
     }
     
     /**
-     * Check that a null GlyphVector throws a NullPointerException
+     * Check that a null GlyphVector throws a <code>NullPointerException</code>.
      */
     @Test
     public void drawGlyphVectorNull() {
