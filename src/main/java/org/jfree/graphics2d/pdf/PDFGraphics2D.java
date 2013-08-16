@@ -730,12 +730,14 @@ public final class PDFGraphics2D extends Graphics2D {
      */
     @Override
     public void setTransform(AffineTransform t) {
+        Shape savedClip = getClip();
         if (t == null) {
             this.transform = new AffineTransform();
         } else {
             this.transform = new AffineTransform(t);
         }
         this.gs.setTransform(this.transform);
+        setClip(savedClip);
     }
 
     /**
