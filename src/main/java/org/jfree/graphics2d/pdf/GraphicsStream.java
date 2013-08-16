@@ -87,10 +87,16 @@ public class GraphicsStream extends Stream {
         this.font = new Font("Dialog", Font.PLAIN, 12);
     }
 
+    /**
+     * Pushes the current graphics state onto a stack for later retrieval.
+     */
     void pushGraphicsState() {
         addContent("q\n");    
     }
     
+    /**
+     * Pops the graphics state that was previously pushed onto the stack.
+     */
     void popGraphicsState() {
         addContent("Q\n");
     }
@@ -400,6 +406,8 @@ public class GraphicsStream extends Stream {
     private String getPDFPath(Path2D path) {
         StringBuilder b = new StringBuilder();   
         float[] coords = new float[6];
+        float lastX = 0;
+        float lastY = 0;
         PathIterator iterator = path.getPathIterator(null);
         while (!iterator.isDone()) {
             int type = iterator.currentSegment(coords);
@@ -407,19 +415,32 @@ public class GraphicsStream extends Stream {
             case (PathIterator.SEG_MOVETO):
                 b.append(geomDP(coords[0])).append(" ");
                 b.append(geomDP(coords[1])).append(" m\n");
+                lastX = coords[0];
+                lastY = coords[1];
                 break;
             case (PathIterator.SEG_LINETO):
                 b.append(geomDP(coords[0])).append(" ");
-                b.append(geomDP(coords[1]));
-                b.append(" l\n");                
+                b.append(geomDP(coords[1])).append(" l\n");                
+                lastX = coords[0];
+                lastY = coords[1];
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append(geomDP(coords[0])).append(" ");
-                b.append(geomDP(coords[1])).append(" ");
-                b.append(geomDP(coords[0])).append(" ");
-                b.append(geomDP(coords[1])).append(" ");
+                // PDF doesn't support quadratic bezier curves so we need to
+                // perform "degree elevation":
+                // http://www.cs.mtu.edu/~shene/COURSES/cs3621/NOTES/spline
+                //       /Bezier/bezier-elev.html
+                float x0 = 0.25f * lastX + 0.75f * coords[0];
+                float y0 = 0.25f * lastY + 0.75f * coords[1];
+                float x1 = 0.5f * coords[0] + 0.5f * coords[2];
+                float y1 = 0.5f * coords[1] + 0.5f * coords[3];
+                b.append(geomDP(x0)).append(" ");
+                b.append(geomDP(y0)).append(" ");
+                b.append(geomDP(x1)).append(" ");
+                b.append(geomDP(y1)).append(" ");
                 b.append(geomDP(coords[2])).append(" ");
                 b.append(geomDP(coords[3])).append(" c\n");
+                lastX = coords[2];
+                lastY = coords[3];
                 break;
             case (PathIterator.SEG_CUBICTO):
                 b.append(geomDP(coords[0])).append(" ");
@@ -428,6 +449,8 @@ public class GraphicsStream extends Stream {
                 b.append(geomDP(coords[3])).append(" ");
                 b.append(geomDP(coords[4])).append(" ");
                 b.append(geomDP(coords[5])).append(" c\n");
+                lastX = coords[4];
+                lastY = coords[5];
                 break;
             case (PathIterator.SEG_CLOSE):
                 b.append("h\n");
