@@ -46,6 +46,8 @@ Version 1.1 (16 August 2013)
 - reimplemented drawString(AttributedCharacterIterator, float, float) using TextLayout and modified drawGlyphVector() to fill rather than stroke shapes (for PDF/SVG/CanvasGraphics2D);
 - added degree elevation to the quadratic segments of Path2D objects to ensure correct output quality with PDFGraphics2D;
 - fixed Page (PDFGraphics2D) so it does not add /XObject to resources if there are no xObjects;
+- fixed bug affecting switch between GradientPaint and Color in PDFGraphics2D;
+- fixed clipping bug in PDFGraphics2D and SVGGraphics2D;
 - added geomDP and transformDP attributes to CanvasGraphics2D to control number of decimal places for numbers written to script; 
 
 Version 1.0 (31 July 2013)
