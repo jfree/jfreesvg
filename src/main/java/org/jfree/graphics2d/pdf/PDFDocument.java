@@ -91,7 +91,7 @@ public class PDFDocument {
         this.catalog = new DictionaryObject(this.nextNumber++, "/Catalog");
         this.outlines = new DictionaryObject(this.nextNumber++, "/Outlines");
         this.info = new DictionaryObject(this.nextNumber++, "/Info");
-        this.info.put("Producer", "(JFreeGraphics2D 1.0)");
+        this.info.put("Producer", "(JFreeGraphics2D 1.1)");
         Date now = new Date();
         String creationDateStr = "(" + PDFUtils.toDateFormat(now) + ")";
         this.info.put("CreationDate", creationDateStr);
