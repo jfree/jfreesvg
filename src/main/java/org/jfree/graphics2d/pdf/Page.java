@@ -43,6 +43,7 @@ import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.RadialGradientPaintKey;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
+import org.jfree.graphics2d.pdf.filter.FlateFilter;
 import org.jfree.graphics2d.pdf.shading.AxialShading;
 import org.jfree.graphics2d.pdf.shading.RadialShading;
 
@@ -109,7 +110,7 @@ public class Page extends PDFObject {
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
         this.contents = new GraphicsStream(n, this);
-        //this.contents.addFilter(new FlateFilter());
+        this.contents.addFilter(new FlateFilter());
         this.gradientPaintsOnPage = new HashMap<GradientPaintKey, String>();
         this.radialGradientPaintsOnPage = new HashMap<RadialGradientPaintKey,
                 String>();
@@ -317,7 +318,7 @@ public class Page extends PDFObject {
         Args.nullNotPermitted(img, "img");
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
-        //image.addFilter(new FlateFilter());
+        image.addFilter(new FlateFilter());
         
         pdfDoc.addObject(image);
         String reference = "/Image" + this.xObjects.size();
