@@ -28,6 +28,7 @@ package org.jfree.graphics2d.pdf;
 
 import org.jfree.graphics2d.pdf.shading.Shading;
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Image;
@@ -42,6 +43,8 @@ import java.util.Map;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.RadialGradientPaintKey;
+import org.jfree.graphics2d.TextAnchor;
+import org.jfree.graphics2d.TextUtils;
 import org.jfree.graphics2d.pdf.Pattern.ShadingPattern;
 import org.jfree.graphics2d.pdf.filter.FlateFilter;
 import org.jfree.graphics2d.pdf.shading.AxialShading;
@@ -86,7 +89,10 @@ public class Page extends PDFObject {
     /** The ExtGState dictionary for the page. */
     private Dictionary graphicsStates;
     
-    /** The transform between Page and Java2D coordinates. */
+    /** 
+     * The transform between Page and Java2D coordinates, used in Shading 
+     * patterns. 
+     */
     private AffineTransform j2DTransform;
 
     private Dictionary xObjects = new Dictionary();
@@ -102,11 +108,9 @@ public class Page extends PDFObject {
      */
     Page(int number, int generation, Pages parent, Rectangle2D bounds) {
         super(number, generation);
-        if (bounds == null) {
-            throw new IllegalArgumentException("Null 'bounds' argument.");
-        }
+        Args.nullNotPermitted(bounds, "bounds");
         this.parent = parent;
-        this.bounds = bounds;
+        this.bounds = (Rectangle2D) bounds.clone();
         this.fontsOnPage = new ArrayList<String>();
         int n = this.parent.getDocument().getNextNumber();
         this.contents = new GraphicsStream(n, this);
@@ -119,10 +123,38 @@ public class Page extends PDFObject {
         
         this.j2DTransform = AffineTransform.getTranslateInstance(0.0, 
                 bounds.getHeight());
-        j2DTransform.concatenate(AffineTransform.getScaleInstance(1.0, -1.0));
-        
+        this.j2DTransform.concatenate(AffineTransform.getScaleInstance(1.0, 
+                -1.0));
+
+        // add an evaluation watermark if necessary...
+        PDFDocument doc = this.parent.getDocument();
+        if (doc.isEvaluationVersion() && doc.getEvaluationWatermark() == null) {
+            n = this.parent.getDocument().getNextNumber();
+            GraphicsStream gs = new GraphicsStream(n, this);
+            //gs.addFilter(new FlateFilter());
+            PDFGraphics2D g2 = new PDFGraphics2D(gs, 
+                    (int) this.bounds.getWidth(), 
+                    (int) this.bounds.getHeight(), true);
+            g2.setFont(new Font("Monospaced", Font.BOLD, 20));
+            g2.setPaint(Color.DARK_GRAY);
+            TextUtils.drawAlignedString("Evaluation version from orsonpdf.com", 
+                    g2, (float) this.bounds.getCenterX(), 
+                    (float) this.bounds.getCenterY(), TextAnchor.CENTER);
+            g2.dispose();
+            doc.setEvaluationWatermark(gs);
+        }
     }
 
+    /**
+     * Returns a new rectangle containing the bounds for this page (as supplied
+     * to the constructor).
+     * 
+     * @return The page bounds. 
+     */
+    public Rectangle2D getBounds() {
+        return (Rectangle2D) this.bounds.clone();
+    }
+    
     /**
      * Returns the <code>PDFObject</code> that represents the page content.
      * 
@@ -319,7 +351,6 @@ public class Page extends PDFObject {
         PDFDocument pdfDoc = this.parent.getDocument();
         PDFImage image = new PDFImage(pdfDoc.getNextNumber(), img);
         image.addFilter(new FlateFilter());
-        
         pdfDoc.addObject(image);
         String reference = "/Image" + this.xObjects.size();
         this.xObjects.put(reference, image);
@@ -335,7 +366,13 @@ public class Page extends PDFObject {
         Dictionary dictionary = new Dictionary("/Page");
         dictionary.put("/Parent", this.parent);
         dictionary.put("/MediaBox", this.bounds);
-        dictionary.put("/Contents", this.contents);
+        PDFDocument doc = this.parent.getDocument();
+        if (doc.getEvaluationWatermark() != null) {
+            dictionary.put("/Contents", new PDFObject[] {this.contents, 
+                doc.getEvaluationWatermark()});            
+        } else {
+            dictionary.put("/Contents", this.contents);            
+        }
         Dictionary resources = new Dictionary();
         resources.put("/ProcSet", "[/PDF /Text /ImageB /ImageC /ImageI]");
         if (!this.xObjects.isEmpty()) {

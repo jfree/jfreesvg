@@ -151,11 +151,28 @@ public final class PDFGraphics2D extends Graphics2D {
      * normally create this directly, instead you will call the 
      * {@link Page#getGraphics2D()} method.
      * 
-     * @param gs  the graphics stream.
+     * @param gs  the graphics stream (<code>null</code> not permitted).
      * @param width  the width.
      * @param height  the height.
      */
     public PDFGraphics2D(GraphicsStream gs, int width, int height) {
+        this(gs, width, height, false);
+    }
+
+    /**
+     * Creates a new instance of <code>PDFGraphics2D</code>.  You won't 
+     * normally create this directly, instead you will call the 
+     * {@link Page#getGraphics2D()} method.
+     * 
+     * @param gs  the graphics stream (<code>null</code> not permitted).
+     * @param width  the width.
+     * @param height  the height.
+     * @param skipJava2DTransform  a flag that allows the PDF to Java2D 
+     *        transform to be skipped (used for watermarks which are appended
+     *        to an existing stream that already has the transform).
+     */
+    public PDFGraphics2D(GraphicsStream gs, int width, int height, 
+            boolean skipJava2DTransform) {
         Args.nullNotPermitted(gs, "gs");
         this.width = width;
         this.height = height;
@@ -163,13 +180,11 @@ public final class PDFGraphics2D extends Graphics2D {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         this.gs = gs;
         // flip the y-axis to match the Java2D convention
-        this.gs.applyTransform(AffineTransform.getTranslateInstance(0.0, 
-                height));
-        this.gs.applyTransform(AffineTransform.getScaleInstance(1.0, -1.0));
-        
-        AffineTransform textTransform = new AffineTransform();
-        textTransform.translate(0.0, 1.0);
-        textTransform.scale(1.0, -1.0);
+        if (!skipJava2DTransform) {
+            this.gs.applyTransform(AffineTransform.getTranslateInstance(0.0, 
+                    height));
+            this.gs.applyTransform(AffineTransform.getScaleInstance(1.0, -1.0));
+        }
         this.gs.applyFont(getFont());
         this.gs.applyStrokeColor(getColor());
         this.gs.applyFillColor(getColor());

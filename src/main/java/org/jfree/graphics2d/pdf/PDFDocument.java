@@ -60,6 +60,9 @@ public class PDFDocument {
     private static final Logger LOGGER = Logger.getLogger(
             PDFDocument.class.getName());
 
+    /** Flag for evaluation version. */
+    private static final boolean EVAL_VERSION = true;
+    
     /** The document catalog. */
     private DictionaryObject catalog;
     
@@ -84,6 +87,14 @@ public class PDFDocument {
     /** The next PDF object number in the document. */
     private int nextNumber = 1;
 
+    /** 
+     * The graphics stream containing the watermark for evaluation versions of
+     * the software.  If present, this watermark will be created by the first
+     * page in the document, and passed up to the document for tracking (it
+     * will be added to the otherObjects list for output in the PDF bytes).
+     */
+    private GraphicsStream evaluationGraphicsStream;
+    
     /**
      * Creates a new <code>PDFDocument</code>, initially with no content.
      */
@@ -91,7 +102,12 @@ public class PDFDocument {
         this.catalog = new DictionaryObject(this.nextNumber++, "/Catalog");
         this.outlines = new DictionaryObject(this.nextNumber++, "/Outlines");
         this.info = new DictionaryObject(this.nextNumber++, "/Info");
-        this.info.put("Producer", "(JFreeGraphics2D 1.1)");
+        StringBuilder producer = new StringBuilder("(JFreeGraphics2D 1.1");
+        if (EVAL_VERSION) {
+            producer.append(" Evaluation Version");
+        }
+        producer.append(")");
+        this.info.put("Producer", producer.toString());
         Date now = new Date();
         String creationDateStr = "(" + PDFUtils.toDateFormat(now) + ")";
         this.info.put("CreationDate", creationDateStr);
@@ -101,6 +117,40 @@ public class PDFDocument {
         this.pages = new Pages(this.nextNumber++, 0, this);
         this.catalog.put("Pages", this.pages);
         this.otherObjects = new ArrayList<PDFObject>();
+    }
+    
+    /**
+     * Returns a flag indicating whether or not this is an evaluation version
+     * of the software.  If yes, the output will include a watermark 
+     * indicating the status.
+     * 
+     * @return A boolean. 
+     */
+    final boolean isEvaluationVersion() {
+        return EVAL_VERSION;    
+    }
+    
+    /**
+     * Returns the watermark displayed if this is an evaluation copy of the
+     * software.
+     * 
+     * @return The watermark (possibly <code>null</code>). 
+     */
+    final GraphicsStream getEvaluationWatermark() {
+        return this.evaluationGraphicsStream;
+    }
+    
+    /**
+     * Sets the watermark that will be displayed on every page if this is an
+     * evaluation copy of the software.
+     * 
+     * @param gs  the watermark. 
+     */
+    final void setEvaluationWatermark(GraphicsStream gs) {
+        if (gs != null) {
+            this.otherObjects.add(gs);
+        }
+        this.evaluationGraphicsStream = gs;
     }
     
     /**
