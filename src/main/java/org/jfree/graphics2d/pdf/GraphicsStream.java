@@ -86,6 +86,14 @@ public class GraphicsStream extends Stream {
         this.content = new ByteArrayOutputStream();
         this.font = new Font("Dialog", Font.PLAIN, 12);
     }
+    
+    private void addContent(String s) {
+        try {
+            this.content.write(PDFUtils.toBytes(s));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Pushes the current graphics state onto a stack for later retrieval.
@@ -117,14 +125,6 @@ public class GraphicsStream extends Stream {
         addContent(b.toString());
     }
     
-    private void addContent(String s) {
-        try {
-            this.content.write(PDFUtils.toBytes(s));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Sets the transform.
      * 
@@ -362,12 +362,11 @@ public class GraphicsStream extends Stream {
         // we need to get the reference for the current font (creating a 
         // new font object if there isn't already one)
         String fontRef = this.page.findOrCreateFontReference(this.font);
-        StringBuilder b = new StringBuilder("BT ");
-        addContent(b.toString());
+        addContent("BT ");
         AffineTransform t = new AffineTransform(1.0, 0.0, 0.0, -1.0, 0.0, 
                 y * 2); 
         applyTextTransform(t);
-        b = new StringBuilder();
+        StringBuilder b = new StringBuilder();
         b.append(fontRef).append(" ").append(this.font.getSize())
                 .append(" Tf ");
         b.append(geomDP(x)).append(" ").append(geomDP(y)).append(" Td (")
