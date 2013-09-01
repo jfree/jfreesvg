@@ -90,6 +90,95 @@ public enum TextAnchor {
     }
 
     /**
+     * Returns <code>true</code> if this anchor is at the left side of the
+     * text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isLeft() {
+        return this == TOP_LEFT || this == CENTER_LEFT 
+                || this == HALF_ASCENT_LEFT || this == BASELINE_LEFT 
+                || this == BOTTOM_LEFT;    
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is horizontally at the center 
+     * of the text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isHorizontalCenter() {
+        return this == TOP_CENTER || this == CENTER 
+                || this == HALF_ASCENT_CENTER || this == BASELINE_CENTER 
+                || this == BOTTOM_CENTER;
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the right side of the
+     * text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isRight() {
+        return this == TOP_RIGHT || this == CENTER_RIGHT 
+                || this == HALF_ASCENT_RIGHT || this == BASELINE_RIGHT 
+                || this == BOTTOM_RIGHT;    
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the top of the
+     * text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isTop() {
+        return this == TOP_LEFT || this == TOP_CENTER || this == TOP_RIGHT;
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the half-ascent level of 
+     * the text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isHalfAscent() {
+        return this == HALF_ASCENT_LEFT || this == HALF_ASCENT_CENTER 
+                || this == HALF_ASCENT_RIGHT;
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the half-height level of 
+     * the text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isHalfHeight() {
+        return this == CENTER_LEFT || this == CENTER || this == CENTER_RIGHT;
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the baseline level of 
+     * the text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isBaseline() {
+        return this == BASELINE_LEFT || this == BASELINE_CENTER 
+                || this == BASELINE_RIGHT;
+    }
+    
+    /**
+     * Returns <code>true</code> if this anchor is at the bottom of 
+     * the text bounds, and <code>false</code> otherwise.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isBottom() {
+        return this == BOTTOM_LEFT || this == BOTTOM_CENTER 
+                || this == BOTTOM_RIGHT;
+    }
+    
+    /**
      * Returns a string representing the object.
      *
      * @return The string.

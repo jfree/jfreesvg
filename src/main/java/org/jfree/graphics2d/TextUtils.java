@@ -52,12 +52,11 @@ public class TextUtils {
      *
      * @return The text bounds (adjusted for the text position).
      */
-    public static Rectangle2D drawAlignedString(final String text,
-            final Graphics2D g2, final float x, final float y,
-            final TextAnchor anchor) {
+    public static Rectangle2D drawAlignedString(String text,
+            Graphics2D g2, float x, float y, TextAnchor anchor) {
 
-        final Rectangle2D textBounds = new Rectangle2D.Double();
-        final float[] adjust = deriveTextBoundsAnchorOffsets(g2, text, anchor,
+        Rectangle2D textBounds = new Rectangle2D.Double();
+        float[] adjust = deriveTextBoundsAnchorOffsets(g2, text, anchor,
                 textBounds);
         // adjust text bounds to match string position
         textBounds.setRect(x + adjust[0], y + adjust[1] + adjust[2],
@@ -79,80 +78,47 @@ public class TextUtils {
      *
      * @return  The offsets.
      */
-    private static float[] deriveTextBoundsAnchorOffsets(final Graphics2D g2,
-            final String text, final TextAnchor anchor) {
+    private static float[] deriveTextBoundsAnchorOffsets(Graphics2D g2,
+            String text, TextAnchor anchor) {
 
-        final float[] result = new float[2];
-        final FontRenderContext frc = g2.getFontRenderContext();
-        final Font f = g2.getFont();
-        final FontMetrics fm = g2.getFontMetrics(f);
-        final Rectangle2D bounds = getTextBounds(text, g2, fm);
-        final LineMetrics metrics = f.getLineMetrics(text, frc);
-        final float ascent = metrics.getAscent();
-        final float halfAscent = ascent / 2.0f;
-        final float descent = metrics.getDescent();
-        final float leading = metrics.getLeading();
+        float[] result = new float[2];
+        FontRenderContext frc = g2.getFontRenderContext();
+        Font f = g2.getFont();
+        FontMetrics fm = g2.getFontMetrics(f);
+        Rectangle2D bounds = getTextBounds(text, g2, fm);
+        LineMetrics metrics = f.getLineMetrics(text, frc);
+        float ascent = metrics.getAscent();
+        float halfAscent = ascent / 2.0f;
+        float descent = metrics.getDescent();
+        float leading = metrics.getLeading();
         float xAdj = 0.0f;
         float yAdj = 0.0f;
 
-        if (anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_CENTER) {
-
+        if (anchor.isHorizontalCenter()) {
             xAdj = (float) -bounds.getWidth() / 2.0f;
-
         }
-        else if (anchor == TextAnchor.TOP_RIGHT
-                || anchor == TextAnchor.CENTER_RIGHT
-                || anchor == TextAnchor.BOTTOM_RIGHT
-                || anchor == TextAnchor.BASELINE_RIGHT
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isRight()) {
             xAdj = (float) -bounds.getWidth();
-
         }
 
-        if (anchor == TextAnchor.TOP_LEFT
-                || anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.TOP_RIGHT) {
-
+        if (anchor.isTop()) {
             yAdj = -descent - leading + (float) bounds.getHeight();
-
         }
-        else if (anchor == TextAnchor.HALF_ASCENT_LEFT
-                || anchor == TextAnchor.HALF_ASCENT_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isHalfAscent()) {
             yAdj = halfAscent;
-
         }
-        else if (anchor == TextAnchor.CENTER_LEFT
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.CENTER_RIGHT) {
-
+        else if (anchor.isHalfHeight()) {
             yAdj = -descent - leading + (float) (bounds.getHeight() / 2.0);
-
         }
-        else if (anchor == TextAnchor.BASELINE_LEFT
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.BASELINE_RIGHT) {
-
+        else if (anchor.isBaseline()) {
             yAdj = 0.0f;
-
         }
-        else if (anchor == TextAnchor.BOTTOM_LEFT
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BOTTOM_RIGHT) {
-
+        else if (anchor.isBottom()) {
             yAdj = -metrics.getDescent() - metrics.getLeading();
-
         }
         result[0] = xAdj;
         result[1] = yAdj;
         return result;
-
     }
 
     /**
@@ -171,77 +137,44 @@ public class TextUtils {
      *
      * @return  The offsets.
      */
-    private static float[] deriveTextBoundsAnchorOffsets(final Graphics2D g2,
-            final String text, final TextAnchor anchor,
-            final Rectangle2D textBounds) {
+    private static float[] deriveTextBoundsAnchorOffsets(Graphics2D g2,
+            String text, TextAnchor anchor, Rectangle2D textBounds) {
 
-        final float[] result = new float[3];
-        final FontRenderContext frc = g2.getFontRenderContext();
-        final Font f = g2.getFont();
-        final FontMetrics fm = g2.getFontMetrics(f);
-        final Rectangle2D bounds = getTextBounds(text, g2, fm);
-        final LineMetrics metrics = f.getLineMetrics(text, frc);
-        final float ascent = metrics.getAscent();
+        float[] result = new float[3];
+        FontRenderContext frc = g2.getFontRenderContext();
+        Font f = g2.getFont();
+        FontMetrics fm = g2.getFontMetrics(f);
+        Rectangle2D bounds = getTextBounds(text, g2, fm);
+        LineMetrics metrics = f.getLineMetrics(text, frc);
+        float ascent = metrics.getAscent();
         result[2] = -ascent;
-        final float halfAscent = ascent / 2.0f;
-        final float descent = metrics.getDescent();
-        final float leading = metrics.getLeading();
+        float halfAscent = ascent / 2.0f;
+        float descent = metrics.getDescent();
+        float leading = metrics.getLeading();
         float xAdj = 0.0f;
         float yAdj = 0.0f;
 
-        if (anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_CENTER) {
-
+        if (anchor.isHorizontalCenter()) {
             xAdj = (float) -bounds.getWidth() / 2.0f;
-
         }
-        else if (anchor == TextAnchor.TOP_RIGHT
-                || anchor == TextAnchor.CENTER_RIGHT
-                || anchor == TextAnchor.BOTTOM_RIGHT
-                || anchor == TextAnchor.BASELINE_RIGHT
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isRight()) {
             xAdj = (float) -bounds.getWidth();
-
         }
 
-        if (anchor == TextAnchor.TOP_LEFT
-                || anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.TOP_RIGHT) {
-
+        if (anchor.isTop()) {
             yAdj = -descent - leading + (float) bounds.getHeight();
-
         }
-        else if (anchor == TextAnchor.HALF_ASCENT_LEFT
-                || anchor == TextAnchor.HALF_ASCENT_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isHalfAscent()) {
             yAdj = halfAscent;
-
         }
-        else if (anchor == TextAnchor.CENTER_LEFT
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.CENTER_RIGHT) {
-
+        else if (anchor.isHalfHeight()) {
             yAdj = -descent - leading + (float) (bounds.getHeight() / 2.0);
-
         }
-        else if (anchor == TextAnchor.BASELINE_LEFT
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.BASELINE_RIGHT) {
-
+        else if (anchor.isBaseline()) {
             yAdj = 0.0f;
-
         }
-        else if (anchor == TextAnchor.BOTTOM_LEFT
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BOTTOM_RIGHT) {
-
+        else if (anchor.isBottom()) {
             yAdj = -metrics.getDescent() - metrics.getLeading();
-
         }
         if (textBounds != null) {
             textBounds.setRect(bounds);
@@ -249,8 +182,8 @@ public class TextUtils {
         result[0] = xAdj;
         result[1] = yAdj;
         return result;
-
     }
+
     /**
      * Returns the bounds for the specified text.
      *
@@ -261,12 +194,11 @@ public class TextUtils {
      * @return The text bounds (<code>null</code> if the <code>text</code>
      *         argument is <code>null</code>).
      */
-    public static Rectangle2D getTextBounds(final String text,
-            final Graphics2D g2, final FontMetrics fm) {
-
-        final Rectangle2D bounds;
-        final double width = fm.stringWidth(text);
-        final double height = fm.getHeight();
+    public static Rectangle2D getTextBounds(String text, Graphics2D g2, 
+            FontMetrics fm) {
+        Rectangle2D bounds;
+        double width = fm.stringWidth(text);
+        double height = fm.getHeight();
         return new Rectangle2D.Double(0.0, -fm.getAscent(), width, height);
     }
     /**
@@ -282,16 +214,14 @@ public class TextUtils {
      * @param rotationX  the x-coordinate for the rotation anchor point.
      * @param rotationY  the y-coordinate for the rotation anchor point.
      */
-    public static void drawRotatedString(final String text,
-            final Graphics2D g2, final float x, final float y,
-            final TextAnchor textAnchor, final double angle,
-            final float rotationX, final float rotationY) {
+    public static void drawRotatedString(String text, Graphics2D g2, float x, 
+            float y, TextAnchor textAnchor, double angle,
+            float rotationX, float rotationY) {
 
         if (text == null || text.equals("")) {
             return;
         }
-        final float[] textAdj = deriveTextBoundsAnchorOffsets(g2, text,
-                textAnchor);
+        float[] textAdj = deriveTextBoundsAnchorOffsets(g2, text, textAnchor);
         drawRotatedString(text, g2, x + textAdj[0], y + textAdj[1], angle,
                 rotationX, rotationY);
     }
@@ -308,23 +238,22 @@ public class TextUtils {
      * @param angle  the rotation angle (in radians).
      * @param rotationAnchor  the rotation anchor.
      */
-    public static void drawRotatedString(final String text, final Graphics2D g2,
-            final float x, final float y, final TextAnchor textAnchor,
-            final double angle, final TextAnchor rotationAnchor) {
+    public static void drawRotatedString(String text, Graphics2D g2,
+            float x, float y, TextAnchor textAnchor,
+            double angle, TextAnchor rotationAnchor) {
 
         if (text == null || text.equals("")) {
             return;
         }
-        final float[] textAdj = deriveTextBoundsAnchorOffsets(g2, text,
-                textAnchor);
-        final float[] rotateAdj = deriveRotationAnchorOffsets(g2, text,
+        float[] textAdj = deriveTextBoundsAnchorOffsets(g2, text, textAnchor);
+        float[] rotateAdj = deriveRotationAnchorOffsets(g2, text, 
                 rotationAnchor);
         drawRotatedString(text, g2, x + textAdj[0], y + textAdj[1],
                 angle, x + textAdj[0] + rotateAdj[0],
                 y + textAdj[1] + rotateAdj[1]);
-
     }
-        /**
+    
+    /**
      * A utility method that calculates the rotation anchor offsets for a
      * string.  These offsets are relative to the text starting coordinate
      * (BASELINE_LEFT).
@@ -335,88 +264,49 @@ public class TextUtils {
      *
      * @return  The offsets.
      */
-    private static float[] deriveRotationAnchorOffsets(final Graphics2D g2,
-            final String text, final TextAnchor anchor) {
+    private static float[] deriveRotationAnchorOffsets(Graphics2D g2,
+            String text, TextAnchor anchor) {
 
-        final float[] result = new float[2];
-        final FontRenderContext frc = g2.getFontRenderContext();
-        final LineMetrics metrics = g2.getFont().getLineMetrics(text, frc);
-        final FontMetrics fm = g2.getFontMetrics();
-        final Rectangle2D bounds = TextUtils.getTextBounds(text, g2, fm);
-        final float ascent = metrics.getAscent();
-        final float halfAscent = ascent / 2.0f;
-        final float descent = metrics.getDescent();
-        final float leading = metrics.getLeading();
+        float[] result = new float[2];
+        FontRenderContext frc = g2.getFontRenderContext();
+        LineMetrics metrics = g2.getFont().getLineMetrics(text, frc);
+        FontMetrics fm = g2.getFontMetrics();
+        Rectangle2D bounds = TextUtils.getTextBounds(text, g2, fm);
+        float ascent = metrics.getAscent();
+        float halfAscent = ascent / 2.0f;
+        float descent = metrics.getDescent();
+        float leading = metrics.getLeading();
         float xAdj = 0.0f;
         float yAdj = 0.0f;
 
-        if (anchor == TextAnchor.TOP_LEFT
-                || anchor == TextAnchor.CENTER_LEFT
-                || anchor == TextAnchor.BOTTOM_LEFT
-                || anchor == TextAnchor.BASELINE_LEFT
-                || anchor == TextAnchor.HALF_ASCENT_LEFT) {
-
+        if (anchor.isLeft()) {
             xAdj = 0.0f;
-
         }
-        else if (anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_CENTER) {
-
+        else if (anchor.isHorizontalCenter()) {
             xAdj = (float) bounds.getWidth() / 2.0f;
-
         }
-        else if (anchor == TextAnchor.TOP_RIGHT
-                || anchor == TextAnchor.CENTER_RIGHT
-                || anchor == TextAnchor.BOTTOM_RIGHT
-                || anchor == TextAnchor.BASELINE_RIGHT
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isRight()) {
             xAdj = (float) bounds.getWidth();
-
         }
 
-        if (anchor == TextAnchor.TOP_LEFT
-                || anchor == TextAnchor.TOP_CENTER
-                || anchor == TextAnchor.TOP_RIGHT) {
-
+        if (anchor.isTop()) {
             yAdj = descent + leading - (float) bounds.getHeight();
-
         }
-        else if (anchor == TextAnchor.CENTER_LEFT
-                || anchor == TextAnchor.CENTER
-                || anchor == TextAnchor.CENTER_RIGHT) {
-
+        else if (anchor.isHalfHeight()) {
             yAdj = descent + leading - (float) (bounds.getHeight() / 2.0);
-
         }
-        else if (anchor == TextAnchor.HALF_ASCENT_LEFT
-                || anchor == TextAnchor.HALF_ASCENT_CENTER
-                || anchor == TextAnchor.HALF_ASCENT_RIGHT) {
-
+        else if (anchor.isHalfAscent()) {
             yAdj = -halfAscent;
-
         }
-        else if (anchor == TextAnchor.BASELINE_LEFT
-                || anchor == TextAnchor.BASELINE_CENTER
-                || anchor == TextAnchor.BASELINE_RIGHT) {
-
+        else if (anchor.isBaseline()) {
             yAdj = 0.0f;
-
         }
-        else if (anchor == TextAnchor.BOTTOM_LEFT
-                || anchor == TextAnchor.BOTTOM_CENTER
-                || anchor == TextAnchor.BOTTOM_RIGHT) {
-
+        else if (anchor.isBottom()) {
             yAdj = metrics.getDescent() + metrics.getLeading();
-
         }
         result[0] = xAdj;
         result[1] = yAdj;
         return result;
-
     }
     
     /**
@@ -431,8 +321,8 @@ public class TextUtils {
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
-    public static void drawRotatedString(final String text, final Graphics2D g2,
-            final double angle, final float x, final float y) {
+    public static void drawRotatedString(String text, Graphics2D g2,
+            double angle, float x, float y) {
         drawRotatedString(text, g2, x, y, angle, x, y);
     }
 
@@ -450,9 +340,9 @@ public class TextUtils {
      * @param rotateX  the point about which the text is rotated.
      * @param rotateY  the point about which the text is rotated.
      */
-    public static void drawRotatedString(final String text, final Graphics2D g2,
-            final float textX, final float textY, final double angle,
-            final float rotateX, final float rotateY) {
+    public static void drawRotatedString(String text, Graphics2D g2,
+            float textX, float textY, double angle,
+            float rotateX, float rotateY) {
 
         if ((text == null) || (text.equals(""))) {
             return;
@@ -461,8 +351,8 @@ public class TextUtils {
         final AffineTransform saved = g2.getTransform();
 
         // apply the rotation...
-        final AffineTransform rotate = AffineTransform.getRotateInstance(
-                angle, rotateX, rotateY);
+        AffineTransform rotate = AffineTransform.getRotateInstance(angle, 
+                rotateX, rotateY);
         g2.transform(rotate);
 
         AttributedString as = new AttributedString(text, 
