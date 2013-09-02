@@ -58,9 +58,7 @@ public class GraphicsUtils {
      * @return A copy of the shape (it may not be the same class). 
      */
     public static Shape copyOf(Shape shape) {
-       if (shape == null) {
-           throw new IllegalArgumentException("Null 'shape' argument.");
-       }
+       Args.nullNotPermitted(shape, "shape");
        if (shape instanceof Line2D) {
            Line2D l = (Line2D) shape;
            return new Line2D.Double(l.getX1(), l.getY1(), l.getX2(), l.getY2());
