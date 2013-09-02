@@ -27,6 +27,7 @@
 package org.jfree.graphics2d.pdf;
 
 import java.awt.Font;
+import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.ObjectUtils;
 
 /**
@@ -52,9 +53,7 @@ public class FontKey {
      * @return The font key.
      */
     public static FontKey createFontKey(Font f) {
-        if (f == null) {
-            throw new IllegalArgumentException("Null 'f' argument.");
-        }
+        Args.nullNotPermitted(f, "f");
         String family = f.getFamily();
         boolean bold = f.isBold();
         boolean italic = f.isItalic();
