@@ -27,6 +27,7 @@
 package org.jfree.graphics2d.svg;
 
 import java.awt.Image;
+import org.jfree.graphics2d.Args;
 
 /**
  * A <code>(String, Image)</code> pair that links together a reference ID and 
@@ -50,12 +51,8 @@ public final class ImageElement {
      * @param image  the image (<code>null</code> not permitted).
      */
     public ImageElement(String href, Image image) {
-        if (href == null) {
-            throw new IllegalArgumentException("Null 'href' argument.");
-        }
-        if (image == null) {
-            throw new IllegalArgumentException("Null 'image' argument.");
-        }
+        Args.nullNotPermitted(href, "href");
+        Args.nullNotPermitted(image, "image");
         this.href = href;
         this.image = image;
     }
