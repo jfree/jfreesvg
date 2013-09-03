@@ -40,7 +40,7 @@ Other code distributed with JFreeGraphics2D:
 Change History
 --------------
 
-Version 1.1 (16 August 2013)
+Version 1.1 (3 September 2013)
 - reimplemented drawString(AttributedCharacterIterator, float, float) using TextLayout and modified drawGlyphVector() to fill rather than stroke shapes (for SVG/CanvasGraphics2D);
 - removed the PDF code (to a separate project);
 - fixed clipping bug in SVGGraphics2D;
