@@ -25,8 +25,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.jfree.graphics2d.pdf.PDFDocument;
-import org.jfree.graphics2d.pdf.Page;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -42,16 +40,16 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
+        BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
         //this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
-        PDFDocument pdfDoc = new PDFDocument();
-        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
-        this.g2 = page.getGraphics2D();
+//        PDFDocument pdfDoc = new PDFDocument();
+//        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
+//        this.g2 = page.getGraphics2D();
 
         // Test CanvasGraphics2D...
         //this.g2 = new CanvasGraphics2D("id");
