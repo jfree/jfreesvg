@@ -13,12 +13,12 @@
     <!-- Initialisation. -->
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
-        <property name="jfreeg2d.name" value="jfreegraphics2d" />
+        <property name="jfreeg2d.name" value="jfreesvg" />
         <property name="jfreeg2d.version" value="1.1" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.15" />
         <property name="jcommon.name" value="jcommon" />
-        <property name="jcommon.version" value="1.0.18" />
+        <property name="jcommon.version" value="1.0.20" />
         <property name="builddir" value="${basedir}/build" />
         <property name="src.version" value="1.6"/>
         <property name="target.version" value="1.6"/>
@@ -32,7 +32,7 @@
 
     <!-- Compile the classes -->
     <target name="compile" depends="initialise"
-            description="Compile the 'graphics2d' source code.">
+            description="Compile the 'jfreesvg' source code.">
 
         <!-- create a temp build directory -->
         <mkdir dir="${basedir}/build" />
@@ -66,14 +66,14 @@
 
     </target>
 
-    <!-- Generate the JFree Graphics2D API HTML pages -->
+    <!-- Generate the JFree SVG API HTML pages -->
     <target name="javadoc"
             description="Generate the Javadoc HTML pages."
             depends="initialise">
         <delete dir="${basedir}/javadoc" />
         <mkdir dir="${basedir}/javadoc" />
         <javadoc destdir="${basedir}/javadoc"
-                 windowtitle="JFree Graphics2D (version ${jfreeg2d.version})"
+                 windowtitle="JFreeSVG version ${jfreeg2d.version}"
                  overview="${basedir}/src/main/java/overview.html"
                  use="yes"
                  linksource="yes"
@@ -142,7 +142,7 @@
                  excludes="**/*.jpg" />
     </target>
 
-    <!-- Make .zip distribution for JFreeGraphics2D -->
+    <!-- Make .zip distribution for JFreeSVG -->
     <target name="zip" depends="fill-distribution">
 
         <!-- make the zip file -->
@@ -156,7 +156,7 @@
     <!-- ALL -->
     <target name="all"
             depends="compile,zip-javadocs,zip"
-            description="Compiles JFreeGraphics2D, builds the jar files, generates the Javadoc HTML pages and creates distribution file (.zip).">
+            description="Compiles JFreeSVG, builds the jar files, generates the Javadoc HTML pages and creates distribution file (.zip).">
 
         <!-- delete the temporary distribution directory -->
         <delete dir="${basedir}/distribution" />
