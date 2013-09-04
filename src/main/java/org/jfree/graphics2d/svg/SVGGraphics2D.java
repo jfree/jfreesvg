@@ -1,10 +1,10 @@
-/* ============================================================================
- * JFreeGraphics2D : a vector graphics output library for the Java(tm) platform
- * ============================================================================
+/* ===================================================
+ * JFreeSVG : an SVG library for the Java(tm) platform
+ * ===================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
  *
- * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
+ * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -66,11 +66,13 @@ import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -989,8 +991,19 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, 
             float y) {
-        TextLayout layout = new TextLayout(iterator, getFontRenderContext());
-        layout.draw(this, x, y);
+        Set<Attribute> s = iterator.getAllAttributeKeys();
+        if (!s.isEmpty()) {
+            TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+            layout.draw(this, x, y);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            iterator.first();
+            for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); i++) {
+                sb.append(iterator.current());
+                iterator.next();
+            }
+            drawString(sb.toString(), x, y);
+        }
     }
 
     /**

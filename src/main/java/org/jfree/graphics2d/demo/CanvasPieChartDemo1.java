@@ -1,10 +1,10 @@
-/* ============================================================================
- * JFreeGraphics2D : a vector graphics output library for the Java(tm) platform
- * ============================================================================
+/* ===================================================
+ * JFreeSVG : an SVG library for the Java(tm) platform
+ * ===================================================
  * 
  * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
  *
- * Project Info:  http://www.jfree.org/jfreegraphics2d/index.html
+ * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
