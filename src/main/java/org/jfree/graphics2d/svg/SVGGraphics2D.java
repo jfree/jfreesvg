@@ -1884,7 +1884,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element.
      */
     public String getSVGElement() {
-        StringBuilder svg = new StringBuilder("<svg width=\"").append(width)
+        StringBuilder svg = new StringBuilder("<svg ")
+                .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\"")
+                .append("width=\"").append(width)
                 .append("\" height=\"").append(height).append("\">\n");
         StringBuilder defs = new StringBuilder("<defs>");
         for (GradientPaintKey key : this.gradientPaints.keySet()) {
