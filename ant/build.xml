@@ -13,8 +13,8 @@
     <!-- Initialisation. -->
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
-        <property name="jfreeg2d.name" value="jfreesvg" />
-        <property name="jfreeg2d.version" value="1.1" />
+        <property name="jfreesvg.name" value="jfreesvg" />
+        <property name="jfreesvg.version" value="1.2" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.15" />
         <property name="jcommon.name" value="jcommon" />
@@ -49,14 +49,14 @@
         </javac>
 
         <!-- make the jar -->
-        <jar jarfile="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar"
+        <jar jarfile="${basedir}/lib/${jfreesvg.name}-${jfreesvg.version}.jar"
              basedir="${basedir}/build" >
             <manifest>
-                <attribute name="Specification-Title" value="${jfreeg2d.name}" />
-                <attribute name="Specification-Version" value="${jfreeg2d.version}" />
+                <attribute name="Specification-Title" value="${jfreesvg.name}" />
+                <attribute name="Specification-Version" value="${jfreesvg.version}" />
                 <attribute name="Specification-Vendor" value="Object Refinery Limited" />
-                <attribute name="Implementation-Title" value="${jfreeg2d.name}" />
-                <attribute name="Implementation-Version" value="${jfreeg2d.version}" />
+                <attribute name="Implementation-Title" value="${jfreesvg.name}" />
+                <attribute name="Implementation-Version" value="${jfreesvg.version}" />
                 <attribute name="Implementation-Vendor" value="Object Refinery Limited" />
             </manifest>
         </jar>
@@ -73,7 +73,7 @@
         <delete dir="${basedir}/javadoc" />
         <mkdir dir="${basedir}/javadoc" />
         <javadoc destdir="${basedir}/javadoc"
-                 windowtitle="JFreeSVG version ${jfreeg2d.version}"
+                 windowtitle="JFreeSVG version ${jfreesvg.version}"
                  overview="${basedir}/src/main/java/overview.html"
                  use="yes"
                  linksource="yes"
@@ -90,9 +90,9 @@
             description="Create ZIP file containing Javadoc HTML pages."
             depends="javadoc">
         <!-- make the zip file -->
-        <zip zipfile="${basedir}/${jfreeg2d.name}-${jfreeg2d.version}-javadocs.zip">
+        <zip zipfile="${basedir}/${jfreesvg.name}-${jfreesvg.version}-javadocs.zip">
              <zipfileset dir="${basedir}/javadoc"
-                         prefix="${jfreeg2d.name}-${jfreeg2d.version}-javadocs" />
+                         prefix="${jfreesvg.name}-${jfreesvg.version}-javadocs" />
         </zip>
     </target>
 
@@ -113,7 +113,7 @@
         <copy file="${basedir}/agpl-3.0.txt" tofile="${basedir}/distribution/agpl-3.0.txt" />
 
         <!-- copy across runtime jar file -->
-        <copy file="${basedir}/lib/${jfreeg2d.name}-${jfreeg2d.version}.jar" tofile="${basedir}/distribution/${jfreeg2d.name}-${jfreeg2d.version}.jar" />
+        <copy file="${basedir}/lib/${jfreesvg.name}-${jfreesvg.version}.jar" tofile="${basedir}/distribution/${jfreesvg.name}-${jfreesvg.version}.jar" />
 
         <!-- copy across JFreeChart and JCommon jar files -->
         <copy file="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}.jar" />
@@ -146,9 +146,9 @@
     <target name="zip" depends="fill-distribution">
 
         <!-- make the zip file -->
-        <zip zipfile="${basedir}/${jfreeg2d.name}-${jfreeg2d.version}.zip">
+        <zip zipfile="${basedir}/${jfreesvg.name}-${jfreesvg.version}.zip">
              <zipfileset dir="${basedir}/distribution"
-                         prefix="${jfreeg2d.name}-${jfreeg2d.version}" />
+                         prefix="${jfreesvg.name}-${jfreesvg.version}" />
         </zip>
 
     </target>
