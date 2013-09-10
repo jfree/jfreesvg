@@ -41,7 +41,8 @@ Change History
 --------------
 
 Version 1.2 (10 September 2013)
-- fix capitalisation of linearGradient element, to pass W3C validator.
+- fix capitalisation of linearGradient element, to pass W3C validator;
+- add xmlns:xlink to SVG element.
 
 Version 1.1 (4 September 2013)
 - reimplemented drawString(AttributedCharacterIterator, float, float) using TextLayout and modified drawGlyphVector() to fill rather than stroke shapes (for SVG/CanvasGraphics2D);
