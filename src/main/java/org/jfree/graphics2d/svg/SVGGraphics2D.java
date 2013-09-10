@@ -1885,6 +1885,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public String getSVGElement() {
         StringBuilder svg = new StringBuilder("<svg ")
+                .append("xmlns=\"http://www.w3.org/2000/svg\"")
                 .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\"")
                 .append("width=\"").append(width)
                 .append("\" height=\"").append(height).append("\">\n");
