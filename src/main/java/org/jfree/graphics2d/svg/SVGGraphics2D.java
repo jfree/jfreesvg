@@ -1942,7 +1942,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element.
      */
     private String getLinearGradientElement(String id, GradientPaint paint) {
-        StringBuilder b = new StringBuilder("<lineargradient id=\"").append(id)
+        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
                 .append("\" ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
@@ -1956,7 +1956,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 getSVGColor(paint.getColor1())).append(";\"/>");
         b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
                 getSVGColor(paint.getColor2())).append(";\"/>");
-        return b.append("</lineargradient>").toString();
+        return b.append("</linearGradient>").toString();
     }
     
     /**
