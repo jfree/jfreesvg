@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.2, 10 September 2013
+Version 1.2, 12 September 2013
 
 (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.2) was released on 10 September 2013.  Changes since the initial release are listed towards the end of this file.
+Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.2) was released on 12 September 2013.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
@@ -40,9 +40,12 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 1.2 (10 September 2013)
-- add SVG and XLINK namespaces to SVG element;
-- fix capitalisation of linearGradient element, to pass W3C validator.
+Version 1.2 (12 September 2013)
+- added SVG and XLINK namespaces to SVG element;
+- fixed capitalisation of linearGradient element, to pass W3C validator;
+- added support for Java2D's RadialGradientPaint;
+- added SVGUtils.writeToSVG() method; 
+- added new demo SVGTimeSeriesChartDemo1.java.
 
 Version 1.1 (4 September 2013)
 - reimplemented drawString(AttributedCharacterIterator, float, float) using TextLayout and modified drawGlyphVector() to fill rather than stroke shapes (for SVG/CanvasGraphics2D);
