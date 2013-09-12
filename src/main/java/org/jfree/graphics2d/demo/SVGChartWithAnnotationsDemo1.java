@@ -196,8 +196,7 @@ public class SVGChartWithAnnotationsDemo1 {
         SVGGraphics2D g2 = new SVGGraphics2D(500, 300);
         Rectangle r = new Rectangle(0, 0, 500, 300);
         chart.draw(g2, r);
-        File f = new File("SVGChartWithAnnotationsDemo1.html");
-        SVGUtils.writeToHTML(f, "SVGChartWithAnnotationsDemo1", 
-                g2.getSVGElement());
+        File f = new File("SVGChartWithAnnotationsDemo1.svg");
+        SVGUtils.writeToSVG(f, g2.getSVGElement());
     }
 }
