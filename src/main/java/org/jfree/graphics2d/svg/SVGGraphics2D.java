@@ -39,6 +39,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -78,6 +79,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import org.jfree.graphics2d.GraphicsUtils;
+import org.jfree.graphics2d.RadialGradientPaintKey;
 
 /**
  * A <code>Graphics2D</code> implementation that creates SVG output.  After 
@@ -157,6 +159,14 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private Map<GradientPaintKey, String> gradientPaints 
             = new HashMap<GradientPaintKey, String>();
+    
+    /** 
+     * A map of all the radial gradients used, and the corresponding id.  When 
+     * generating the SVG file, all the radial gradient paints used must be 
+     * defined in the defs element.
+     */
+    private Map<RadialGradientPaintKey, String> radialGradientPaints
+            = new HashMap<RadialGradientPaintKey, String>();
     
     /**
      * The clip paths that are used, and their reference ids. 
@@ -424,6 +434,15 @@ public final class SVGGraphics2D extends Graphics2D {
                 this.gradientPaintRef = "gp" + count;
             } else {
                 this.gradientPaintRef = ref;
+            }
+        } else if (paint instanceof RadialGradientPaint) {
+            RadialGradientPaint rgp = (RadialGradientPaint) paint;
+            RadialGradientPaintKey key = new RadialGradientPaintKey(rgp);
+            String ref = this.radialGradientPaints.get(key);
+            if (ref == null) {
+                int count = this.radialGradientPaints.keySet().size();
+                this.radialGradientPaints.put(key, "rgp" + count);
+                this.gradientPaintRef = "rgp" + count;
             }
         }
     }
@@ -793,7 +812,8 @@ public final class SVGGraphics2D extends Graphics2D {
         String result = "black;";
         if (this.paint instanceof Color) {
             return getSVGColor((Color) this.paint);
-        } else if (this.paint instanceof GradientPaint) {
+        } else if (this.paint instanceof GradientPaint 
+                || this.paint instanceof RadialGradientPaint) {
             return "url(#" + this.gradientPaintRef + ")";
         }
         return result;
@@ -1895,6 +1915,11 @@ public final class SVGGraphics2D extends Graphics2D {
                     key.getPaint()));
             defs.append("\n");
         }
+        for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
+            defs.append(getRadialGradientElement(
+                    this.radialGradientPaints.get(key), key.getPaint()));
+            defs.append("\n");
+        }
         for (Shape s : this.clipPaths.keySet()) {
             defs.append(getClipPathElement(this.clipPaths.get(s), s));
             defs.append("\n");
@@ -1960,6 +1985,38 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
                 getSVGColor(paint.getColor2())).append(";\"/>");
         return b.append("</linearGradient>").toString();
+    }
+    
+    /**
+     * Returns an element to represent a radial gradient.  All the radial
+     * gradients that are used get written to the DEFS element in the SVG.
+     * 
+     * @param id  the reference id.
+     * @param rgp  the radial gradient.
+     * 
+     * @return The SVG element. 
+     */
+    private String getRadialGradientElement(String id, RadialGradientPaint rgp) {
+        StringBuilder b = new StringBuilder("<radialGradient id=\"").append(id)
+                .append("\" gradientUnits=\"userSpaceOnUse\" ");
+        Point2D center = rgp.getCenterPoint();
+        Point2D focus = rgp.getFocusPoint();
+        float radius = rgp.getRadius();
+        b.append("cx=\"").append(geomDP(center.getX())).append("\" ");
+        b.append("cy=\"").append(geomDP(center.getY())).append("\" ");
+        b.append("r=\"").append(geomDP(radius)).append("\" ");
+        b.append("fx=\"").append(geomDP(focus.getX())).append("\" ");
+        b.append("fy=\"").append(geomDP(focus.getY())).append("\">");
+        
+        Color[] colors = rgp.getColors();
+        float[] fractions = rgp.getFractions();
+        for (int i = 0; i < colors.length; i++) {
+            Color c = colors[i];
+            float f = fractions[i];
+            b.append("<stop offset=\"").append(geomDP(f * 100)).append("%\" ");
+            b.append("stop-color=\"").append(getSVGColor(c)).append("\"/>");
+        }
+        return b.append("</radialGradient>").toString();
     }
     
     /**
