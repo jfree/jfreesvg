@@ -164,7 +164,7 @@ public class SVGPieChartDemo1 {
         g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
         Rectangle r = new Rectangle(0, 0, 600, 400);
         chart.draw(g2, r);
-        File f = new File("SVGPieChartDemo1.html");
-        SVGUtils.writeToHTML(f, "SVGPieChartDemo1", g2.getSVGElement());
+        File f = new File("SVGPieChartDemo1.svg");
+        SVGUtils.writeToSVG(f, g2.getSVGElement());
     }
 }
