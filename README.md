@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.2, 12 September 2013
+Version 1.2, 13 September 2013
 
 (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
 
@@ -17,13 +17,13 @@ Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the m
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.1.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.2.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
        http://docs.oracle.com/javase/tutorial/2d/
 
-There are some demonstration applications included in the org.jfree.graphics2d.demo.* package.  These applications make use of JFreeChart, so you'll find two additional jars in the 'lib' directory (jfreechart-1.0.15.jar and jcommon-1.0.20.jar).  These are required for the demo code only.
+There are some demonstration applications included in the org.jfree.graphics2d.demo.* package.  These applications make use of JFreeChart, so you'll find two additional jars in the 'lib' directory (jfreechart-1.0.16.jar and jcommon-1.0.20.jar).  These are required for the demo code only.
 
 
 License
@@ -40,7 +40,7 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 1.2 (12 September 2013)
+Version 1.2 (13 September 2013)
 - added SVG and XLINK namespaces to SVG element;
 - fixed capitalisation of linearGradient element, to pass W3C validator;
 - added support for Java2D's RadialGradientPaint;
