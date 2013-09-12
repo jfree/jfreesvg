@@ -43,6 +43,33 @@ public class SVGUtils {
     }
     
     /**
+     * Writes a file containing the SVG element.
+     * 
+     * @param file  the file (<code>null</code> not permitted).
+     * @param svgElement  the SVG element (<code>null</code> not permitted).
+     * 
+     * @since 1.2
+     */
+    public static void writeToSVG(File file, String svgElement) 
+            throws IOException {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
+            writer.write(svgElement + "\n");
+            writer.flush();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } 
+    }
+    
+    /**
      * Writes an HTML file containing an SVG element.
      * 
      * @param f  the file.
@@ -79,5 +106,4 @@ public class SVGUtils {
         } 
     }
     
-
 }
