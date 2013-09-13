@@ -12,7 +12,7 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.2) was released on 12 September 2013.  Changes since the initial release are listed towards the end of this file.
+Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.2) was released on 13 September 2013.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
