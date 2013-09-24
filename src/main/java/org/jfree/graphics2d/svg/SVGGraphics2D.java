@@ -169,9 +169,10 @@ public final class SVGGraphics2D extends Graphics2D {
             = new HashMap<RadialGradientPaintKey, String>();
     
     /**
-     * The clip paths that are used, and their reference ids. 
+     * A list of the registered clip regions.  These will be written to the
+     * DEFS element.
      */
-    private Map<Shape, String> clipPaths = new HashMap<Shape, String>();
+    private List<String> clipPaths = new ArrayList<String>();
     
     /** 
      * A list of images that are referenced but not embedded in the SVG.
@@ -183,7 +184,8 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The user clip (can be null). */
     private Shape clip;
     
-    private Shape registeredClip;
+    /** The reference for the current clip. */
+    private String clipRef;
     
     /** The current transform. */
     private AffineTransform transform = new AffineTransform();
@@ -1170,6 +1172,7 @@ public final class SVGGraphics2D extends Graphics2D {
         } else {
             this.transform = new AffineTransform(t);
         }
+        this.clipRef = null;
     }
 
     /**
@@ -1267,7 +1270,7 @@ public final class SVGGraphics2D extends Graphics2D {
     public void setClip(Shape shape) {
         // null is handled fine here...
         this.clip = this.transform.createTransformedShape(shape);
-        registerClip(shape);
+        this.clipRef = null;
     }
     
     /**
@@ -1276,15 +1279,19 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @param clip  the clip (ignored if <code>null</code>) 
      */
-    private void registerClip(Shape clip) {
+    private String registerClip(Shape clip) {
         if (clip == null) {
-            this.registeredClip = null;
-            return;
+            this.clipRef = null;
+            return null;
         }
-        int count = this.clipPaths.size();
-        Shape key = GraphicsUtils.copyOf(clip);
-        this.clipPaths.put(key, "clip-" + count);
-        this.registeredClip = key;
+        // generate the path
+        String pathStr = getSVGPathData(new Path2D.Double(clip));
+        int index = this.clipPaths.indexOf(pathStr);
+        if (index < 0) {
+            this.clipPaths.add(pathStr);
+            index = this.clipPaths.size() - 1;
+        }
+        return "clip-" + index;
     }
     
     private String transformDP(double d) {
@@ -1342,7 +1349,7 @@ public final class SVGGraphics2D extends Graphics2D {
           a1.intersect(a2);
           this.clip = new Path2D.Double(a1);
         }
-        registerClip(s);  // SVG is expecting the non-transformed clip area
+        this.clipRef = null;
     }
 
     /**
@@ -1674,11 +1681,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
                     img)));
             this.sb.append("\" ");
-            String clipRef = this.clipPaths.get(this.registeredClip);
-            if (clipRef != null) {
-                this.sb.append("clip-path=\"url(#").append(clipRef)
-                        .append(")\" ");
-            }
+            this.sb.append(getClipPathRef());
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");            
             this.sb.append("x=\"").append(geomDP(x))
@@ -1695,11 +1698,7 @@ public final class SVGGraphics2D extends Graphics2D {
             // write an SVG element for the img
             this.sb.append("<image xlink:href=\"");
             this.sb.append(fileName).append("\" ");
-            String clipRef = this.clipPaths.get(this.registeredClip);
-            if (clipRef != null) {
-                this.sb.append("clip-path=\"url(#").append(clipRef)
-                        .append(")\" ");
-            }
+            this.sb.append(getClipPathRef());
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
             this.sb.append("x=\"").append(geomDP(x))
@@ -1932,9 +1931,12 @@ public final class SVGGraphics2D extends Graphics2D {
                     this.radialGradientPaints.get(key), key.getPaint()));
             defs.append("\n");
         }
-        for (Shape s : this.clipPaths.keySet()) {
-            defs.append(getClipPathElement(this.clipPaths.get(s), s));
-            defs.append("\n");
+        for (int i = 0; i < this.clipPaths.size(); i++) {
+            StringBuilder b = new StringBuilder("<clipPath id=\"clip-")
+                    .append(i).append("\">");
+            b.append("<path ").append(this.clipPaths.get(i)).append("/>");
+            b.append("</clipPath>").append("\n");
+            defs.append(b.toString());
         }
         defs.append("</defs>\n");
         svg.append(defs);
@@ -2055,11 +2057,14 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return A clip path reference. 
      */
     private String getClipPathRef() {
-        StringBuilder b = new StringBuilder();
-        String clipRef = this.clipPaths.get(this.registeredClip);
-        if (clipRef != null) {
-            b.append("clip-path=\"url(#").append(clipRef).append(")\"");
+        if (this.clip == null) {
+            return "";
         }
+        if (this.clipRef == null) {
+            this.clipRef = registerClip(getClip());
+        }
+        StringBuilder b = new StringBuilder();
+        b.append("clip-path=\"url(#").append(this.clipRef).append(")\"");
         return b.toString();
     }
     
