@@ -1278,7 +1278,8 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private void registerClip(Shape clip) {
         if (clip == null) {
-            return;  // nothing to do
+            this.registeredClip = null;
+            return;
         }
         int count = this.clipPaths.size();
         Shape key = GraphicsUtils.copyOf(clip);
