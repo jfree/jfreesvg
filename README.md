@@ -44,6 +44,7 @@ Version 1.3 (24 September 2013)
 - implemented getDeviceConfiguration() method;
 - fixed clipping bug with transforms applied after clip is set;
 - fixed bug with setClip(null);
+- fixed "not well-formed" parsing issue for Firefox;
 
 Version 1.2 (13 September 2013)
 - added SVG and XLINK namespaces to SVG element;
