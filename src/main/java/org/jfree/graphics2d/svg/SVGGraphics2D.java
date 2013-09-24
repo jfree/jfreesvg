@@ -1677,7 +1677,8 @@ public final class SVGGraphics2D extends Graphics2D {
         // referenced...
         Object hint = this.getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
-            this.sb.append("<image xlink:href=\"data:image/png;base64,");
+            this.sb.append("<image preserveAspectRatio=\"none\" ");
+            this.sb.append("xlink:href=\"data:image/png;base64,");
             this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
                     img)));
             this.sb.append("\" ");
