@@ -1681,7 +1681,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
                     img)));
             this.sb.append("\" ");
-            this.sb.append(getClipPathRef());
+            this.sb.append(getClipPathRef()).append(" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");            
             this.sb.append("x=\"").append(geomDP(x))
@@ -1698,7 +1698,7 @@ public final class SVGGraphics2D extends Graphics2D {
             // write an SVG element for the img
             this.sb.append("<image xlink:href=\"");
             this.sb.append(fileName).append("\" ");
-            this.sb.append(getClipPathRef());
+            this.sb.append(getClipPathRef()).append(" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
             this.sb.append("x=\"").append(geomDP(x))
