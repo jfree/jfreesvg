@@ -243,6 +243,12 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String gradientPaintRef = null;
 
+    /** 
+     * The device configuration (this is lazily instantiated in the 
+     * getDeviceConfiguration() method.
+     */
+    private GraphicsConfiguration deviceConfiguration;
+
     /**
      * Creates a new instance with the specified width and height.
      * 
@@ -360,13 +366,18 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Not yet implemented.
+     * Returns the device configuration associated with this
+     * <code>Graphics2D</code>.
      * 
      * @return The graphics configuration.
      */
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO
+        if (this.deviceConfiguration == null) {
+            this.deviceConfiguration = new SVGGraphicsConfiguration(this.width,
+                    this.height);
+        }
+        return this.deviceConfiguration;
     }
 
     /**
