@@ -42,6 +42,7 @@ Change History
 
 Version 1.3 (24 September 2013)
 - implemented getDeviceConfiguration() method;
+- fixed clipping bug with transforms applied after clip is set;
 - fixed bug with setClip(null);
 
 Version 1.2 (13 September 2013)
