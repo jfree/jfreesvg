@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.2, 13 September 2013
+Version 1.3, 24 September 2013
 
 (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
 
@@ -12,12 +12,12 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.2) was released on 13 September 2013.  Changes since the initial release are listed towards the end of this file.
+Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.3) was released on 24 September 2013.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.2.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.3.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
@@ -39,6 +39,10 @@ Other code distributed with JFreeSVG:
 
 Change History
 --------------
+
+Version 1.3 (24 September 2013)
+- implemented getDeviceConfiguration() method;
+- fixed bug with setClip(null);
 
 Version 1.2 (13 September 2013)
 - added SVG and XLINK namespaces to SVG element;
