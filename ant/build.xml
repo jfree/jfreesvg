@@ -14,7 +14,7 @@
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreesvg.name" value="jfreesvg" />
-        <property name="jfreesvg.version" value="1.2" />
+        <property name="jfreesvg.version" value="1.3" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.16" />
         <property name="jcommon.name" value="jcommon" />
