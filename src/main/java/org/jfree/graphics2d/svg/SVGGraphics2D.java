@@ -85,19 +85,32 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * A <code>Graphics2D</code> implementation that creates SVG output.  After 
  * rendering the graphics via the <code>SVGGraphics2D</code>, you can retrieve
  * an SVG element (see {@link #getSVGElement()}) or an SVG document (see 
- * {@link #getSVGDocument()}).
+ * {@link #getSVGDocument()}) containing your content.
  * <p>
- * <b>Usage</b>
+ * <b>Usage</b><br>
+ * Using the <code>SVGGraphics2D</code> class is straightforward.  First, 
+ * create an instance specifying the height and width of the SVG element that 
+ * will be created.  Then, use standard Java2D API calls to draw content 
+ * into the element.  Finally, retrieve the SVG element that has been 
+ * accumulated.  For example:
  * <p>
- * <code>SVGGraphics2D g2 = new SVGGraphics2D(300, 200);<br></code>
- * <code>g2.setPaint(Color.RED);<br></code>
- * <code>g2.draw(new Rectangle(10, 10, 280, 180);<br></code>
- * <code>String svgElement = g2.getSVGElement();<br></code>
+ * <code>&nbsp;&nbsp;&nbsp;&nbsp;SVGGraphics2D g2 = new SVGGraphics2D(300, 200);<br></code>
+ * <code>&nbsp;&nbsp;&nbsp;&nbsp;g2.setPaint(Color.RED);<br></code>
+ * <code>&nbsp;&nbsp;&nbsp;&nbsp;g2.draw(new Rectangle(10, 10, 280, 180);<br></code>
+ * <code>&nbsp;&nbsp;&nbsp;&nbsp;String svgElement = g2.getSVGElement();<br></code>
  * <p>
- * Some implementation notes:
+ * For the content generation step, you can make use of third party libraries,
+ * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a>, that 
+ * render output using standard Java2D API calls.
  * <p>
+ * <b>Rendering Hints</b><br>
+ * The <code>SVGGraphics2D</code> supports a couple of custom rendering hints -  
+ * for details, refer to the {@link SVGHints} class documentation.
+ * <p>
+ * <b>Other Notes</b><br>
+ * Some additional notes:
  * <ul>
- * 
+ *
  * <li>Images are supported, but for methods with an <code>ImageObserver</code>
  * parameter note that the observer is ignored completely.  In any case, using 
  * images that are not fully loaded already would not be a good idea in the 
@@ -113,8 +126,8 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * write the coordinates for geometrical elements (default 2dp) and transform
  * matrices (default 6dp).  These defaults may change in a future release.</li>
  * </ul>
- * <p>
- * For some demos of the use of this class, please look in the
+ *
+ * For some demos showing how to use this class, look in the
  * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
  * directory.
  */
