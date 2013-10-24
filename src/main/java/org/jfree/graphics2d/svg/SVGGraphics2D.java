@@ -961,6 +961,9 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Draws a string at <code>(x, y)</code>.  The start of the text at the
      * baseline level will be aligned with the <code>(x, y)</code> point.
+     * <br><br>
+     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING} 
+     * hint when drawing strings (this is completely optional though). 
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -976,6 +979,9 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Draws a string at <code>(x, y)</code>. The start of the text at the
      * baseline level will be aligned with the <code>(x, y)</code> point.
+     * <br><br>
+     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING} 
+     * hint when drawing strings (this is completely optional though). 
      * 
      * @param str  the string (<code>null</code> not permitted).
      * @param x  the x-coordinate.
@@ -992,7 +998,14 @@ public final class SVGGraphics2D extends Graphics2D {
         this.sb.append("<text x=\"").append(geomDP(x))
                 .append("\" y=\"").append(geomDP(y))
                 .append("\"");
-        this.sb.append(" style=\"").append(getSVGFontStyle()).append("\" ");
+        this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
+        String textRenderValue = "auto";
+        Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
+        if (hintValue != null) {
+            textRenderValue = hintValue.toString();
+        }
+        this.sb.append(" text-rendering=\"").append(textRenderValue)
+                .append("\" ");
         this.sb.append(getClipPathRef());
         this.sb.append(">");
         this.sb.append(str).append("</text>");
@@ -1002,7 +1015,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Draws a string of attributed characters at <code>(x, y)</code>.  The 
      * call is delegated to 
-     * {@link #drawString(java.text.AttributedCharacterIterator, float, float)}. 
+     * {@link #drawString(AttributedCharacterIterator, float, float)}. 
      * 
      * @param iterator  an iterator for the characters.
      * @param x  the x-coordinate.
@@ -1026,16 +1039,18 @@ public final class SVGGraphics2D extends Graphics2D {
             float y) {
         Set<Attribute> s = iterator.getAllAttributeKeys();
         if (!s.isEmpty()) {
-            TextLayout layout = new TextLayout(iterator, getFontRenderContext());
+            TextLayout layout = new TextLayout(iterator, 
+                    getFontRenderContext());
             layout.draw(this, x, y);
         } else {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder strb = new StringBuilder();
             iterator.first();
-            for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); i++) {
-                sb.append(iterator.current());
+            for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); 
+                    i++) {
+                strb.append(iterator.current());
                 iterator.next();
             }
-            drawString(sb.toString(), x, y);
+            drawString(strb.toString(), x, y);
         }
     }
 

@@ -30,9 +30,13 @@ import java.awt.RenderingHints;
 
 /**
  * Defines the rendering hints that can be used with the {@link SVGGraphics2D} 
- * class.  For the moment, there is a single hint (see 
- * {@link #KEY_IMAGE_HANDLING}) that controls how images are handled (embedded
- * in the SVG, or referenced externally).
+ * class.  For the moment, there are two hints:
+ * <ul>
+ * <li>{@link #KEY_IMAGE_HANDLING} that controls how images are handled 
+ * (embedded in the SVG, or referenced externally);</li>
+ * <li>{@link #KEY_TEXT_RENDERING} that allows configuration of the preferred 
+ * value of the SVG <code>text-rendering</code> attribute in text elements.</li>
+ * </ul>
  */
 public final class SVGHints {
 
@@ -44,29 +48,69 @@ public final class SVGHints {
      * The key for the hint that controls whether images are embedded in the
      * SVG or referenced externally.
      */
-    public static final SVGHints.Key KEY_IMAGE_HANDLING 
-            = new SVGHints.Key();
+    public static final SVGHints.Key KEY_IMAGE_HANDLING = new SVGHints.Key(0);
     
     /**
-     * Hint value to say that images should be embedded in the SVG output
-     * using PNG data <code>Base64</code> encoded.
+     * Hint value to specify that images should be embedded in the SVG output
+     * using PNG data <code>Base64</code> encoded (to use with the key
+     * {@link #KEY_IMAGE_HANDLING}).
      */
     public static final Object VALUE_IMAGE_HANDLING_EMBED 
             = "VALUE_IMAGE_HANDLING_EMBED";
     
     /**
-     * Hint value to say that images should be referenced externally.
+     * Hint value to say that images should be referenced externally (to use 
+     * with the key {@link #KEY_IMAGE_HANDLING}).
      */
     public static final Object VALUE_IMAGE_HANDLING_REFERENCE 
             = "VALUE_IMAGE_HANDLING_REFERENCE";
+    
+    /**
+     * The key for a hint that permits configuration of the <a 
+     * href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-rendering">text-rendering 
+     * attribute</a> in SVG text elements.
+     */
+    public static final SVGHints.Key KEY_TEXT_RENDERING = new SVGHints.Key(1);
+     
+    /**
+     * Hint value for <code>KEY_TEXT_RENDERING</code> to set 'auto' in SVG 
+     * text elements.
+     */
+    public static final String VALUE_TEXT_RENDERING_AUTO = "auto";
+    
+    /**
+     * Hint value for <code>KEY_TEXT_RENDERING</code> to set 'optimizeSpeed' 
+     * in SVG text elements.
+     */
+    public static final String VALUE_TEXT_RENDERING_SPEED = "optimizeSpeed";
+    
+    /**
+     * Hint value for <code>KEY_TEXT_RENDERING</code> to set 
+     * 'optimizeLegibility' in SVG text elements.
+     */
+    public static final String VALUE_TEXT_RENDERING_LEGIBILITY 
+            = "optimizeLegibility";
+    
+    /**
+     * Hint value for <code>KEY_TEXT_RENDERING</code> to set 
+     * 'geometricPrecision' in SVG text elements.
+     */
+    public static final String VALUE_TEXT_RENDERING_PRECISION 
+            = "geometricPrecision";
+    
+    /**
+     * Hint value for <code>KEY_TEXT_RENDERING</code> to set 
+     * 'inherit' in SVG text elements.
+     */
+    public static final String VALUE_TEXT_RENDERING_INHERIT = "inherit";
     
     /**
      * A key for hints used by the {@link SVGGraphics2D} class.
      */
     public static class Key extends RenderingHints.Key {
 
-        private Key() {
-            super(0);    
+        public Key(int privateKey) {
+            super(privateKey);    
         }
     
         /**
@@ -79,8 +123,19 @@ public final class SVGHints {
          */
         @Override
         public boolean isCompatibleValue(Object val) {
-            return VALUE_IMAGE_HANDLING_EMBED.equals(val)
-                    || VALUE_IMAGE_HANDLING_REFERENCE.equals(val);
+            switch (intKey()) {
+                case 0:
+                    return VALUE_IMAGE_HANDLING_EMBED.equals(val)
+                            || VALUE_IMAGE_HANDLING_REFERENCE.equals(val);
+                case 1:
+                    return VALUE_TEXT_RENDERING_AUTO.equals(val)
+                            || VALUE_TEXT_RENDERING_INHERIT.equals(val)
+                            || VALUE_TEXT_RENDERING_LEGIBILITY.equals(val)
+                            || VALUE_TEXT_RENDERING_PRECISION.equals(val)
+                            || VALUE_TEXT_RENDERING_SPEED.equals(val);
+                default:
+                    throw new RuntimeException("Not possible!");
+            }
         }
     }
     
