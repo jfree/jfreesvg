@@ -924,7 +924,7 @@ public final class SVGGraphics2D extends Graphics2D {
         StringBuilder b = new StringBuilder();
         b.append("fill: ").append(getSVGColor()).append("; ");
         b.append("font-family: ").append(this.font.getFamily()).append("; ");
-        b.append("font-size: ").append(this.font.getSize()).append("pt; ");
+        b.append("font-size: ").append(this.font.getSize()).append("px; ");
         if (this.font.isBold()) {
             b.append("font-weight: bold; ");
         }
