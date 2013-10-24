@@ -27,9 +27,10 @@
 package org.jfree.graphics2d;
 
 /**
- * Some utility methods.
+ * Provides a couple of (static) utility methods used throughout 
+ * <b>JFreeSVG</b>.
  */
-public class ObjectUtils {
+public final class ObjectUtils {
     
     private ObjectUtils() {
         // no need to instantiate
@@ -37,15 +38,17 @@ public class ObjectUtils {
     
     /**
      * Returns <code>true</code> if the objects are equal or both 
-     * <code>null</code>, and <code>false</code> otherwise. In Java 7, we 
-     * could use the <code>Objects</code> class instead.
+     * <code>null</code>, and <code>false</code> otherwise.
+     * <br><br>
+     * In Java 7, we could use methods in the <code>Objects</code> class 
+     * instead, but for now JFreeSVG is supporting Java 6 and above.
      * 
-     * @param obj1  object 1.
-     * @param obj2  object 2.
+     * @param obj1  object 1 (<code>null</code> permitted).
+     * @param obj2  object 2 (<code>null</code> permitted).
      * 
      * @return A boolean. 
      */
-    public static final boolean equals(Object obj1, Object obj2) {
+    public static boolean equals(Object obj1, Object obj2) {
         if (obj1 == null) {
             return obj2 == null;
         } else {
@@ -54,9 +57,11 @@ public class ObjectUtils {
     }
     
     /**
-     * Returns the hash code for the object, or 0 if the object is 
-     * <code>null</code>.  In Java 7, we could use the <code>Objects</code> 
-     * class instead.
+     * Returns the hash code for the object, or <code>0</code> if the object is 
+     * <code>null</code>.
+     * <br><br>
+     * In Java 7, we could use methods in the <code>Objects</code> class 
+     * instead, but for now JFreeSVG is supporting Java 6 and above.
      * 
      * @param obj  the object (<code>null</code> permitted).
      * 
