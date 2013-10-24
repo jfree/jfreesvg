@@ -42,20 +42,25 @@ import java.awt.image.WritableRaster;
 import java.util.Hashtable;
 
 /**
- * Utility methods for shapes and images.
+ * A collection of (static) utility methods for shapes and images.
  */
-public class GraphicsUtils {
+public final class GraphicsUtils {
     
     private GraphicsUtils() {
         // no need to instantiate this
     }
     
     /**
-     * Returns a shape that is more or less equivalent to the supplied shape.
+     * Returns a shape that is (more or less) equivalent to the supplied shape.
+     * For some known shape implementations (<code>Line2D</code>, 
+     * <code>Rectangle2D</code>, <code>RoundRectangle2D</code>, 
+     * <code>Arc2D</code>, <code>Ellipse2D</code>, and <code>Polygon</code>) 
+     * the copy will be an instance of that class.  For other shapes, a 
+     * <code>Path2D</code> containing the outline of the shape is returned.
      * 
      * @param shape  the shape (<code>null</code> not permitted).
      * 
-     * @return A copy of the shape (it may not be the same class). 
+     * @return A copy of the shape or shape outline (never <code>null</code>). 
      */
     public static Shape copyOf(Shape shape) {
        Args.nullNotPermitted(shape, "shape");
@@ -93,8 +98,8 @@ public class GraphicsUtils {
     }
 
     /**
-     * Creates a polygon for from the specified <code>x</code> and 
-     * <code>y</code> coordinates.
+     * Creates a polygon from the specified <code>x</code> and 
+     * <code>y</code> coordinate arrays.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
