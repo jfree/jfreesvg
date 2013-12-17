@@ -69,6 +69,7 @@ import java.io.IOException;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,7 +150,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * The decimal formatter for transform matrices.
      */
-    private DecimalFormat transformFormat = new DecimalFormat("0.######");
+    private DecimalFormat transformFormat;
     
     /**
      * The number of decimal places to use when writing coordinates for
@@ -160,7 +161,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * The decimal formatter for coordinates of geometrical shapes.
      */
-    private DecimalFormat geometryFormat = new DecimalFormat("0.##");
+    private DecimalFormat geometryFormat;
     
     /** The buffer that accumulates the SVG output. */
     private StringBuilder sb;
@@ -278,6 +279,11 @@ public final class SVGGraphics2D extends Graphics2D {
         this.sb = new StringBuilder();
         this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
+        // force the formatters to use a '.' for the decimal point
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        this.transformFormat = new DecimalFormat("0.######", dfs);
+        this.geometryFormat = new DecimalFormat("0.##", dfs);
     }
 
     /**
@@ -339,8 +345,10 @@ public final class SVGGraphics2D extends Graphics2D {
             this.transformFormat = null;
             return;
         }
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
         this.transformFormat = new DecimalFormat("0." 
-                + "##########".substring(0, dp));
+                + "##########".substring(0, dp), dfs);
     }
     
     /**
@@ -376,8 +384,10 @@ public final class SVGGraphics2D extends Graphics2D {
             this.geometryFormat = null;
             return;
         }
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
         this.geometryFormat = new DecimalFormat("0." 
-                + "##########".substring(0, dp));
+                + "##########".substring(0, dp), dfs);
     }
 
     /**
@@ -1021,7 +1031,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 .append("\" ");
         this.sb.append(getClipPathRef());
         this.sb.append(">");
-        this.sb.append(str).append("</text>");
+        this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
         this.sb.append("</g>");
     }
 

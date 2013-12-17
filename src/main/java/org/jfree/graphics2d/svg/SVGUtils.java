@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * Utility methods related to the {@link SVGGraphics2D} implementation.
@@ -40,6 +41,57 @@ public class SVGUtils {
     
     private SVGUtils() {
         // no need to instantiate this
+    }
+
+    /**
+     * Returns a new string where any special characters in the source string
+     * have been encoded.
+     * 
+     * @param source  the source string (<code>null</code> not permitted).
+     * 
+     * @return A new string with special characters escaped for XML.
+     * 
+     * @since 1.5
+     */
+    public static String escapeForXML(String source) {
+        ParamChecks.nullNotPermitted(source, "source");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < source.length(); i++) {
+            char c = source.charAt(i);
+            switch (c) {
+                case '<' : {
+                    sb.append("&lt;");
+                    break;
+                } 
+                case '>' : {
+                    sb.append("&gt;");
+                    break;
+                } 
+                case '&' : {
+                    String next = source.substring(i, Math.min(i + 6, 
+                            source.length()));
+                    if (next.startsWith("&lt;") || next.startsWith("&gt;") 
+                            || next.startsWith("&amp;") 
+                            || next.startsWith("&apos;")
+                            || next.startsWith("&quot;")) {
+                        sb.append(c); 
+                    } else {
+                        sb.append("&amp;");
+                    }
+                    break;
+                } 
+                case '\'' : {
+                    sb.append("&apos;");
+                    break;
+                } 
+                case '\"' : {
+                    sb.append("&quot;");
+                    break;
+                } 
+                default : sb.append(c);
+            }
+        }
+        return sb.toString();
     }
     
     /**
