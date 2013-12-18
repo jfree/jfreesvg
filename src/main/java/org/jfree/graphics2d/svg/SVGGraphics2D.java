@@ -190,6 +190,20 @@ public final class SVGGraphics2D extends Graphics2D {
     private List<String> clipPaths = new ArrayList<String>();
     
     /** 
+     * The filename prefix for images that are referenced rather than
+     * embedded but don't have an <code>href</code> supplied via the 
+     * {@link #KEY_IMAGE_HREF} hint.
+     */
+    private String filePrefix;
+    
+    /** 
+     * The filename suffix for images that are referenced rather than
+     * embedded but don't have an <code>href</code> supplied via the 
+     * {@link #KEY_IMAGE_HREF} hint.
+     */
+    private String fileSuffix;
+    
+    /** 
      * A list of images that are referenced but not embedded in the SVG.
      * After the SVG is generated, the caller can make use of this list to
      * write PNG files if they don't already exist.  
@@ -281,6 +295,8 @@ public final class SVGGraphics2D extends Graphics2D {
         this.height = height;
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
+        this.filePrefix = "image-";
+        this.fileSuffix = ".png";
         this.font = new Font("SansSerif", Font.PLAIN, 12);
         this.fontMapper = new StandardFontMapper();
         this.sb = new StringBuilder();
@@ -396,7 +412,57 @@ public final class SVGGraphics2D extends Graphics2D {
         this.geometryFormat = new DecimalFormat("0." 
                 + "##########".substring(0, dp), dfs);
     }
+    
+    /**
+     * Returns the prefix used to generate a filename for an image that is
+     * referenced from, rather than embedded in, the SVG element.
+     * 
+     * @return The file prefix (never <code>null</code>).
+     * 
+     * @since 1.5
+     */
+    public String getFilePrefix() {
+        return this.filePrefix;
+    }
+    
+    /**
+     * Sets the prefix used to generate a filename for any image that is
+     * referenced from the SVG element.
+     * 
+     * @param prefix  the new prefix (<code>null</code> not permitted).
+     * 
+     * @since 1.5
+     */
+    public void setFilePrefix(String prefix) {
+        ParamChecks.nullNotPermitted(prefix, "prefix");
+        this.filePrefix = prefix;
+    }
 
+    /**
+     * Returns the suffix used to generate a filename for an image that is
+     * referenced from, rather than embedded in, the SVG element.
+     * 
+     * @return The file suffix (never <code>null</code>).
+     * 
+     * @since 1.5
+     */
+    public String getFileSuffix() {
+        return this.fileSuffix;
+    }
+    
+    /**
+     * Sets the suffix used to generate a filename for any image that is
+     * referenced from the SVG element.
+     * 
+     * @param suffix  the new prefix (<code>null</code> not permitted).
+     * 
+     * @since 1.5
+     */
+    public void setFileSuffix(String suffix) {
+        ParamChecks.nullNotPermitted(suffix, "suffix");
+        this.fileSuffix = suffix;
+    }
+ 
     /**
      * Returns the device configuration associated with this
      * <code>Graphics2D</code>.
@@ -431,6 +497,8 @@ public final class SVGGraphics2D extends Graphics2D {
         copy.setFont(getFont());
         copy.setTransform(getTransform());
         copy.setBackground(getBackground());
+        copy.setFilePrefix(getFilePrefix());
+        copy.setFileSuffix(getFileSuffix());
         return copy;
     }
 
@@ -1766,12 +1834,18 @@ public final class SVGGraphics2D extends Graphics2D {
             return true;
         } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
             int count = this.imageElements.size();
-            String fileName = "image-" + count + ".png";
-            ImageElement imageElement = new ImageElement(fileName, img);
+            String href = (String) this.hints.get(SVGHints.KEY_IMAGE_HREF);
+            if (href == null) {
+                href = this.filePrefix + count + this.fileSuffix;
+            } else {
+                // KEY_IMAGE_HREF value is for a single use...
+                this.hints.put(SVGHints.KEY_IMAGE_HREF, null);
+            }
+            ImageElement imageElement = new ImageElement(href, img);
             this.imageElements.add(imageElement);
             // write an SVG element for the img
             this.sb.append("<image xlink:href=\"");
-            this.sb.append(fileName).append("\" ");
+            this.sb.append(href).append("\" ");
             this.sb.append(getClipPathRef()).append(" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
