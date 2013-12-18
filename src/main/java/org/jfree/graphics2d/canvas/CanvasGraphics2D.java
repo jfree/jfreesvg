@@ -64,6 +64,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Map;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
@@ -157,7 +158,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * The decimal formatter for transform matrices.
      */
-    private DecimalFormat transformFormat = new DecimalFormat("0.######");
+    private DecimalFormat transformFormat;
     
     /**
      * The number of decimal places to use when writing coordinates for
@@ -182,6 +183,10 @@ public final class CanvasGraphics2D extends Graphics2D {
         this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
         this.clip = null;
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        this.transformFormat = new DecimalFormat("0.######", dfs);
+        this.geometryFormat = new DecimalFormat("0.##", dfs);
     }
 
     /**
@@ -230,8 +235,10 @@ public final class CanvasGraphics2D extends Graphics2D {
             this.transformFormat = null;
             return;
         }
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
         this.transformFormat = new DecimalFormat("0." 
-                + "##########".substring(0, dp));
+                + "##########".substring(0, dp), dfs);
     }
     
     /**
@@ -267,8 +274,10 @@ public final class CanvasGraphics2D extends Graphics2D {
             this.geometryFormat = null;
             return;
         }
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
         this.geometryFormat = new DecimalFormat("0." 
-                + "##########".substring(0, dp));
+                + "##########".substring(0, dp), dfs);
     }
     
     /**
