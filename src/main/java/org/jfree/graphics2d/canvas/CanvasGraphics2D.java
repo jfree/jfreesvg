@@ -219,7 +219,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * matrices in the Javascript output.  Values in the range 1 to 10 will be 
      * used to configure a formatter to that number of decimal places, for all 
      * other values we revert to the normal <code>String</code> conversion of 
-     * <coode>double</code> primitives (approximately 16 decimals places).
+     * <code>double</code> primitives (approximately 16 decimals places).
      * <p>
      * Note that there is a separate attribute to control the number of decimal
      * places for geometrical elements in the output (see 
