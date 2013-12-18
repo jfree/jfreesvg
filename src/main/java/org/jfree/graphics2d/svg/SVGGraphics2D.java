@@ -2163,6 +2163,18 @@ public final class SVGGraphics2D extends Graphics2D {
         return this.imageElements;
     }
     
+    /**
+     * Returns a new set containing the element IDs that have been used in
+     * output so far.
+     * 
+     * @return The element IDs.
+     * 
+     * @since 1.5
+     */
+    public Set<String> getElementIDs() {
+        return new HashSet<String>(this.elementIDs);
+    }
+    
     private static final double EPSILON = 0.00000001;
     
     /**
