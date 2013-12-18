@@ -71,6 +71,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -284,6 +285,9 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private GraphicsConfiguration deviceConfiguration;
 
+    /** A set of element IDs. */
+    private Set<String> elementIDs;
+    
     /**
      * Creates a new instance with the specified width and height.
      * 
@@ -307,6 +311,7 @@ public final class SVGGraphics2D extends Graphics2D {
         dfs.setDecimalSeparator('.');
         this.transformFormat = new DecimalFormat("0.######", dfs);
         this.geometryFormat = new DecimalFormat("0.##", dfs);
+        this.elementIDs = new HashSet<String>();
     }
 
     /**
@@ -541,8 +546,10 @@ public final class SVGGraphics2D extends Graphics2D {
             String ref = this.gradientPaints.get(key);
             if (ref == null) {
                 int count = this.gradientPaints.keySet().size();
-                this.gradientPaints.put(key, "gp" + count);
-                this.gradientPaintRef = "gp" + count;
+                String id = "gp" + count;
+                this.elementIDs.add(id);
+                this.gradientPaints.put(key, id);
+                this.gradientPaintRef = id;
             } else {
                 this.gradientPaintRef = ref;
             }
@@ -552,8 +559,10 @@ public final class SVGGraphics2D extends Graphics2D {
             String ref = this.radialGradientPaints.get(key);
             if (ref == null) {
                 int count = this.radialGradientPaints.keySet().size();
-                this.radialGradientPaints.put(key, "rgp" + count);
-                this.gradientPaintRef = "rgp" + count;
+                String id = "rgp" + count;
+                this.elementIDs.add(id);
+                this.radialGradientPaints.put(key, id);
+                this.gradientPaintRef = id;
             }
         }
     }
@@ -743,6 +752,26 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
+     * A utility method that appends an optional element id if one is 
+     * specified via the rendering hints.
+     * 
+     * @param sb  the string builder (<code>null</code> not permitted). 
+     */
+    private void appendOptionalElementIDFromHint(StringBuilder sb) {
+        String elementID = (String) this.hints.get(SVGHints.KEY_ELEMENT_ID);
+        if (elementID != null) {
+            this.hints.put(SVGHints.KEY_ELEMENT_ID, null); // clear it
+            if (this.elementIDs.contains(elementID)) {
+                throw new IllegalStateException("The element id " 
+                        + elementID + " is already used.");
+            } else {
+                this.elementIDs.add(elementID);
+            }
+            this.sb.append("id=\"").append(elementID).append("\" ");
+        }
+    }
+    
+    /**
      * Draws the specified shape with the current <code>paint</code> and 
      * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
      * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
@@ -757,7 +786,9 @@ public final class SVGGraphics2D extends Graphics2D {
     public void draw(Shape s) {
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
-            this.sb.append("<line x1=\"").append(geomDP(l.getX1()))
+            this.sb.append("<line ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("x1=\"").append(geomDP(l.getX1()))
                     .append("\" y1=\"").append(geomDP(l.getY1()))
                     .append("\" x2=\"").append(geomDP(l.getX2()))
                     .append("\" y2=\"").append(geomDP(l.getY2()))
@@ -769,7 +800,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect x=\"").append(geomDP(r.getX()))
+            this.sb.append("<rect ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("x=\"").append(geomDP(r.getX()))
                     .append("\" y=\"").append(geomDP(r.getY()))
                     .append("\" width=\"").append(geomDP(r.getWidth()))
                     .append("\" height=\"").append(geomDP(r.getHeight()))
@@ -782,7 +815,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g style=\"").append(strokeStyle())
+            this.sb.append("<g ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("style=\"").append(strokeStyle())
                     .append("; fill: none").append("\" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
@@ -812,7 +847,9 @@ public final class SVGGraphics2D extends Graphics2D {
             if (r.isEmpty()) {
                 return;
             }
-            this.sb.append("<rect x=\"").append(geomDP(r.getX()))
+            this.sb.append("<rect ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("x=\"").append(geomDP(r.getX()))
                     .append("\" y=\"").append(geomDP(r.getY()))
                     .append("\" width=\"").append(geomDP(r.getWidth()))
                     .append("\" height=\"").append(geomDP(r.getHeight()))
@@ -824,7 +861,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g style=\"").append(getSVGFillStyle());
+            this.sb.append("<g ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("style=\"").append(getSVGFillStyle());
             this.sb.append("; stroke: none").append("\" ");
             this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\" ");
@@ -1818,7 +1857,9 @@ public final class SVGGraphics2D extends Graphics2D {
         // referenced...
         Object hint = this.getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
-            this.sb.append("<image preserveAspectRatio=\"none\" ");
+            this.sb.append("<image ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("preserveAspectRatio=\"none\" ");
             this.sb.append("xlink:href=\"data:image/png;base64,");
             this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
                     img)));
@@ -1844,7 +1885,9 @@ public final class SVGGraphics2D extends Graphics2D {
             ImageElement imageElement = new ImageElement(href, img);
             this.imageElements.add(imageElement);
             // write an SVG element for the img
-            this.sb.append("<image xlink:href=\"");
+            this.sb.append("<image ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("xlink:href=\"");
             this.sb.append(href).append("\" ");
             this.sb.append(getClipPathRef()).append(" ");
             this.sb.append("transform=\"").append(getSVGTransform(
