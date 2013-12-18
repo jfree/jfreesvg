@@ -111,6 +111,16 @@ public final class SVGHints {
     public static final String VALUE_TEXT_RENDERING_INHERIT = "inherit";
     
     /**
+     * Hint key to supply string to be used as the href for an image that is 
+     * referenced rather than embedded.  The value associated with the key 
+     * should be a string and will be used for the next image element written 
+     * to the SVG output (and then the hint will be cleared).
+     * 
+     * @since 1.5
+     */
+    public static final SVGHints.Key KEY_IMAGE_HREF = new SVGHints.Key(2);
+    
+    /**
      * A key for hints used by the {@link SVGGraphics2D} class.
      */
     public static class Key extends RenderingHints.Key {
@@ -139,6 +149,8 @@ public final class SVGHints {
                             || VALUE_TEXT_RENDERING_LEGIBILITY.equals(val)
                             || VALUE_TEXT_RENDERING_PRECISION.equals(val)
                             || VALUE_TEXT_RENDERING_SPEED.equals(val);
+                case 2: // KEY_IMAGE:URL
+                    return val == null || val instanceof String;
                 default:
                     throw new RuntimeException("Not possible!");
             }
