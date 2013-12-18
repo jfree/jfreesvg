@@ -26,7 +26,6 @@
 
 package org.jfree.graphics2d.svg;
 
-import org.jfree.graphics2d.GradientPaintKey;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -79,6 +78,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
+import org.jfree.chart.util.ParamChecks;
+import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.GraphicsUtils;
 import org.jfree.graphics2d.RadialGradientPaintKey;
 
@@ -213,8 +214,12 @@ public final class SVGGraphics2D extends Graphics2D {
     
     private Stroke stroke = new BasicStroke(1.0f);
     
-    private Font font = new Font("SansSerif", Font.PLAIN, 12);
-    
+    /** The last font that was set. */
+    private Font font;
+
+    /** Maps font family names to alternates (or leaves them unchanged). */
+    private FontMapper fontMapper;
+        
     /** The background color, used by clearRect(). */
     private Color background = Color.BLACK;
 
@@ -276,6 +281,8 @@ public final class SVGGraphics2D extends Graphics2D {
         this.height = height;
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
+        this.font = new Font("SansSerif", Font.PLAIN, 12);
+        this.fontMapper = new StandardFontMapper();
         this.sb = new StringBuilder();
         this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
@@ -939,6 +946,33 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
+     * Returns the font mapper (an object that optionally maps font family
+     * names to alternates).  The default mapper will convert Java logical 
+     * font names to the equivalent SVG generic font name, and leave all other
+     * font names unchanged.
+     * 
+     * @return The font mapper (never <code>null</code>).
+     * 
+     * @see #setFontMapper(org.jfree.graphics2d.svg.FontMapper) 
+     * @since 1.5
+     */
+    public FontMapper getFontMapper() {
+        return this.fontMapper;
+    }
+    
+    /**
+     * Sets the font mapper.
+     * 
+     * @param mapper  the font mapper (<code>null</code> not permitted).
+     * 
+     * @since 1.5
+     */
+    public void setFontMapper(FontMapper mapper) {
+        ParamChecks.nullNotPermitted(mapper, "mapper");
+        this.fontMapper = mapper;
+    }
+    
+    /**
      * Returns a string containing font style info.
      * 
      * @return A string containing font style info.
@@ -946,7 +980,8 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getSVGFontStyle() {
         StringBuilder b = new StringBuilder();
         b.append("fill: ").append(getSVGColor()).append("; ");
-        b.append("font-family: ").append(this.font.getFamily()).append("; ");
+        String fontFamily = this.fontMapper.mapFont(this.font.getFamily());
+        b.append("font-family: ").append(fontFamily).append("; ");
         b.append("font-size: ").append(this.font.getSize()).append("px; ");
         if (this.font.isBold()) {
             b.append("font-weight: bold; ");
