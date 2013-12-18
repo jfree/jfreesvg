@@ -29,7 +29,7 @@ package org.jfree.graphics2d.svg;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
-import org.jfree.chart.util.ParamChecks;
+import org.jfree.graphics2d.Args;
 
 /**
  * A default implementation of the {@link FontMapper} interface.  This 
@@ -63,7 +63,7 @@ public class StandardFontMapper implements FontMapper {
      * @return The alternate font family name (possibly <code>null</code>). 
      */
     public String get(String family) {
-        ParamChecks.nullNotPermitted(family, "family");
+        Args.nullNotPermitted(family, "family");
         return this.alternates.get(family);
     }
     
@@ -75,7 +75,7 @@ public class StandardFontMapper implements FontMapper {
      * @param alternate  the alternate (<code>null</code> permitted).
      */
     public void put(String family, String alternate) {
-        ParamChecks.nullNotPermitted(family, "family");
+        Args.nullNotPermitted(family, "family");
         this.alternates.put(family, alternate);
     }
     
@@ -90,7 +90,7 @@ public class StandardFontMapper implements FontMapper {
      */
     @Override
     public String mapFont(String family) {
-        ParamChecks.nullNotPermitted(family, "family");
+        Args.nullNotPermitted(family, "family");
         String alternate = this.alternates.get(family);
         if (alternate != null) {
             return alternate;
