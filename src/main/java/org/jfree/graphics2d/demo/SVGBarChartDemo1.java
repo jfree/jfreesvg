@@ -39,7 +39,6 @@ import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.StatisticalBarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
@@ -80,18 +79,8 @@ public class SVGBarChartDemo1 {
      */
     private static JFreeChart createChart(CategoryDataset dataset) {
 
-        // create the chart...
         JFreeChart chart = ChartFactory.createLineChart(
-            "Statistical Bar Chart Demo 1", // chart title
-            "Type",                         // domain axis label
-            "Value",                        // range axis label
-            dataset,                        // data
-            PlotOrientation.VERTICAL,       // orientation
-            true,                           // include legend
-            true,                           // tooltips
-            false                           // urls
-        );
-
+            "Statistical Bar Chart Demo 1", "Type", "Value", dataset);
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
