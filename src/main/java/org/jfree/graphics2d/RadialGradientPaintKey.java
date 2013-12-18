@@ -38,10 +38,16 @@ public class RadialGradientPaintKey {
     
     float f = 0.0f;
     
-    public RadialGradientPaintKey(RadialGradientPaint mgp) {
-        Args.nullNotPermitted(mgp, "mgp");
-        this.paint = mgp;
+    /**
+     * Creates a new instance.
+     * 
+     * @param rgp  the radial gradient paint (<code>null</code> not permitted).
+     */
+    public RadialGradientPaintKey(RadialGradientPaint rgp) {
+        Args.nullNotPermitted(rgp, "mgp");
+        this.paint = rgp;
     }
+ 
     /**
      * Returns the <code>RadialGradientPaint</code> that was supplied to the 
      * constructor.
