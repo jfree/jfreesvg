@@ -34,8 +34,12 @@ import java.awt.RenderingHints;
  * <ul>
  * <li>{@link #KEY_IMAGE_HANDLING} that controls how images are handled 
  * (embedded in the SVG, or referenced externally);</li>
+ * <li>{@link #KEY_IMAGE_HREF} that allows the caller to specify the image
+ * href attribute for the next image;</li>
  * <li>{@link #KEY_TEXT_RENDERING} that allows configuration of the preferred 
- * value of the SVG <code>text-rendering</code> attribute in text elements.</li>
+ * value of the SVG <code>text-rendering</code> attribute in text elements;</li>
+ * <li>{@link #KEY_ELEMENT_ID} that allows the caller to specify the element
+ * ID for the next element.</li>
  * </ul>
  */
 public final class SVGHints {
