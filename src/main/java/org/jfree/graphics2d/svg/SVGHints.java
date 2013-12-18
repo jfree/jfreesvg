@@ -121,6 +121,12 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_IMAGE_HREF = new SVGHints.Key(2);
     
     /**
+     * Hint key to supply an element id for the next element generated.
+     * 
+     * @since 1.5
+     */
+    public static final SVGHints.Key KEY_ELEMENT_ID = new SVGHints.Key(3);
+    /**
      * A key for hints used by the {@link SVGGraphics2D} class.
      */
     public static class Key extends RenderingHints.Key {
@@ -151,6 +157,8 @@ public final class SVGHints {
                             || VALUE_TEXT_RENDERING_SPEED.equals(val);
                 case 2: // KEY_IMAGE:URL
                     return val == null || val instanceof String;
+                case 3: // KEY_ELEMENT_ID
+                    return val == null || val instanceof String;                    
                 default:
                     throw new RuntimeException("Not possible!");
             }
