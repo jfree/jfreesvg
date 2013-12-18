@@ -54,7 +54,7 @@ public class CanvasUtils {
      * @param height  the canvas height.
      * @param canvasScript  the canvas script.
      * 
-     * @throws IOException 
+     * @throws IOException if there is an IO error.
      */
     public static void writeToHTML(File f, String title, String canvasID,
             int width, int height, String canvasScript) throws IOException {

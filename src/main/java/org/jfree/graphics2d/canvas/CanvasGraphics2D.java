@@ -1035,7 +1035,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Not yet implemented.
      * 
-     * @param c1 
+     * @param c1  the color.
      */
     @Override
     public void setXORMode(Color c1) {
@@ -1153,12 +1153,12 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Not yet implemented.
      * 
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param dx
-     * @param dy 
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param dx  the destination x-offset.
+     * @param dy  the destination y-offset.
      */
     @Override
     public void copyArea(int x, int y, int width, int height, int dx, int dy) {
@@ -1472,12 +1472,12 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Not yet supported (but no exception is thrown).
      * 
-     * @param img
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param observer
+     * @param img  the image.
+     * @param x  the x-coordinate.
+     * @param y  the y-coordinate.
+     * @param width  the width.
+     * @param height  the height.
+     * @param observer  the observer (<code>null</code> permitted).
      * 
      * @return A boolean. 
      */

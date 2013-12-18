@@ -357,7 +357,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * matrices in the SVG output.  Values in the range 1 to 10 will be used
      * to configure a formatter to that number of decimal places, for all other
      * values we revert to the normal <code>String</code> conversion of 
-     * <coode>double</code> primitives (approximately 16 decimals places).
+     * <code>double</code> primitives (approximately 16 decimals places).
      * <p>
      * Note that there is a separate attribute to control the number of decimal
      * places for geometrical elements in the output (see 
@@ -776,7 +776,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
      * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
      * mapped to a <code>GeneralPath</code> and then drawn (effectively as 
-     * </code>Path2D</code> objects).
+     * <code>Path2D</code> objects).
      * 
      * @param s  the shape (<code>null</code> not permitted).
      * 
@@ -1300,7 +1300,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Applies a shear transformation. This is equivalent to the following 
      * call to the <code>transform</code> method:
-     * <p>
+     * <br><br>
      * <ul><li>
      * <code>transform(AffineTransform.getShearInstance(shx, shy));</code>
      * </ul>
