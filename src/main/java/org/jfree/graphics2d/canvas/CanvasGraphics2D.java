@@ -609,7 +609,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
      * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
      * mapped to a <code>GeneralPath</code> and then drawn (effectively as 
-     * </code>Path2D</code> objects).
+     * <code>Path2D</code> objects).
      * 
      * @param s  the shape (<code>null</code> not permitted).
      * 
@@ -927,7 +927,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Applies a shear transformation. This is equivalent to the following 
      * call to the <code>transform</code> method:
-     * <p>
+     * <br><br>
      * <ul><li>
      * <code>transform(AffineTransform.getShearInstance(shx, shy));</code>
      * </ul>
