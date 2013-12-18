@@ -79,7 +79,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
-import org.jfree.chart.util.ParamChecks;
+import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.GraphicsUtils;
 import org.jfree.graphics2d.RadialGradientPaintKey;
@@ -439,7 +439,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @since 1.5
      */
     public void setFilePrefix(String prefix) {
-        ParamChecks.nullNotPermitted(prefix, "prefix");
+        Args.nullNotPermitted(prefix, "prefix");
         this.filePrefix = prefix;
     }
 
@@ -464,7 +464,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @since 1.5
      */
     public void setFileSuffix(String suffix) {
-        ParamChecks.nullNotPermitted(suffix, "suffix");
+        Args.nullNotPermitted(suffix, "suffix");
         this.fileSuffix = suffix;
     }
  
@@ -1075,7 +1075,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @since 1.5
      */
     public void setFontMapper(FontMapper mapper) {
-        ParamChecks.nullNotPermitted(mapper, "mapper");
+        Args.nullNotPermitted(mapper, "mapper");
         this.fontMapper = mapper;
     }
     
