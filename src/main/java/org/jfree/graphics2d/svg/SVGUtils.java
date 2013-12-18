@@ -32,7 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jfree.chart.util.ParamChecks;
+import org.jfree.graphics2d.Args;
 
 /**
  * Utility methods related to the {@link SVGGraphics2D} implementation.
@@ -54,7 +54,7 @@ public class SVGUtils {
      * @since 1.5
      */
     public static String escapeForXML(String source) {
-        ParamChecks.nullNotPermitted(source, "source");
+        Args.nullNotPermitted(source, "source");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < source.length(); i++) {
             char c = source.charAt(i);
