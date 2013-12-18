@@ -100,6 +100,8 @@ public class SVGUtils {
      * @param file  the file (<code>null</code> not permitted).
      * @param svgElement  the SVG element (<code>null</code> not permitted).
      * 
+     * @throws IOException if there is an I/O problem.
+     * 
      * @since 1.2
      */
     public static void writeToSVG(File file, String svgElement) 
@@ -128,7 +130,7 @@ public class SVGUtils {
      * @param title  the title.
      * @param svgElement  the SVG element.
      * 
-     * @throws IOException 
+     * @throws IOException if there is an I/O problem.
      */
     public static void writeToHTML(File f, String title, String svgElement) 
             throws IOException {
