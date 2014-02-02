@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -22,6 +22,12 @@
  * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
  * Other names may be trademarks of their respective owners.]
  * 
+ * If you do not wish to be bound by the terms of the AGPL, an alternative
+ * commercial license can be purchased.  For details, please see visit the
+ * JFreeSVG home page:
+ * 
+ * http://www.jfree.org/jfreesvg
+ * 
  */
 
 package org.jfree.graphics2d;
@@ -30,10 +36,11 @@ import java.awt.GradientPaint;
 
 /**
  * A wrapper for a <code>GradientPaint</code> that can be used as the key for 
- * a <code>HashMap</code>.  This class is used internally by 
- * <code>SVGGraphics2D</code> to track and re-use gradient definitions.  
- * <code>GradientPaint</code> itself does not implement the equals() and 
- * hashCode() methods, so it doesn't make a good key for a <code>Map</code>.
+ * a <code>Map</code> (including a <code>HashMap</code>.  This class is used 
+ * internally by <code>SVGGraphics2D</code> to track and re-use gradient 
+ * definitions.  <code>GradientPaint</code> itself does not implement the 
+ * equals() and hashCode() methods, so it doesn't make a good key for a 
+ * <code>Map</code>.
  */
 public final class GradientPaintKey {
 

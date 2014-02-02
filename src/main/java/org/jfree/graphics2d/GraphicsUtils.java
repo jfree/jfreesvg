@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -21,6 +21,12 @@
  * 
  * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
  * Other names may be trademarks of their respective owners.]
+ * 
+ * If you do not wish to be bound by the terms of the AGPL, an alternative
+ * commercial license can be purchased.  For details, please see visit the
+ * JFreeSVG home page:
+ * 
+ * http://www.jfree.org/jfreesvg
  * 
  */
 
@@ -42,7 +48,7 @@ import java.awt.image.WritableRaster;
 import java.util.Hashtable;
 
 /**
- * A collection of (static) utility methods for shapes and images.
+ * A collection of static utility methods for shapes and images.
  */
 public final class GraphicsUtils {
     
