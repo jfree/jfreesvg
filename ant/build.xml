@@ -1,4 +1,4 @@
-<!-- An ANT build file for 'graphics2d' -->
+<!-- An ANT build file for 'jfreesvg' -->
 
 <!-- Written by David Gilbert. -->
 
@@ -8,13 +8,13 @@
 <!-- ../distribution, as working areas.  A ../javadoc directory will -->
 <!-- be created for the Javadoc HTML pages. -->
 
-<project name="graphics2d" default="all" basedir="..">
+<project name="jfreesvg" default="all" basedir="..">
 
     <!-- Initialisation. -->
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreesvg.name" value="jfreesvg" />
-        <property name="jfreesvg.version" value="1.6" />
+        <property name="jfreesvg.version" value="1.7" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.17" />
         <property name="jcommon.name" value="jcommon" />
