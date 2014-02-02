@@ -44,8 +44,18 @@ import java.awt.RenderingHints;
  * <li>{@link #KEY_TEXT_RENDERING} that allows configuration of the preferred 
  * value of the SVG <code>text-rendering</code> attribute in text elements;</li>
  * <li>{@link #KEY_ELEMENT_ID} that allows the caller to specify the element
- * ID for the next element.</li>
+ * ID for the next element;</li>
+ * <li>{@link #KEY_BEGIN_GROUP} tells the <code>SVGGraphics2D</code> instance 
+ * to start a new group element with an id equal to the hint value (which must 
+ * be an instance of String).  Any other <code>Graphics2D</code> implementation 
+ * will ignore this hint;</li>
+ * <li>{@link #KEY_END_GROUP} tells the <code>SVGGraphics2D</code> instance 
+ * to end a group element.  The hint value is ignored.  The caller assumes 
+ * responsibility for balancing the number of <code>KEY_BEGIN_GROUP</code> and 
+ * <code>KEY_END_GROUP</code> hints.  Any other <code>Graphics2D</code> 
+ * implementation will ignore this hint.</li>
  * </ul>
+ * 
  */
 public final class SVGHints {
 
