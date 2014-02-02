@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -22,6 +22,11 @@
  * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
  * Other names may be trademarks of their respective owners.]
  * 
+ * If you do not wish to be bound by the terms of the AGPL, an alternative
+ * commercial license can be purchased.  For details, please see visit the
+ * JFreeSVG home page:
+ * 
+ * http://www.jfree.org/jfreesvg
  */
 
 package org.jfree.graphics2d.svg;
@@ -130,6 +135,27 @@ public final class SVGHints {
      * @since 1.5
      */
     public static final SVGHints.Key KEY_ELEMENT_ID = new SVGHints.Key(3);
+
+    /**
+     * Hint key that informs the <code>SVGGraphics2D</code> that the caller 
+     * would like to begin a new group element.  The hint value is the id for 
+     * the new group.  After opening the new group the hint is cleared and it 
+     * is the caller's responsibility to close the group later using 
+     * {@link SVGHints.KEY_CLOSE_GROUP}.  Groups can be nested.
+     * 
+     * @since 1.7
+     */
+    public static final SVGHints.Key KEY_BEGIN_GROUP = new SVGHints.Key(4);
+    
+    /**
+     * Hint key that informs the <code>SVGGraphics2D</code> that the caller
+     * would like to close a previously opened group element.  The hint
+     * value is ignored.
+     * 
+     * @since 1.7
+     */
+    public static final SVGHints.Key KEY_END_GROUP = new SVGHints.Key(5);
+
     /**
      * A key for hints used by the {@link SVGGraphics2D} class.
      */
@@ -162,7 +188,11 @@ public final class SVGHints {
                 case 2: // KEY_IMAGE:URL
                     return val == null || val instanceof String;
                 case 3: // KEY_ELEMENT_ID
-                    return val == null || val instanceof String;                    
+                    return val == null || val instanceof String;    
+                case 4: // KEY_BEGIN_GROUP
+                    return val == null || val instanceof String;
+                case 5: // KEY_END_GROUP
+                    return true; // the value is ignored
                 default:
                     throw new RuntimeException("Not possible!");
             }
