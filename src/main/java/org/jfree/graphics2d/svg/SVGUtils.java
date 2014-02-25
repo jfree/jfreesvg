@@ -147,7 +147,7 @@ public class SVGUtils {
             writer.write("<html>\n");
             writer.write("<head>\n");
             writer.write("<title>" + title + "</title>\n");
-            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n"); 
+            writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"); 
             writer.write("</head>\n");
             writer.write("<body>\n");
             writer.write(svgElement + "\n");
