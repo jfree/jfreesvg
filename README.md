@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 1.6, 18 December 2013
+Version 1.7, 25 February 2014
 
-(C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
 
 
 Overview
@@ -12,12 +12,12 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.6) was released on 18 December 2013.  Changes since the initial release are listed towards the end of this file.
+Version 1.0 (then called JFreeGraphics2D) was released on 31 July 2013 and the most recent version (1.7) was released on 25 February 2014.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.5.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.7.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
@@ -40,8 +40,14 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
+Version 1.7 (25 February 2014)
+- added SVGHints.KEY_BEGIN_GROUP and SVGHints.KEY_END_GROUP to allow grouping of SVG output;
+- fix drawString() to include id if SVGHints.KEY_ELEMENT_ID is set;
+- fixed minor issue with meta tag in HTML output file.
+
+
 Version 1.6 (18 December 2013)
-- Fixes a minor packaging error in version 1.5.
+- fixed a minor packaging error in version 1.5.
 
 
 Version 1.5 (18 December 2013)
@@ -87,4 +93,8 @@ Version 1.0 (31 July 2013)
 
 Contact / Questions
 -------------------
-If you have any questions or feedback about JFreeSVG, please send an e-mail to david.gilbert@object-refinery.com.
+If you have any questions or feedback about JFreeSVG, please post in the forum:
+
+http://www.jfree.org/forum/viewforum.php?f=32
+
+...or send an e-mail to david.gilbert@object-refinery.com.
