@@ -151,7 +151,7 @@ public final class SVGHints {
      * would like to begin a new group element.  The hint value is the id for 
      * the new group.  After opening the new group the hint is cleared and it 
      * is the caller's responsibility to close the group later using 
-     * {@link SVGHints.KEY_CLOSE_GROUP}.  Groups can be nested.
+     * {@link SVGHints#KEY_END_GROUP}.  Groups can be nested.
      * 
      * @since 1.7
      */
