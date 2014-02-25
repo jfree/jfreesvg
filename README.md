@@ -43,6 +43,7 @@ Change History
 Version 1.7 (25 February 2014)
 - added SVGHints.KEY_BEGIN_GROUP and SVGHints.KEY_END_GROUP to allow grouping of SVG output;
 - fix drawString() to include id if SVGHints.KEY_ELEMENT_ID is set;
+- fix transparent colors issue;
 - fixed minor issue with meta tag in HTML output file.
 
 
