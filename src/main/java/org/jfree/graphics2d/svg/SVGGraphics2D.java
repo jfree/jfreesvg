@@ -978,10 +978,10 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return An SVG color string. 
      */
-    private String getSVGColor() {
+    private String svgColorStr() {
         String result = "black;";
         if (this.paint instanceof Color) {
-            return getSVGColor((Color) this.paint);
+            return rgbaColorStr((Color) this.paint);
         } else if (this.paint instanceof GradientPaint 
                 || this.paint instanceof RadialGradientPaint) {
             return "url(#" + this.gradientPaintRef + ")";
@@ -996,10 +996,27 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return The SVG RGB color string.
      */
-    private String getSVGColor(Color c) {
+    private String rgbColorStr(Color c) {
         StringBuilder b = new StringBuilder("rgb(");
         b.append(c.getRed()).append(",").append(c.getGreen()).append(",")
                 .append(c.getBlue()).append(")");
+        return b.toString();
+    }
+    
+    /**
+     * Returns a string representing the specified color in RGBA format.
+     * 
+     * @param c  the color (<code>null</code> not permitted).
+     * 
+     * @return The SVG RGBA color string.
+     */
+    private String rgbaColorStr(Color c) {
+        StringBuilder b = new StringBuilder("rgba(");
+        double alphaPercent = c.getAlpha() / 255.0;
+        b.append(c.getRed()).append(",").append(c.getGreen()).append(",")
+                .append(c.getBlue());
+        b.append(",").append(transformDP(alphaPercent));
+        b.append(")");
         return b.toString();
     }
     
@@ -1019,7 +1036,7 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         StringBuilder b = new StringBuilder();
         b.append("stroke-width: ").append(strokeWidth).append(";");
-        b.append("stroke: ").append(getSVGColor()).append(";");
+        b.append("stroke: ").append(svgColorStr()).append(";");
         b.append("stroke-opacity: ").append(getAlpha()).append(";");
         if (dashArray != null && dashArray.length != 0) {
             b.append("stroke-dasharray: ");
@@ -1040,7 +1057,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill: ").append(getSVGColor()).append(";");
+        b.append("fill: ").append(svgColorStr()).append(";");
         b.append("fill-opacity: ").append(getAlpha());
         return b.toString();
     }
@@ -1106,7 +1123,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFontStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill: ").append(getSVGColor()).append("; ");
+        b.append("fill: ").append(svgColorStr()).append("; ");
         String fontFamily = this.fontMapper.mapFont(this.font.getFamily());
         b.append("font-family: ").append(fontFamily).append("; ");
         b.append("font-size: ").append(this.font.getSize()).append("px; ");
@@ -2219,9 +2236,9 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("x2=\"").append(h ? "100%" : "50%").append("\" ");
         b.append("y2=\"").append(v ? "100%" : "50%").append("\">");
         b.append("<stop offset=\"0%\" style=\"stop-color: ").append(
-                getSVGColor(paint.getColor1())).append(";\"/>");
+                rgbColorStr(paint.getColor1())).append(";\"/>");
         b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
-                getSVGColor(paint.getColor2())).append(";\"/>");
+                rgbColorStr(paint.getColor2())).append(";\"/>");
         return b.append("</linearGradient>").toString();
     }
     
@@ -2252,7 +2269,7 @@ public final class SVGGraphics2D extends Graphics2D {
             Color c = colors[i];
             float f = fractions[i];
             b.append("<stop offset=\"").append(geomDP(f * 100)).append("%\" ");
-            b.append("stop-color=\"").append(getSVGColor(c)).append("\"/>");
+            b.append("stop-color=\"").append(rgbColorStr(c)).append("\"/>");
         }
         return b.append("</radialGradient>").toString();
     }
