@@ -32,6 +32,9 @@
 package org.jfree.graphics2d.svg;
 
 import java.awt.RenderingHints;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines the rendering hints that can be used with the {@link SVGGraphics2D} 
@@ -156,7 +159,7 @@ public final class SVGHints {
      * @since 1.7
      */
     public static final SVGHints.Key KEY_BEGIN_GROUP = new SVGHints.Key(4);
-    
+
     /**
      * Hint key that informs the <code>SVGGraphics2D</code> that the caller
      * would like to close a previously opened group element.  The hint
@@ -165,6 +168,217 @@ public final class SVGHints {
      * @since 1.7
      */
     public static final SVGHints.Key KEY_END_GROUP = new SVGHints.Key(5);
+
+    /**
+     * A list of keys that are treated as synonyms for KEY_BEGIN_GROUP
+     * (the list does not include KEY_BEGIN_GROUP itself).
+     */
+    private static final List<RenderingHints.Key> beginGroupKeys;
+    
+    /**
+     * A list of keys that are treated as synonyms for KEY_END_GROUP
+     * (the list does not include KEY_END_GROUP itself).
+     */
+    private static final List<RenderingHints.Key> endGroupKeys;
+    
+    static {
+        beginGroupKeys = new ArrayList<RenderingHints.Key>();
+        endGroupKeys = new ArrayList<RenderingHints.Key>();
+        if (isOrsonChartsOnClasspath()) {
+            beginGroupKeys.add(getOrsonChartsBeginElementKey());
+            endGroupKeys.add(getOrsonChartsEndElementKey());
+        }
+    }
+    
+    /**
+     * Creates and returns a list of keys that are synonymous with 
+     * {@link #KEY_BEGIN_GROUP}.
+     * 
+     * @return A list (never <code>null</code>).
+     * 
+     * @since 1.8
+     */
+    public static List<RenderingHints.Key> getBeginGroupKeys() {
+        return new ArrayList<RenderingHints.Key>(beginGroupKeys);    
+    }
+    
+    /**
+     * Adds a key to the list of keys that are synonyms for 
+     * {@link SVGHints#KEY_BEGIN_GROUP}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.8
+     */
+    public static void addBeginGroupKey(RenderingHints.Key key) {
+        beginGroupKeys.add(key);
+    }
+    
+    /**
+     * Removes a key from the list of keys that are synonyms for
+     * {@link SVGHints#KEY_BEGIN_GROUP}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.8
+     */
+    public static void removeBeginGroupKey(RenderingHints.Key key) {
+        beginGroupKeys.remove(key);
+    }
+    
+    /**
+     * Clears the list of keys that are treated as synonyms for 
+     * {@link SVGHints#KEY_BEGIN_GROUP}.
+     * 
+     * @since 1.8
+     */
+    public static void clearBeginGroupKeys() {
+        beginGroupKeys.clear();
+    }
+    
+    /**
+     * Returns <code>true</code> if this key is equivalent to 
+     * {@link #KEY_BEGIN_GROUP}, and <code>false</code> otherwise.  The purpose 
+     * of this method is to allow certain keys from external packages (such as 
+     * Orson Charts) to use their own keys to drive the behaviour of
+     * SVGHints.KEY_BEGIN_GROUP.  This has two benefits: (1) it avoids the 
+     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
+     * grouping behaviour generic from the point of view of the external
+     * package, rather than SVG-specific.
+     * 
+     * @param key  the key (<code>null</code> not permitted)
+     * 
+     * @return A boolean.
+     * 
+     * @since 1.8
+     */
+    public static boolean isBeginGroupKey(RenderingHints.Key key) {
+        return beginGroupKeys.contains(key);        
+    }
+
+    /**
+     * Creates and returns a list of keys that are synonymous with 
+     * {@link #KEY_END_GROUP}.
+     * 
+     * @return A list (never <code>null</code>).
+     * 
+     * @since 1.8
+     */
+    public static List<RenderingHints.Key> getEndGroupKeys() {
+        return new ArrayList<RenderingHints.Key>(endGroupKeys);    
+    }
+    
+    /**
+     * Adds a key to the list of keys that are synonyms for 
+     * {@link SVGHints#KEY_END_GROUP}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.8
+     */
+    public static void addEndGroupKey(RenderingHints.Key key) {
+        endGroupKeys.add(key);
+    }
+    
+    /**
+     * Removes a key from the list of keys that are synonyms for
+     * {@link SVGHints#KEY_END_GROUP}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.8
+     */
+    public static void removeEndGroupKey(RenderingHints.Key key) {
+        endGroupKeys.remove(key);
+    }
+    
+    /**
+     * Clears the list of keys that are treated as synonyms for 
+     * {@link SVGHints#KEY_END_GROUP}.
+     * 
+     * @since 1.8
+     */
+    public static void clearEndGroupKeys() {
+        endGroupKeys.clear();
+    }
+    
+    /**
+     * Returns <code>true</code> if this key is equivalent to 
+     * {@link #KEY_END_GROUP}, and <code>false</code> otherwise.  The purpose 
+     * of this method is to allow certain keys from external packages (such as 
+     * Orson Charts) to use their own keys to drive the behaviour of
+     * SVGHints.KEY_END_GROUP.  This has two benefits: (1) it avoids the 
+     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
+     * grouping behaviour generic from the point of view of the external
+     * package, rather than SVG-specific.
+     * 
+     * @param key  the key (<code>null</code> not permitted)
+     * 
+     * @return A boolean.
+     * 
+     * @since 1.8
+     */
+    public static boolean isEndGroupKey(RenderingHints.Key key) {
+        return endGroupKeys.contains(key);        
+    }
+
+    /**
+     * Returns <code>true</code> if Orson Charts (version 1.3 or later) is on 
+     * the classpath, and <code>false</code> otherwise.  This method is used to
+     * auto-register keys from Orson Charts that should translate to the 
+     * behaviour of {@link SVGHints#KEY_BEGIN_GROUP} and 
+     * {@link SVGHints#KEY_END_GROUP}.
+     * <br><br>
+     * The Orson Charts library can be found at
+     * http://www.object-refinery.com/orsoncharts/
+     * 
+     * @return A boolean.
+     * 
+     * @since 1.8
+     */
+    private static boolean isOrsonChartsOnClasspath() {
+        return (getOrsonChartsBeginElementKey() != null);
+    }
+    
+    private static RenderingHints.Key getOrsonChartsBeginElementKey() {
+        Class<?> renderingHintsClass = null;
+        try {
+            renderingHintsClass 
+                    = Class.forName("com.orsoncharts.Chart3DHints");
+            Field f = renderingHintsClass.getDeclaredField("KEY_BEGIN_ELEMENT");
+            return (RenderingHints.Key) f.get(null);
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (NoSuchFieldException ex) {
+            return null;
+        } catch (SecurityException ex) {
+            return null;
+        } catch (IllegalArgumentException ex) {
+            return null;
+        } catch (IllegalAccessException ex) {
+            return null;
+        }
+    }
+
+    private static RenderingHints.Key getOrsonChartsEndElementKey() {
+        Class<?> renderingHintsClass = null;
+        try {
+            renderingHintsClass 
+                    = Class.forName("com.orsoncharts.Chart3DHints");
+            Field f = renderingHintsClass.getDeclaredField("KEY_END_ELEMENT");
+            return (RenderingHints.Key) f.get(null);
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (NoSuchFieldException ex) {
+            return null;
+        } catch (SecurityException ex) {
+            return null;
+        } catch (IllegalArgumentException ex) {
+            return null;
+        } catch (IllegalAccessException ex) {
+            return null;
+        }
+    }
 
     /**
      * A key for hints used by the {@link SVGGraphics2D} class.

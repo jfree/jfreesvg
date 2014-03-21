@@ -718,17 +718,33 @@ public final class SVGGraphics2D extends Graphics2D {
     public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue) {
         // KEY_BEGIN_GROUP and KEY_END_GROUP are handled as special cases that
         // never get stored in the hints map...
-        if (hintKey.equals(SVGHints.KEY_BEGIN_GROUP)) {
-            String groupId = (String) hintValue;
-            if (this.elementIDs.contains(groupId)) {
-                throw new IllegalArgumentException("The group id (" + groupId 
-                        + ") is not unique.");
-            } else {
-                this.sb.append("<g id=\"").append(groupId).append("\">");
-                this.elementIDs.add(groupId);
+        if (SVGHints.isBeginGroupKey(hintKey)) {
+            String groupId = null;
+            String ref = null;
+            if (hintValue instanceof String) {
+                groupId = (String) hintValue;
+             } else if (hintValue instanceof Map) {
+                Map hintValueMap = (Map) hintValue;
+                groupId = (String) hintValueMap.get("id");
+                ref = (String) hintValueMap.get("ref");
             }
-        } else if (hintKey.equals(SVGHints.KEY_END_GROUP)) {
-            this.sb.append("</g>");
+            this.sb.append("<g");
+            if (groupId != null) {
+                if (this.elementIDs.contains(groupId)) {
+                    throw new IllegalArgumentException("The group id (" 
+                            + groupId + ") is not unique.");
+                } else {
+                    this.sb.append(" id=\"").append(groupId).append("\"");
+                    this.elementIDs.add(groupId);
+                }
+            }
+            if (ref != null) {
+                this.sb.append(" jfreesvg:ref=\"");
+                this.sb.append(SVGUtils.escapeForXML(ref)).append("\"");
+            }
+            this.sb.append(">");
+        } else if (SVGHints.isEndGroupKey(hintKey)) {
+            this.sb.append("</g>\n");
         } else {
             this.hints.put(hintKey, hintValue);
         }
@@ -2144,11 +2160,19 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element.
      */
     public String getSVGElement() {
-        StringBuilder svg = new StringBuilder("<svg ")
-                .append("xmlns=\"http://www.w3.org/2000/svg\" ")
-                .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
-                .append("width=\"").append(width)
-                .append("\" height=\"").append(height).append("\">\n");
+        return getSVGElement(null);
+    }
+    
+    public String getSVGElement(String id) {
+        StringBuilder svg = new StringBuilder("<svg ");
+        if (id != null) {
+            svg.append("id=\"").append(id).append("\" ");
+        }
+        svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
+           .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
+           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ")
+           .append("width=\"").append(width)
+           .append("\" height=\"").append(height).append("\">\n");
         StringBuilder defs = new StringBuilder("<defs>");
         for (GradientPaintKey key : this.gradientPaints.keySet()) {
             defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
