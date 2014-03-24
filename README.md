@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.7, 25 February 2014
+Version 1.8, ?? ??? 2014
 
 (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
 
@@ -39,6 +39,10 @@ Other code distributed with JFreeSVG:
 
 Change History
 --------------
+
+Version 1.8 (not yet released)
+- added additional KEY_BEGIN_GROUP options, plus special integration support for Orson Charts;
+- explicitly set encoding to UTF-8 for SVGUtils.writeToSVG() and SVGUtils.writeToHTML().
 
 Version 1.7 (25 February 2014)
 - added SVGHints.KEY_BEGIN_GROUP and SVGHints.KEY_END_GROUP to allow grouping of SVG output;
