@@ -34,8 +34,9 @@ package org.jfree.graphics2d.svg;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jfree.graphics2d.Args;
@@ -114,7 +115,9 @@ public class SVGUtils {
             throws IOException {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(file));
+            FileOutputStream fos = new FileOutputStream(file);
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            writer = new BufferedWriter(osw);
             writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
             writer.write(svgElement + "\n");
             writer.flush();
@@ -132,17 +135,19 @@ public class SVGUtils {
     /**
      * Writes an HTML file containing an SVG element.
      * 
-     * @param f  the file.
+     * @param file  the file.
      * @param title  the title.
      * @param svgElement  the SVG element.
      * 
      * @throws IOException if there is an I/O problem.
      */
-    public static void writeToHTML(File f, String title, String svgElement) 
+    public static void writeToHTML(File file, String title, String svgElement) 
             throws IOException {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(f));
+            FileOutputStream fos = new FileOutputStream(file);
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            writer = new BufferedWriter(osw);
             writer.write("<!DOCTYPE html>\n");
             writer.write("<html>\n");
             writer.write("<head>\n");
