@@ -42,7 +42,9 @@ Change History
 
 Version 1.8 (not yet released)
 - added additional KEY_BEGIN_GROUP options, plus special integration support for Orson Charts;
+- add special handling for shape drawing when the Stroke is not an instance of BasicStroke;
 - explicitly set encoding to UTF-8 for SVGUtils.writeToSVG() and SVGUtils.writeToHTML().
+
 
 Version 1.7 (25 February 2014)
 - added SVGHints.KEY_BEGIN_GROUP and SVGHints.KEY_END_GROUP to allow grouping of SVG output;
