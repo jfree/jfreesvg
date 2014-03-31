@@ -45,7 +45,7 @@ import java.util.Arrays;
  */
 public class RadialGradientPaintKey {
     
-    private RadialGradientPaint paint;
+    private final RadialGradientPaint paint;
     
     /**
      * Creates a new instance.
