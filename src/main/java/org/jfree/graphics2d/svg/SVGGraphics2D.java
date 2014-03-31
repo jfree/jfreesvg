@@ -672,8 +672,7 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the stroke that will be used to draw shapes.  Only 
-     * <code>BasicStroke</code> is supported.
+     * Sets the stroke that will be used to draw shapes.
      * 
      * @param s  the stroke (<code>null</code> not permitted).
      * 
@@ -820,6 +819,12 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void draw(Shape s) {
+        // if the current stroke is not a BasicStroke then it is handled as
+        // a special case
+        if (!(this.stroke instanceof BasicStroke)) {
+            fill(this.stroke.createStrokedShape(s));
+            return;
+        }
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
             this.sb.append("<line ");
@@ -1046,6 +1051,7 @@ public final class SVGGraphics2D extends Graphics2D {
         float strokeWidth = 1.0f;
         float[] dashArray = new float[0];
         if (this.stroke instanceof BasicStroke) {
+            // in fact this method doesn't get called for other stroke types
             BasicStroke bs = (BasicStroke) this.stroke;
             strokeWidth = bs.getLineWidth();
             dashArray = bs.getDashArray();
