@@ -44,7 +44,7 @@ import java.awt.GradientPaint;
  */
 public final class GradientPaintKey {
 
-    private GradientPaint paint;
+    private final GradientPaint paint;
     
     /**
      * Creates a new instance based on the specified <code>paint</code>.
