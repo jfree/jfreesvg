@@ -341,7 +341,7 @@ public final class SVGHints {
     }
     
     private static RenderingHints.Key getOrsonChartsBeginElementKey() {
-        Class<?> renderingHintsClass = null;
+        Class<?> renderingHintsClass;
         try {
             renderingHintsClass 
                     = Class.forName("com.orsoncharts.Chart3DHints");
@@ -361,7 +361,7 @@ public final class SVGHints {
     }
 
     private static RenderingHints.Key getOrsonChartsEndElementKey() {
-        Class<?> renderingHintsClass = null;
+        Class<?> renderingHintsClass;
         try {
             renderingHintsClass 
                     = Class.forName("com.orsoncharts.Chart3DHints");
@@ -385,6 +385,11 @@ public final class SVGHints {
      */
     public static class Key extends RenderingHints.Key {
 
+        /**
+         * Creates a new instance.
+         * 
+         * @param privateKey  the private key. 
+         */
         public Key(int privateKey) {
             super(privateKey);    
         }
