@@ -36,7 +36,7 @@ import java.awt.GradientPaint;
 
 /**
  * A wrapper for a <code>GradientPaint</code> that can be used as the key for 
- * a <code>Map</code> (including a <code>HashMap</code>.  This class is used 
+ * a <code>Map</code> (including a <code>HashMap</code>).  This class is used 
  * internally by <code>SVGGraphics2D</code> to track and re-use gradient 
  * definitions.  <code>GradientPaint</code> itself does not implement the 
  * equals() and hashCode() methods, so it doesn't make a good key for a 
