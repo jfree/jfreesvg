@@ -142,11 +142,11 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
 public final class SVGGraphics2D extends Graphics2D {
 
     /** Rendering hints (see SVGHints). */
-    private RenderingHints hints;
+    private final RenderingHints hints;
     
-    private int width;
+    private final int width;
     
-    private int height;
+    private final int height;
     
     /** 
      * The number of decimal places to use when writing the matrix values
@@ -171,14 +171,21 @@ public final class SVGGraphics2D extends Graphics2D {
     private DecimalFormat geometryFormat;
     
     /** The buffer that accumulates the SVG output. */
-    private StringBuilder sb;
+    private final StringBuilder sb;
 
+    /** 
+     * A prefix for the keys used in the DEFS element.  This can be used to 
+     * ensure that the keys are unique when creating more than one SVG element
+     * for a single HTML page.
+     */
+    private String defsKeyPrefix = "";
+    
     /** 
      * A map of all the gradients used, and the corresponding id.  When 
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
      */
-    private Map<GradientPaintKey, String> gradientPaints 
+    private final Map<GradientPaintKey, String> gradientPaints 
             = new HashMap<GradientPaintKey, String>();
     
     /** 
@@ -186,14 +193,17 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the radial gradient paints used must be 
      * defined in the defs element.
      */
-    private Map<RadialGradientPaintKey, String> radialGradientPaints
+    private final Map<RadialGradientPaintKey, String> radialGradientPaints
             = new HashMap<RadialGradientPaintKey, String>();
+    
+    /** The prefix for keys used to identify clip paths. */
+    private static final String CLIP_KEY_PREFIX = "clip-";
     
     /**
      * A list of the registered clip regions.  These will be written to the
      * DEFS element.
      */
-    private List<String> clipPaths = new ArrayList<String>();
+    private final List<String> clipPaths = new ArrayList<String>();
     
     /** 
      * The filename prefix for images that are referenced rather than
@@ -214,7 +224,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * After the SVG is generated, the caller can make use of this list to
      * write PNG files if they don't already exist.  
      */
-    private List<ImageElement> imageElements;
+    private final List<ImageElement> imageElements;
     
     /** The user clip (can be null). */
     private Shape clip;
@@ -244,7 +254,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private Color background = Color.BLACK;
 
     /** A hidden image used for font metrics. */
-    private BufferedImage fmImage = new BufferedImage(10, 10, 
+    private final BufferedImage fmImage = new BufferedImage(10, 10, 
             BufferedImage.TYPE_INT_RGB);;
 
     /**
@@ -291,7 +301,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private GraphicsConfiguration deviceConfiguration;
 
     /** A set of element IDs. */
-    private Set<String> elementIDs;
+    private final Set<String> elementIDs;
     
     /**
      * Creates a new instance with the specified width and height.
@@ -302,6 +312,7 @@ public final class SVGGraphics2D extends Graphics2D {
     public SVGGraphics2D(int width, int height) {
         this.width = width;
         this.height = height;
+        this.defsKeyPrefix = "";
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
         this.filePrefix = "image-";
@@ -339,6 +350,32 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public int getHeight() {
         return this.height;
+    }
+    
+    /**
+     * Returns the prefix used for all keys in the DEFS element.  The default
+     * value is the empty string.
+     * 
+     * @return The prefix string (never <code>null</code>).
+     * 
+     * @since 1.9
+     */
+    public String getDefsKeyPrefix() {
+        return this.defsKeyPrefix;
+    }
+    
+    /**
+     * Sets the prefix that will be used for all keys in the DEFS element.
+     * If required, this must be set immediately after construction (before any 
+     * content generation methods have been called).
+     * 
+     * @param prefix  the prefix (<code>null</code> not permitted).
+     * 
+     * @since 1.9
+     */
+    public void setDefKeyPrefix(String prefix) {
+        Args.nullNotPermitted(prefix, "prefix");
+        this.defsKeyPrefix = prefix;
     }
     
     /**
@@ -551,7 +588,7 @@ public final class SVGGraphics2D extends Graphics2D {
             String ref = this.gradientPaints.get(key);
             if (ref == null) {
                 int count = this.gradientPaints.keySet().size();
-                String id = "gp" + count;
+                String id = this.defsKeyPrefix + "gp" + count;
                 this.elementIDs.add(id);
                 this.gradientPaints.put(key, id);
                 this.gradientPaintRef = id;
@@ -564,7 +601,7 @@ public final class SVGGraphics2D extends Graphics2D {
             String ref = this.radialGradientPaints.get(key);
             if (ref == null) {
                 int count = this.radialGradientPaints.keySet().size();
-                String id = "rgp" + count;
+                String id = this.defsKeyPrefix + "rgp" + count;
                 this.elementIDs.add(id);
                 this.radialGradientPaints.put(key, id);
                 this.gradientPaintRef = id;
@@ -1531,7 +1568,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.clipPaths.add(pathStr);
             index = this.clipPaths.size() - 1;
         }
-        return "clip-" + index;
+        return this.defsKeyPrefix + CLIP_KEY_PREFIX + index;
     }
     
     private String transformDP(double d) {
@@ -2203,8 +2240,9 @@ public final class SVGGraphics2D extends Graphics2D {
             defs.append("\n");
         }
         for (int i = 0; i < this.clipPaths.size(); i++) {
-            StringBuilder b = new StringBuilder("<clipPath id=\"clip-")
-                    .append(i).append("\">");
+            StringBuilder b = new StringBuilder("<clipPath id=\"")
+                    .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
+                    .append("\">");
             b.append("<path ").append(this.clipPaths.get(i)).append("/>");
             b.append("</clipPath>").append("\n");
             defs.append(b.toString());
@@ -2314,23 +2352,6 @@ public final class SVGGraphics2D extends Graphics2D {
             b.append("stop-color=\"").append(rgbColorStr(c)).append("\"/>");
         }
         return b.append("</radialGradient>").toString();
-    }
-    
-    /**
-     * Returns an element to represent a clip path.  All the clip paths that
-     * are used are written to the DEFS element in the SVG.
-     * 
-     * @param refID  the reference id.
-     * @param s  the clip region.
-     * 
-     * @return The SVG element.
-     */
-    private String getClipPathElement(String refID, Shape s) {
-        StringBuilder b = new StringBuilder("<clipPath id=\"").append(refID)
-                .append("\">");
-        b.append("<path ").append(getSVGPathData(new Path2D.Double(s)))
-                .append("/>");
-        return b.append("</clipPath>").toString();
     }
 
     /**
