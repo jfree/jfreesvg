@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -373,7 +374,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @since 1.9
      */
-    public void setDefKeyPrefix(String prefix) {
+    public void setDefsKeyPrefix(String prefix) {
         Args.nullNotPermitted(prefix, "prefix");
         this.defsKeyPrefix = prefix;
     }
@@ -757,12 +758,24 @@ public final class SVGGraphics2D extends Graphics2D {
         if (SVGHints.isBeginGroupKey(hintKey)) {
             String groupId = null;
             String ref = null;
+            List<Entry> otherKeysAndValues = null;
             if (hintValue instanceof String) {
                 groupId = (String) hintValue;
              } else if (hintValue instanceof Map) {
                 Map hintValueMap = (Map) hintValue;
                 groupId = (String) hintValueMap.get("id");
                 ref = (String) hintValueMap.get("ref");
+                for (final Object obj: hintValueMap.entrySet()) {
+                   final Entry e = (Entry) obj;
+                   final Object key = e.getKey();
+                   if ("id".equals(key) || "ref".equals(key)) {
+                      continue;
+                   }
+                   if (otherKeysAndValues == null) {
+                      otherKeysAndValues = new ArrayList<Entry>();
+                   }
+                   otherKeysAndValues.add(e);
+                }
             }
             this.sb.append("<g");
             if (groupId != null) {
@@ -778,9 +791,20 @@ public final class SVGGraphics2D extends Graphics2D {
                 this.sb.append(" jfreesvg:ref=\"");
                 this.sb.append(SVGUtils.escapeForXML(ref)).append("\"");
             }
+            if (otherKeysAndValues != null) {
+               for (final Entry e: otherKeysAndValues) {
+                    this.sb.append(" ").append(e.getKey()).append("=\"");
+                    this.sb.append(SVGUtils.escapeForXML(String.valueOf(
+                            e.getValue()))).append("\"");
+               }
+            }
             this.sb.append(">");
         } else if (SVGHints.isEndGroupKey(hintKey)) {
             this.sb.append("</g>\n");
+        } else if (SVGHints.isElementTitleKey(hintKey) && (hintValue != null)) {
+            this.sb.append("<title>");
+            this.sb.append(SVGUtils.escapeForXML(String.valueOf(hintValue)));
+            this.sb.append("</title>");     
         } else {
             this.hints.put(hintKey, hintValue);
         }
