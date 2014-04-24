@@ -170,6 +170,15 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_END_GROUP = new SVGHints.Key(5);
 
     /**
+     * Hint key that informs the <code>SVGGraphics2D</code> that the caller
+     * would like to add a title element to the output (with the hint value
+     * being a string containing the title text).
+     * 
+     * @since 1.9
+     */
+    public static final SVGHints.Key KEY_ELEMENT_TITLE = new SVGHints.Key(6);
+    
+    /**
      * A list of keys that are treated as synonyms for KEY_BEGIN_GROUP
      * (the list does not include KEY_BEGIN_GROUP itself).
      */
@@ -181,12 +190,20 @@ public final class SVGHints {
      */
     private static final List<RenderingHints.Key> endGroupKeys;
     
+    /**
+     * A list of keys that are treated as synonyms for KEY_ELEMENT_TITLE
+     * (the list does not include KEY_ELEMENT_TITLE itself).
+     */
+    private static final List<RenderingHints.Key> elementTitleKeys;
+    
     static {
         beginGroupKeys = new ArrayList<RenderingHints.Key>();
         endGroupKeys = new ArrayList<RenderingHints.Key>();
+        elementTitleKeys = new ArrayList<RenderingHints.Key>();
         if (isOrsonChartsOnClasspath()) {
             beginGroupKeys.add(getOrsonChartsBeginElementKey());
             endGroupKeys.add(getOrsonChartsEndElementKey());
+            elementTitleKeys.add(getOrsonChartsElementTitleKey());
         }
     }
     
@@ -253,7 +270,8 @@ public final class SVGHints {
      * @since 1.8
      */
     public static boolean isBeginGroupKey(RenderingHints.Key key) {
-        return beginGroupKeys.contains(key);        
+        return SVGHints.KEY_BEGIN_GROUP.equals(key) 
+                || beginGroupKeys.contains(key);        
     }
 
     /**
@@ -319,7 +337,74 @@ public final class SVGHints {
      * @since 1.8
      */
     public static boolean isEndGroupKey(RenderingHints.Key key) {
-        return endGroupKeys.contains(key);        
+        return SVGHints.KEY_END_GROUP.equals(key) || endGroupKeys.contains(key);        
+    }
+
+    /**
+     * Creates and returns a list of keys that are synonymous with 
+     * {@link #KEY_ELEMENT_TITLE}.
+     * 
+     * @return A list (never <code>null</code>).
+     * 
+     * @since 1.9
+     */
+    public static List<RenderingHints.Key> getElementTitleKeys() {
+        return new ArrayList<RenderingHints.Key>(elementTitleKeys);    
+    }
+    
+    /**
+     * Adds a key to the list of keys that are synonyms for 
+     * {@link SVGHints#KEY_ELEMENT_TITLE}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.9
+     */
+    public static void addElementTitleKey(RenderingHints.Key key) {
+        elementTitleKeys.add(key);
+    }
+    
+    /**
+     * Removes a key from the list of keys that are synonyms for
+     * {@link SVGHints#KEY_ELEMENT_TITLE}.
+     * 
+     * @param key  the key (<code>null</code> not permitted).
+     * 
+     * @since 1.9
+     */
+    public static void removeElementTitleKey(RenderingHints.Key key) {
+        elementTitleKeys.remove(key);
+    }
+    
+    /**
+     * Clears the list of keys that are treated as synonyms for 
+     * {@link SVGHints#KEY_ELEMENT_TITLE}.
+     * 
+     * @since 1.9
+     */
+    public static void clearElementTitleKeys() {
+        elementTitleKeys.clear();
+    }
+    
+    /**
+     * Returns <code>true</code> if this key is equivalent to 
+     * {@link #KEY_ELEMENT_TITLE}, and <code>false</code> otherwise.  The 
+     * purpose of this method is to allow certain keys from external packages 
+     * (such as Orson Charts) to use their own keys to drive the behaviour of
+     * SVGHints.KEY_ELEMENT_TITLE.  This has two benefits: (1) it avoids the 
+     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
+     * element title behaviour generic from the point of view of the external
+     * package, rather than SVG-specific.
+     * 
+     * @param key  the key (<code>null</code> not permitted)
+     * 
+     * @return A boolean.
+     * 
+     * @since 1.9
+     */
+    public static boolean isElementTitleKey(RenderingHints.Key key) {
+        return SVGHints.KEY_ELEMENT_TITLE.equals(key) 
+                || elementTitleKeys.contains(key);        
     }
 
     /**
@@ -380,6 +465,26 @@ public final class SVGHints {
         }
     }
 
+    private static RenderingHints.Key getOrsonChartsElementTitleKey() {
+        Class<?> renderingHintsClass;
+        try {
+            renderingHintsClass 
+                    = Class.forName("com.orsoncharts.Chart3DHints");
+            Field f = renderingHintsClass.getDeclaredField("KEY_ELEMENT_TITLE");
+            return (RenderingHints.Key) f.get(null);
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (NoSuchFieldException ex) {
+            return null;
+        } catch (SecurityException ex) {
+            return null;
+        } catch (IllegalArgumentException ex) {
+            return null;
+        } catch (IllegalAccessException ex) {
+            return null;
+        }
+    }
+
     /**
      * A key for hints used by the {@link SVGGraphics2D} class.
      */
@@ -422,6 +527,8 @@ public final class SVGHints {
                     return val == null || val instanceof String;
                 case 5: // KEY_END_GROUP
                     return true; // the value is ignored
+                case 6: // KEY_ELEMENT_TITLE
+                    return val instanceof String;
                 default:
                     throw new RuntimeException("Not possible!");
             }
