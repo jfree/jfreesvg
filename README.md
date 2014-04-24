@@ -41,8 +41,9 @@ Change History
 --------------
 
 Version 1.9 (?? ????? 2014) 
-- added defsKeyPrefix attribute to allow unique ids for DEFS when generating multiple SVG elements for use in a single HTML page.
-
+- added defsKeyPrefix attribute to allow unique ids for DEFS when generating multiple SVG elements for use in a single HTML page;
+- added KEY_ELEMENT_TITLE rendering hint;
+- added support for arbitrary key, value pairs in the KEY_START_GROUP handler.
 
 Version 1.8 (11 April 2014)
 - added additional KEY_BEGIN_GROUP options, plus special integration support for Orson Charts;
