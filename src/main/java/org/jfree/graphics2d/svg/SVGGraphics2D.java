@@ -142,12 +142,15 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  */
 public final class SVGGraphics2D extends Graphics2D {
 
-    /** Rendering hints (see SVGHints). */
-    private final RenderingHints hints;
+    /** The prefix for keys used to identify clip paths. */
+    private static final String CLIP_KEY_PREFIX = "clip-";
     
     private final int width;
     
     private final int height;
+    
+    /** Rendering hints (see SVGHints). */
+    private final RenderingHints hints;
     
     /** 
      * The number of decimal places to use when writing the matrix values
@@ -197,9 +200,6 @@ public final class SVGGraphics2D extends Graphics2D {
     private final Map<RadialGradientPaintKey, String> radialGradientPaints
             = new HashMap<RadialGradientPaintKey, String>();
     
-    /** The prefix for keys used to identify clip paths. */
-    private static final String CLIP_KEY_PREFIX = "clip-";
-    
     /**
      * A list of the registered clip regions.  These will be written to the
      * DEFS element.
@@ -243,7 +243,16 @@ public final class SVGGraphics2D extends Graphics2D {
     private Composite composite = AlphaComposite.getInstance(
             AlphaComposite.SRC_OVER, 1.0f);
     
+    /** The current stroke. */
     private Stroke stroke = new BasicStroke(1.0f);
+    
+    /** 
+     * The width of the SVG stroke to use when the user supplies a
+     * BasicStroke with a width of 0.0 (in this case the Java specificatin
+     * says "If width is set to 0.0f, the stroke is rendered as the thinnest 
+     * possible line for the target device and the antialias hint setting."
+     */
+    private double zeroStrokeWidth;
     
     /** The last font that was set. */
     private Font font;
@@ -256,7 +265,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /** A hidden image used for font metrics. */
     private final BufferedImage fmImage = new BufferedImage(10, 10, 
-            BufferedImage.TYPE_INT_RGB);;
+            BufferedImage.TYPE_INT_RGB);
 
     /**
      * An instance that is lazily instantiated in drawLine and then 
@@ -320,6 +329,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.fileSuffix = ".png";
         this.font = new Font("SansSerif", Font.PLAIN, 12);
         this.fontMapper = new StandardFontMapper();
+        this.zeroStrokeWidth = 0.1;
         this.sb = new StringBuilder();
         this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
@@ -509,6 +519,38 @@ public final class SVGGraphics2D extends Graphics2D {
     public void setFileSuffix(String suffix) {
         Args.nullNotPermitted(suffix, "suffix");
         this.fileSuffix = suffix;
+    }
+    
+    /**
+     * Returns the width to use for the SVG stroke when the AWT stroke
+     * specified has a zero width (the default value is <code>0.1</code>.  In 
+     * the Java specification for <code>BasicStroke</code> it states "If width 
+     * is set to 0.0f, the stroke is rendered as the thinnest possible 
+     * line for the target device and the antialias hint setting."  We don't 
+     * have a means to implement that accurately since we must specify a fixed
+     * width.
+     * 
+     * @return The width.
+     * 
+     * @since 1.9
+     */
+    public double getZeroStrokeWidth() {
+        return this.zeroStrokeWidth;
+    }
+    
+    /**
+     * Sets the width to use for the SVG stroke when the current AWT stroke
+     * has a width of 0.0.
+     * 
+     * @param width  the new width (must be 0 or greater).
+     * 
+     * @since 1.9
+     */
+    public void setZeroStrokeWidth(double width) {
+        if (width < 0.0) {
+            throw new IllegalArgumentException("Width cannot be negative.");
+        }
+        this.zeroStrokeWidth = width;
     }
  
     /**
@@ -1109,12 +1151,13 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return A stroke style string.
      */
     private String strokeStyle() {
-        float strokeWidth = 1.0f;
+        double strokeWidth = 1.0f;
         float[] dashArray = new float[0];
         if (this.stroke instanceof BasicStroke) {
             // in fact this method doesn't get called for other stroke types
             BasicStroke bs = (BasicStroke) this.stroke;
-            strokeWidth = bs.getLineWidth();
+            strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth() 
+                    : this.zeroStrokeWidth;
             dashArray = bs.getDashArray();
         }
         StringBuilder b = new StringBuilder();
@@ -1936,7 +1979,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws an image at the location <code>(x, y)</code>.  Note that the 
      * <code>observer</code> is ignored.
      * 
-     * @param img  the image.
+     * @param img  the image (<code>null</code> not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param observer  ignored.
@@ -1976,7 +2019,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
         // the rendering hints control whether the image is embedded or
         // referenced...
-        Object hint = this.getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
+        Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
             this.sb.append("<image ");
             appendOptionalElementIDFromHint(this.sb);
@@ -2026,7 +2069,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws an image at the location <code>(x, y)</code>.  Note that the 
      * <code>observer</code> is ignored.
      * 
-     * @param img  the image.
+     * @param img  the image (<code>null</code> not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param bgcolor  the background color (<code>null</code> permitted).
