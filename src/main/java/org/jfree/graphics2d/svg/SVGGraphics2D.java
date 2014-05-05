@@ -42,6 +42,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
+import java.awt.LinearGradientPaint;
+import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
@@ -88,6 +90,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.GraphicsUtils;
+import org.jfree.graphics2d.LinearGradientPaintKey;
 import org.jfree.graphics2d.RadialGradientPaintKey;
 
 /**
@@ -191,6 +194,14 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private final Map<GradientPaintKey, String> gradientPaints 
             = new HashMap<GradientPaintKey, String>();
+    
+    /** 
+     * A map of all the linear gradients used, and the corresponding id.  When 
+     * generating the SVG file, all the linear gradient paints used must be 
+     * defined in the defs element.
+     */
+    private final Map<LinearGradientPaintKey, String> linearGradientPaints 
+            = new HashMap<LinearGradientPaintKey, String>();
     
     /** 
      * A map of all the radial gradients used, and the corresponding id.  When 
@@ -637,6 +648,17 @@ public final class SVGGraphics2D extends Graphics2D {
                 this.gradientPaintRef = id;
             } else {
                 this.gradientPaintRef = ref;
+            }
+        } else if (paint instanceof LinearGradientPaint) {
+            LinearGradientPaint lgp = (LinearGradientPaint) paint;
+            LinearGradientPaintKey key = new LinearGradientPaintKey(lgp);
+            String ref = this.linearGradientPaints.get(key);
+            if (ref == null) {
+                int count = this.linearGradientPaints.keySet().size();
+                String id = this.defsKeyPrefix + "lgp" + count;
+                this.elementIDs.add(id);
+                this.linearGradientPaints.put(key, id);
+                this.gradientPaintRef = id;
             }
         } else if (paint instanceof RadialGradientPaint) {
             RadialGradientPaint rgp = (RadialGradientPaint) paint;
@@ -1107,6 +1129,7 @@ public final class SVGGraphics2D extends Graphics2D {
         if (this.paint instanceof Color) {
             return rgbaColorStr((Color) this.paint);
         } else if (this.paint instanceof GradientPaint 
+                || this.paint instanceof LinearGradientPaint
                 || this.paint instanceof RadialGradientPaint) {
             return "url(#" + this.gradientPaintRef + ")";
         }
@@ -2139,8 +2162,8 @@ public final class SVGGraphics2D extends Graphics2D {
             int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
         int w = dx2 - dx1;
         int h = dy2 - dy1;
-        BufferedImage img2 = new BufferedImage(BufferedImage.TYPE_INT_ARGB, 
-                w, h);
+        BufferedImage img2 = new BufferedImage(w, h, 
+                BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = img2.createGraphics();
         g2.drawImage(img, 0, 0, w, h, sx1, sy1, sx2, sy2, null);
         return drawImage(img2, dx1, dx2, null);
@@ -2301,6 +2324,11 @@ public final class SVGGraphics2D extends Graphics2D {
                     key.getPaint()));
             defs.append("\n");
         }
+        for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
+            defs.append(getLinearGradientElement(
+                    this.linearGradientPaints.get(key), key.getPaint()));
+            defs.append("\n");            
+        }
         for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
             defs.append(getRadialGradientElement(
                     this.radialGradientPaints.get(key), key.getPaint()));
@@ -2360,8 +2388,6 @@ public final class SVGGraphics2D extends Graphics2D {
         return new HashSet<String>(this.elementIDs);
     }
     
-    private static final double EPSILON = 0.00000001;
-    
     /**
      * Returns an element to represent a linear gradient.  All the linear
      * gradients that are used get written to the DEFS element in the SVG.
@@ -2376,16 +2402,49 @@ public final class SVGGraphics2D extends Graphics2D {
                 .append("\" ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        boolean h = Math.abs(p1.getX() - p2.getX()) > EPSILON;
-        boolean v = Math.abs(p1.getY() - p2.getY()) > EPSILON;
-        b.append("x1=\"").append(h ? "0%" : "50%").append("\" ");
-        b.append("y1=\"").append(v ? "0%" : "50%").append("\" ");
-        b.append("x2=\"").append(h ? "100%" : "50%").append("\" ");
-        b.append("y2=\"").append(v ? "100%" : "50%").append("\">");
+        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
+        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
+        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
+        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
+        b.append("gradientUnits=\"userSpaceOnUse\">");
         b.append("<stop offset=\"0%\" style=\"stop-color: ").append(
                 rgbColorStr(paint.getColor1())).append(";\"/>");
         b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
                 rgbColorStr(paint.getColor2())).append(";\"/>");
+        return b.append("</linearGradient>").toString();
+    }
+    
+    /**
+     * Returns an element to represent a linear gradient.  All the linear
+     * gradients that are used get written to the DEFS element in the SVG.
+     * 
+     * @param id  the reference id.
+     * @param paint  the gradient.
+     * 
+     * @return The SVG element.
+     */
+    private String getLinearGradientElement(String id, LinearGradientPaint paint) {
+        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
+                .append("\" ");
+        Point2D p1 = paint.getStartPoint();
+        Point2D p2 = paint.getEndPoint();
+        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
+        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
+        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
+        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
+        if (!paint.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
+            String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT) 
+                    ? "reflect" : "repeat";
+            b.append("spreadMethod=\"").append(sm).append("\" ");
+        }
+        b.append("gradientUnits=\"userSpaceOnUse\">");
+        for (int i = 0; i < paint.getFractions().length; i++) {
+            Color c = paint.getColors()[i];
+            float fraction = paint.getFractions()[i];
+            b.append("<stop offset=\"").append(geomDP(fraction * 100))
+                    .append("%\" style=\"stop-color: ")
+                    .append(rgbColorStr(c)).append(";\"/>");
+        }
         return b.append("</linearGradient>").toString();
     }
     
