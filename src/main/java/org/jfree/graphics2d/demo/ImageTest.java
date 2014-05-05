@@ -3,16 +3,21 @@ package org.jfree.graphics2d.demo;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.MultipleGradientPaint;
+import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 
 /**
  *
@@ -39,6 +44,52 @@ public class ImageTest {
         g2.fillRect(60, 10, 50, 50);
     }
     
+    private static void drawLinearGradientPaintTest(Graphics2D g2) {
+        // top left
+        LinearGradientPaint lgp = new LinearGradientPaint(10, 30, 50, 30, new float[] {0.0f, 1.0f}, new Color[] {Color.RED, Color.BLUE});
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(10, 10, 40, 40));
+        
+        // top right
+        lgp = new LinearGradientPaint(80, 10, 80, 50, new float[] {0.0f, 1.0f}, new Color[] {Color.RED, Color.BLUE});
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(60, 10, 40, 40));
+        
+        // bottom left
+        lgp = new LinearGradientPaint(10, 100, 50, 60, new float[] {0.0f, 1.0f}, new Color[] {Color.RED, Color.BLUE});
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(10, 60, 40, 40));
+        
+        // bottom right
+        lgp = new LinearGradientPaint(70, 70, 90, 90, new float[] {0.0f, 0.5f, 1.0f}, new Color[] {Color.RED, Color.YELLOW, Color.BLUE}, CycleMethod.REPEAT);
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(60, 60, 40, 40));
+        
+    }
+    
+    private static void drawOldLinearGradientPaintTest(Graphics2D g2) {
+        // top left
+        GradientPaint lgp = new GradientPaint(10, 30, Color.RED, 50, 30, Color.BLUE);
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(10, 10, 40, 40));
+        
+        // top right
+        lgp = new GradientPaint(80, 10, Color.RED, 80, 50, Color.BLUE);
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(60, 10, 40, 40));
+        
+        // bottom left
+        lgp = new GradientPaint(10, 100, Color.RED, 50, 60, Color.BLUE);
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(10, 60, 40, 40));
+        
+        // bottom right
+        lgp = new GradientPaint(70, 70, Color.RED, 90, 90, Color.BLUE);
+        g2.setPaint(lgp);
+        g2.fill(new Rectangle2D.Double(60, 60, 40, 40));
+        
+    }
+
     private static void drawRadialGradientPaintTest(Graphics2D g2) {
         RadialGradientPaint rgp = new RadialGradientPaint(50, 50, 40, 30, 30, 
                 new float[] {0f, 0.75f, 1f}, new Color[] {Color.RED, 
@@ -107,13 +158,18 @@ public class ImageTest {
      * @throws IOException 
      */
     public static void main(String[] args) throws IOException {
-        BufferedImage image = new BufferedImage(200, 200, 
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = image.createGraphics();
-        drawClipTest(g2);
+//        BufferedImage image = new BufferedImage(200, 200, 
+//                BufferedImage.TYPE_INT_ARGB);
+//        Graphics2D g2 = image.createGraphics();
+        
+        SVGGraphics2D g2 = new SVGGraphics2D(110, 110);
+        //drawClipTest(g2);
         //drawGradientPaintTest(g2);
+        drawLinearGradientPaintTest(g2);
+        //drawOldLinearGradientPaintTest(g2);
         //drawRadialGradientPaintTest(g2);
         //drawArcTest(g2);
-        ImageIO.write(image, "png", new File("clip-test.png"));
+//        ImageIO.write(image, "png", new File("oldlgp-test.png"));
+        SVGUtils.writeToSVG(new File("lgp-test.svg"), g2.getSVGElement());
     }
 }
