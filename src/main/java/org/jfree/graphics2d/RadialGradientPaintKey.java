@@ -36,9 +36,9 @@ import java.awt.RadialGradientPaint;
 import java.util.Arrays;
 
 /**
- * A wrapper for a <code>GradientPaint</code> that can be used as the key for 
- * a <code>Map</code> (including a <code>HashMap</code>).  This class is used 
- * internally by <code>SVGGraphics2D</code> to track and re-use gradient 
+ * A wrapper for a <code>RadialGradientPaint</code> that can be used as the key
+ * for a <code>Map</code> (including a <code>HashMap</code>).  This class is 
+ * used internally by <code>SVGGraphics2D</code> to track and re-use gradient 
  * definitions.  <code>GradientPaint</code> itself does not implement the 
  * equals() and hashCode() methods, so it doesn't make a good key for a 
  * <code>Map</code>.
@@ -53,7 +53,7 @@ public class RadialGradientPaintKey {
      * @param rgp  the radial gradient paint (<code>null</code> not permitted).
      */
     public RadialGradientPaintKey(RadialGradientPaint rgp) {
-        Args.nullNotPermitted(rgp, "mgp");
+        Args.nullNotPermitted(rgp, "rgp");
         this.paint = rgp;
     }
  
