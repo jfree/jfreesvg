@@ -810,13 +810,16 @@ public final class SVGGraphics2D extends Graphics2D {
      * Sets the value for a hint.  See the {@link SVGHints} class for 
      * information about the hints that can be used with this implementation.
      * 
-     * @param hintKey  the hint key.
+     * @param hintKey  the hint key (<code>null</code> not permitted).
      * @param hintValue  the hint value.
      * 
      * @see #getRenderingHint(java.awt.RenderingHints.Key) 
      */
     @Override
     public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue) {
+        if (hintKey == null) {
+            throw new NullPointerException("Null 'hintKey' not permitted.");
+        }
         // KEY_BEGIN_GROUP and KEY_END_GROUP are handled as special cases that
         // never get stored in the hints map...
         if (SVGHints.isBeginGroupKey(hintKey)) {
@@ -1703,6 +1706,9 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void clip(Shape s) {
+        if (s instanceof Line2D) {
+            s = s.getBounds2D();
+        }
         if (this.clip == null) {
             setClip(s);
             return;
