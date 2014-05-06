@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.9, ?? ??? 2014
+Version 1.9, 6 May 2014
 
 (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 was released on 31 July 2013 and the most recent version (1.9) was released on ?? ??? 2014.  Changes since the initial release are listed towards the end of this file.
+Version 1.0 was released on 31 July 2013 and the most recent version (1.9) was released on 6 May 2014.  Changes since the initial release are listed towards the end of this file.
 
 
 Getting Started
@@ -40,10 +40,14 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 1.9 (?? ????? 2014) 
+Version 1.9 (6 May 2014) 
 - added defsKeyPrefix attribute to allow unique ids for DEFS when generating multiple SVG elements for use in a single HTML page;
+- added support for LinearGradientPaint and improved existing GradientPaint handling;
 - added KEY_ELEMENT_TITLE rendering hint;
-- added support for arbitrary key, value pairs in the KEY_START_GROUP handler.
+- added support for arbitrary key, value pairs in the KEY_START_GROUP handler;
+- added zeroStrokeWidth attribute to allow configuration of handling for BasicStroke with zero width (which the Java specification states should be "rendered as the thinnest possible line");
+- fixed a bug in the drawImage(Image, int, int, int, int, int, int, int, int, ImageObserver) method.
+
 
 Version 1.8 (11 April 2014)
 - added additional KEY_BEGIN_GROUP options, plus special integration support for Orson Charts;

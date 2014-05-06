@@ -14,11 +14,11 @@
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreesvg.name" value="jfreesvg" />
-        <property name="jfreesvg.version" value="1.8" />
+        <property name="jfreesvg.version" value="1.9" />
         <property name="jfreechart.name" value="jfreechart" />
         <property name="jfreechart.version" value="1.0.17" />
         <property name="jcommon.name" value="jcommon" />
-        <property name="jcommon.version" value="1.0.21" />
+        <property name="jcommon.version" value="1.0.22" />
         <property name="builddir" value="${basedir}/build" />
         <property name="src.version" value="1.6"/>
         <property name="target.version" value="1.6"/>
