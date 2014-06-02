@@ -259,7 +259,7 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /** 
      * The width of the SVG stroke to use when the user supplies a
-     * BasicStroke with a width of 0.0 (in this case the Java specificatin
+     * BasicStroke with a width of 0.0 (in this case the Java specification
      * says "If width is set to 0.0f, the stroke is rendered as the thinnest 
      * possible line for the target device and the antialias hint setting."
      */
@@ -534,7 +534,7 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /**
      * Returns the width to use for the SVG stroke when the AWT stroke
-     * specified has a zero width (the default value is <code>0.1</code>.  In 
+     * specified has a zero width (the default value is <code>0.1</code>).  In 
      * the Java specification for <code>BasicStroke</code> it states "If width 
      * is set to 0.0f, the stroke is rendered as the thinnest possible 
      * line for the target device and the antialias hint setting."  We don't 
