@@ -152,6 +152,20 @@ public final class SVGGraphics2D extends Graphics2D {
     
     private final int height;
     
+    /** 
+     * The shape rendering property to set for the SVG element.  Permitted
+     * values are "auto", "crispEdges", "geometricPrecision" and
+     * "optimizeSpeed".
+     */
+    private String shapeRendering = "auto";
+    
+    /**
+     * The text rendering property for the SVG element.  Permitted values 
+     * are "auto", "optimizeSpeed", "optimizeLegibility" and 
+     * "geometricPrecision".
+     */
+    private String textRendering = "auto";
+    
     /** Rendering hints (see SVGHints). */
     private final RenderingHints hints;
     
@@ -261,7 +275,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * The width of the SVG stroke to use when the user supplies a
      * BasicStroke with a width of 0.0 (in this case the Java specification
      * says "If width is set to 0.0f, the stroke is rendered as the thinnest 
-     * possible line for the target device and the antialias hint setting."
+     * possible line for the target device and the antialias hint setting.")
      */
     private double zeroStrokeWidth;
     
@@ -331,8 +345,26 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param height  the height of the SVG element.
      */
     public SVGGraphics2D(int width, int height) {
+        this(width, height, new StringBuilder());
+    }
+    
+    /**
+     * Creates a new instance with the specified width and height that will
+     * populate the supplied StringBuilder instance.  This constructor is 
+     * used by the {@link #create()} method, but won't normally be called
+     * directly by user code.
+     * 
+     * @param width  the width of the SVG element.
+     * @param height  the height of the SVG element.
+     * @param sb  the string builder (<code>null</code> not permitted).
+     * 
+     * @since 2.0
+     */
+    public SVGGraphics2D(int width, int height, StringBuilder sb) {
         this.width = width;
         this.height = height;
+        this.shapeRendering = "auto";
+        this.textRendering = "auto";
         this.defsKeyPrefix = "";
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
@@ -341,7 +373,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.font = new Font("SansSerif", Font.PLAIN, 12);
         this.fontMapper = new StandardFontMapper();
         this.zeroStrokeWidth = 0.1;
-        this.sb = new StringBuilder();
+        this.sb = sb;
         this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
         // force the formatters to use a '.' for the decimal point
@@ -372,6 +404,66 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public int getHeight() {
         return this.height;
+    }
+    
+    /**
+     * Returns the value of the 'shape-rendering' property that will be 
+     * written to the SVG element.  The default value is "auto".
+     * 
+     * @return The shape rendering property.
+     * 
+     * @since 2.0
+     */
+    public String getShapeRendering() {
+        return this.shapeRendering;
+    }
+    
+    /**
+     * Sets the value of the 'shape-rendering' property that will be written to
+     * the SVG element.  Permitted values are "auto", "crispEdges", 
+     * "geometricPrecision", "inherit" and "optimizeSpeed".
+     * 
+     * @param value  the new value.
+     * 
+     * @since 2.0
+     */
+    public void setShapeRendering(String value) {
+        if (!value.equals("auto") && !value.equals("crispEdges") 
+                && !value.equals("geometricPrecision") 
+                && !value.equals("optimizeSpeed")) {
+            throw new IllegalArgumentException("Unrecognised value: " + value);
+        }
+        this.shapeRendering = value;
+    }
+    
+    /**
+     * Returns the value of the 'text-rendering' property that will be 
+     * written to the SVG element.  The default value is "auto".
+     * 
+     * @return The text rendering property.
+     * 
+     * @since 2.0
+     */
+    public String getTextRendering() {
+        return this.textRendering;
+    }
+    
+    /**
+     * Sets the value of the 'text-rendering' property that will be written to
+     * the SVG element.  Permitted values are "auto", "optimizeSpeed", 
+     * "optimizeLegibility" and "geometricPrecision".
+     * 
+     * @param value  the new value.
+     * 
+     * @since 2.0
+     */
+    public void setTextRendering(String value) {
+        if (!value.equals("auto") && !value.equals("optimizeSpeed") 
+                && !value.equals("optimizeLegibility") 
+                && !value.equals("geometricPrecision")) {
+            throw new IllegalArgumentException("Unrecognised value: " + value);
+        }
+        this.textRendering = value;
     }
     
     /**
@@ -588,15 +680,16 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public Graphics create() {
-        SVGGraphics2D copy = new SVGGraphics2D(this.width, this.height);
+        SVGGraphics2D copy = new SVGGraphics2D(this.width, this.height, 
+                this.sb);
         copy.setRenderingHints(getRenderingHints());
+        copy.setTransform(getTransform());
         copy.setClip(getClip());
         copy.setPaint(getPaint());
         copy.setColor(getColor());
         copy.setComposite(getComposite());
         copy.setStroke(getStroke());
         copy.setFont(getFont());
-        copy.setTransform(getTransform());
         copy.setBackground(getBackground());
         copy.setFilePrefix(getFilePrefix());
         copy.setFileSuffix(getFileSuffix());
@@ -1354,14 +1447,13 @@ public final class SVGGraphics2D extends Graphics2D {
                 .append("\" y=\"").append(geomDP(y))
                 .append("\"");
         this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
-        String textRenderValue = "auto";
         Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
         if (hintValue != null) {
-            textRenderValue = hintValue.toString();
+            String textRenderValue = hintValue.toString();
+            this.sb.append(" text-rendering=\"").append(textRenderValue)
+                    .append("\"");
         }
-        this.sb.append(" text-rendering=\"").append(textRenderValue)
-                .append("\" ");
-        this.sb.append(getClipPathRef());
+        this.sb.append(" ").append(getClipPathRef());
         this.sb.append(">");
         this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
         this.sb.append("</g>");
@@ -2322,8 +2414,11 @@ public final class SVGGraphics2D extends Graphics2D {
         svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
            .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
            .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ")
-           .append("width=\"").append(width)
-           .append("\" height=\"").append(height).append("\">\n");
+           .append("width=\"").append(this.width)
+           .append("\" height=\"").append(this.height)
+           .append("\" text-rendering=\"").append(this.textRendering)
+           .append("\" shape-rendering=\"").append(this.shapeRendering)
+           .append("\">\n");
         StringBuilder defs = new StringBuilder("<defs>");
         for (GradientPaintKey key : this.gradientPaints.keySet()) {
             defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
