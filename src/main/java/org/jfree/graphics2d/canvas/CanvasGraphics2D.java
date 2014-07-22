@@ -70,7 +70,7 @@ import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
 
 /**
- * A <code>Graphics2D</code> implementation that writes out Javascript code 
+ * A <code>Graphics2D</code> implementation that writes out JavaScript code 
  * that will draw to an HTML5 Canvas. 
  * <p>
  * Implementation notes:
