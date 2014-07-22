@@ -205,6 +205,10 @@ public final class SVGHints {
             endGroupKeys.add(getOrsonChartsEndElementKey());
             elementTitleKeys.add(getOrsonChartsElementTitleKey());
         }
+        if (isJFreeChartOnClasspath()) {
+            beginGroupKeys.add(getJFreeChartBeginElementKey());
+            endGroupKeys.add(getJFreeChartBeginElementKey());
+        }
     }
     
     /**
@@ -425,12 +429,30 @@ public final class SVGHints {
         return (getOrsonChartsBeginElementKey() != null);
     }
     
-    private static RenderingHints.Key getOrsonChartsBeginElementKey() {
-        Class<?> renderingHintsClass;
+    /**
+     * Returns <code>true</code> if JFreeChart (1.0.18 or later) is on 
+     * the classpath, and <code>false</code> otherwise.  This method is used to
+     * auto-register keys from JFreeChart that should translate to the 
+     * behaviour of {@link SVGHints#KEY_BEGIN_GROUP} and 
+     * {@link SVGHints#KEY_END_GROUP}.
+     * 
+     * <p>The JFreeChart library can be found at <a href="http://www.jfree.org/jfreechart/">
+     * http://www.jfree.org/jfreechart/</a>.
+     * 
+     * @return A boolean.
+     * 
+     * @since 2.0
+     */
+    private static boolean isJFreeChartOnClasspath() {
+        return (getJFreeChartBeginElementKey() != null);
+    }
+
+    private static RenderingHints.Key fetchKey(String className, 
+            String fieldName) {
+        Class<?> hintsClass;
         try {
-            renderingHintsClass 
-                    = Class.forName("com.orsoncharts.Chart3DHints");
-            Field f = renderingHintsClass.getDeclaredField("KEY_BEGIN_ELEMENT");
+            hintsClass = Class.forName(className);
+            Field f = hintsClass.getDeclaredField(fieldName);
             return (RenderingHints.Key) f.get(null);
         } catch (ClassNotFoundException e) {
             return null;
@@ -443,46 +465,26 @@ public final class SVGHints {
         } catch (IllegalAccessException ex) {
             return null;
         }
+    }
+    
+    private static RenderingHints.Key getOrsonChartsBeginElementKey() {
+        return fetchKey("com.orsoncharts.Chart3DHints", "KEY_BEGIN_ELEMENT");
     }
 
     private static RenderingHints.Key getOrsonChartsEndElementKey() {
-        Class<?> renderingHintsClass;
-        try {
-            renderingHintsClass 
-                    = Class.forName("com.orsoncharts.Chart3DHints");
-            Field f = renderingHintsClass.getDeclaredField("KEY_END_ELEMENT");
-            return (RenderingHints.Key) f.get(null);
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (NoSuchFieldException ex) {
-            return null;
-        } catch (SecurityException ex) {
-            return null;
-        } catch (IllegalArgumentException ex) {
-            return null;
-        } catch (IllegalAccessException ex) {
-            return null;
-        }
+        return fetchKey("com.orsoncharts.Chart3DHints", "KEY_END_ELEMENT");
     }
 
     private static RenderingHints.Key getOrsonChartsElementTitleKey() {
-        Class<?> renderingHintsClass;
-        try {
-            renderingHintsClass 
-                    = Class.forName("com.orsoncharts.Chart3DHints");
-            Field f = renderingHintsClass.getDeclaredField("KEY_ELEMENT_TITLE");
-            return (RenderingHints.Key) f.get(null);
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (NoSuchFieldException ex) {
-            return null;
-        } catch (SecurityException ex) {
-            return null;
-        } catch (IllegalArgumentException ex) {
-            return null;
-        } catch (IllegalAccessException ex) {
-            return null;
-        }
+        return fetchKey("com.orsoncharts.Chart3DHints", "KEY_ELEMENT_TITLE");
+    }
+
+    private static RenderingHints.Key getJFreeChartBeginElementKey() {
+        return fetchKey("org.jfree.chart.ChartHints", "KEY_BEGIN_ELEMENT");
+    }
+
+    private static RenderingHints.Key getJFreeChartEndElementKey() {
+        return fetchKey("org.jfree.chart.ChartHints", "KEY_END_ELEMENT");
     }
 
     /**
