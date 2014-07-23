@@ -14,17 +14,14 @@
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreesvg.name" value="jfreesvg" />
-        <property name="jfreesvg.version" value="1.9" />
-        <property name="jfreechart.name" value="jfreechart" />
-        <property name="jfreechart.version" value="1.0.17" />
-        <property name="jcommon.name" value="jcommon" />
-        <property name="jcommon.version" value="1.0.22" />
+        <property name="jfreesvg.version" value="2.0" />
+        <property name="jfreechart.name" value="jfreechart-nofx" />
+        <property name="jfreechart.version" value="2.0-pre1" />
         <property name="builddir" value="${basedir}/build" />
         <property name="src.version" value="1.6"/>
         <property name="target.version" value="1.6"/>
         <path id="build.classpath">
             <fileset dir="${basedir}/lib/">
-                <include name="${jcommon.name}-${jcommon.version}.jar"/>
                 <include name="${jfreechart.name}-${jfreechart.version}.jar"/>
             </fileset>
         </path>
@@ -115,9 +112,8 @@
         <!-- copy across runtime jar file -->
         <copy file="${basedir}/lib/${jfreesvg.name}-${jfreesvg.version}.jar" tofile="${basedir}/distribution/${jfreesvg.name}-${jfreesvg.version}.jar" />
 
-        <!-- copy across JFreeChart and JCommon jar files -->
+        <!-- copy across JFreeChart jar file and license -->
         <copy file="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}.jar" />
-        <copy file="${basedir}/lib/${jcommon.name}-${jcommon.version}.jar" tofile="${basedir}/distribution/lib/${jcommon.name}-${jcommon.version}.jar" />
         <copy file="${basedir}/lib/license-LGPL.txt" tofile="${basedir}/distribution/lib/license-LGPL.txt" />
 
         <!-- copy across source files -->
