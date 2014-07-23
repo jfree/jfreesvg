@@ -282,6 +282,14 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The last font that was set. */
     private Font font;
 
+    /** 
+     * The font render context.  The fractional metrics flag solves the glyph
+     * positioning issue identified by Christoph Nahr:
+     * http://news.kynosarges.org/2014/06/28/glyph-positioning-in-jfreesvg-orsonpdf/
+     */
+    private final FontRenderContext fontRenderContext = new FontRenderContext(
+            null, false, true);
+
     /** Maps font family names to alternates (or leaves them unchanged). */
     private FontMapper fontMapper;
         
@@ -1402,7 +1410,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public FontRenderContext getFontRenderContext() {
-        return this.fmImage.createGraphics().getFontRenderContext();
+        return this.fontRenderContext;
     }
 
     /**
