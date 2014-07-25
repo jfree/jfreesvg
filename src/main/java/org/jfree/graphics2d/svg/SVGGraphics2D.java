@@ -113,17 +113,20 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * {@code &nbsp;&nbsp;&nbsp;&nbsp;String svgElement = g2.getSVGElement();<br>}
  * <p>
  * For the content generation step, you can make use of third party libraries,
- * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a>, that 
+ * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and
+ * <a href="http://www.object-refinery.com/orsoncharts/">Orson Charts</a>, that 
  * render output using standard Java2D API calls.
  * <p>
  * <b>Rendering Hints</b><br>
  * The {@code SVGGraphics2D} supports a couple of custom rendering hints -  
- * for details, refer to the {@link SVGHints} class documentation.
+ * for details, refer to the {@link SVGHints} class documentation.  Also see
+ * the examples in this blog post: 
+ * <a href="http://www.object-refinery.com/blog/blog-20140509.html">
+ * Orson Charts 3D / Enhanced SVG Export</a>.
  * <p>
  * <b>Other Notes</b><br>
  * Some additional notes:
  * <ul>
- *
  * <li>Images are supported, but for methods with an {@code ImageObserver}
  * parameter note that the observer is ignored completely.  In any case, using 
  * images that are not fully loaded already would not be a good idea in the 
@@ -138,10 +141,16 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * <li>there are settings to control the number of decimal places used to
  * write the coordinates for geometrical elements (default 2dp) and transform
  * matrices (default 6dp).  These defaults may change in a future release.</li>
+ * 
+ * <li>when an HTML page contains multiple SVG elements, the items within
+ * the DEFS element for each SVG element must have IDs that are unique across 
+ * <em>all</em> SVG elements in the page.  We auto-populate the 
+ * {@code defsKeyPrefix} attribute to help ensure that unique IDs are 
+ * generated.</li>
  * </ul>
  *
- * For some demos showing how to use this class, look in the
- * {@code org.jfree.graphics2d.demo} package in the{@code src} directory.
+ * <p>For some demos showing how to use this class, look in the
+ * {@code org.jfree.graphics2d.demo} package in the{@code src} directory.</p>
  */
 public final class SVGGraphics2D extends Graphics2D {
 
@@ -373,7 +382,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.height = height;
         this.shapeRendering = "auto";
         this.textRendering = "auto";
-        this.defsKeyPrefix = "";
+        this.defsKeyPrefix = String.valueOf(System.nanoTime());
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
         this.filePrefix = "image-";
@@ -476,7 +485,7 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /**
      * Returns the prefix used for all keys in the DEFS element.  The default
-     * value is the empty string.
+     * value is {@code String.valueOf(System.nanoTime())}.
      * 
      * @return The prefix string (never {@code null}).
      * 
