@@ -106,8 +106,8 @@
         <!-- copy across README  -->
         <copy file="${basedir}/README.md" tofile="${basedir}/distribution/README.md" />
 
-        <!-- copy across agpl-3.0.txt  -->
-        <copy file="${basedir}/agpl-3.0.txt" tofile="${basedir}/distribution/agpl-3.0.txt" />
+        <!-- copy across gpl-3.0.txt  -->
+        <copy file="${basedir}/gpl-3.0.txt" tofile="${basedir}/distribution/gpl-3.0.txt" />
 
         <!-- copy across runtime jar file -->
         <copy file="${basedir}/lib/${jfreesvg.name}-${jfreesvg.version}.jar" tofile="${basedir}/distribution/${jfreesvg.name}-${jfreesvg.version}.jar" />
@@ -119,7 +119,6 @@
         <!-- copy across source files -->
         <copy todir="${basedir}/distribution/src">
             <fileset dir="${basedir}/src">
-                <exclude name="test/**"/>
             </fileset>
         </copy>
 
