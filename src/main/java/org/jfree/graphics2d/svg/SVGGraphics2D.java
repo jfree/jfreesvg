@@ -1402,11 +1402,9 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the font render context.  The implementation here returns the
-     * <code>FontRenderContext</code> for an image that is maintained 
-     * internally (as for {@link #getFontMetrics}).
+     * Returns the font render context.
      * 
-     * @return The font render context.
+     * @return The font render context (never {@code null}).
      */
     @Override
     public FontRenderContext getFontRenderContext() {
