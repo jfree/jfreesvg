@@ -74,6 +74,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
+import java.text.AttributedString;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -1443,24 +1444,31 @@ public final class SVGGraphics2D extends Graphics2D {
         if (str == null) {
             throw new NullPointerException("Null 'str' argument.");
         }
-        this.sb.append("<g ");
-        appendOptionalElementIDFromHint(this.sb);
-        this.sb.append("transform=\"").append(getSVGTransform(
+        if (!SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR.equals(
+                this.hints.get(SVGHints.KEY_DRAW_STRING_TYPE))) {
+            this.sb.append("<g ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("transform=\"").append(getSVGTransform(
                     this.transform)).append("\">");
-        this.sb.append("<text x=\"").append(geomDP(x))
-                .append("\" y=\"").append(geomDP(y))
-                .append("\"");
-        this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
-        Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
-        if (hintValue != null) {
-            String textRenderValue = hintValue.toString();
-            this.sb.append(" text-rendering=\"").append(textRenderValue)
+            this.sb.append("<text x=\"").append(geomDP(x))
+                    .append("\" y=\"").append(geomDP(y))
                     .append("\"");
+            this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
+            Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
+            if (hintValue != null) {
+                String textRenderValue = hintValue.toString();
+                this.sb.append(" text-rendering=\"").append(textRenderValue)
+                        .append("\"");
+            }
+            this.sb.append(" ").append(getClipPathRef());
+            this.sb.append(">");
+            this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
+            this.sb.append("</g>");
+        } else {
+            AttributedString as = new AttributedString(str, 
+                    this.font.getAttributes());
+            drawString(as.getIterator(), x, y);
         }
-        this.sb.append(" ").append(getClipPathRef());
-        this.sb.append(">");
-        this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
-        this.sb.append("</g>");
     }
 
     /**

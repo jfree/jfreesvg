@@ -177,6 +177,36 @@ public final class SVGHints {
      * @since 1.9
      */
     public static final SVGHints.Key KEY_ELEMENT_TITLE = new SVGHints.Key(6);
+
+    /**
+     * The key for the hint that controls whether strings are rendered as
+     * characters or vector graphics (implemented using {@code TextLayout}).  
+     * The latter will result in larger output files but avoids problems with
+     * fonts not being available for the viewer.  Valid hint values are 
+     * {@link #VALUE_DRAW_STRING_TYPE_STANDARD} and 
+     * {@link #VALUE_DRAW_STRING_TYPE_VECTOR}.
+     * 
+     * @since 2.0
+     */
+    public static final SVGHints.Key KEY_DRAW_STRING_TYPE = new SVGHints.Key(7);
+    
+    /**
+     * Hint value for {@code KEY_DRAW_STRING_TYPE} to specify that strings
+     * should be written to the output using standard SVG text elements.
+     * 
+     * @since 2.0
+     */
+    public static final Object VALUE_DRAW_STRING_TYPE_STANDARD 
+            = "VALUE_DRAW_STRING_TYPE_STANDARD";
+    
+    /**
+     * Hint value for {@code KEY_DRAW_STRING_TYPE} to say that strings
+     * should be written to the output using vector graphics primitives.
+     * 
+     * @since 2.0
+     */
+    public static final Object VALUE_DRAW_STRING_TYPE_VECTOR
+            = "VALUE_DRAW_STRING_TYPE_VECTOR";
     
     /**
      * A list of keys that are treated as synonyms for KEY_BEGIN_GROUP
@@ -531,6 +561,10 @@ public final class SVGHints {
                     return true; // the value is ignored
                 case 6: // KEY_ELEMENT_TITLE
                     return val instanceof String;
+                case 7:
+                    return val == null 
+                            || VALUE_DRAW_STRING_TYPE_STANDARD.equals(val)
+                            || VALUE_DRAW_STRING_TYPE_VECTOR.equals(val);
                 default:
                     throw new RuntimeException("Not possible!");
             }
