@@ -1239,7 +1239,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private String svgColorStr() {
         String result = "black;";
         if (this.paint instanceof Color) {
-            return rgbaColorStr((Color) this.paint);
+            return rgbColorStr((Color) this.paint);
         } else if (this.paint instanceof GradientPaint 
                 || this.paint instanceof LinearGradientPaint
                 || this.paint instanceof RadialGradientPaint) {
@@ -1298,7 +1298,8 @@ public final class SVGGraphics2D extends Graphics2D {
         StringBuilder b = new StringBuilder();
         b.append("stroke-width: ").append(strokeWidth).append(";");
         b.append("stroke: ").append(svgColorStr()).append(";");
-        b.append("stroke-opacity: ").append(getAlpha()).append(";");
+        b.append("stroke-opacity: ").append(getColorAlpha() * getAlpha())
+                .append(";");
         if (dashArray != null && dashArray.length != 0) {
             b.append("stroke-dasharray: ");
             for (int i = 0; i < dashArray.length; i++) {
@@ -1311,6 +1312,20 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
+     * Returns the alpha value of the current {@code paint}, or {@code 1.0f} if
+     * it is not an instance of {@code Color}.
+     * 
+     * @return The alpha value (in the range {@code 0.0} to {@code 1.0}. 
+     */
+    private float getColorAlpha() {
+        if (this.paint instanceof Color) {
+            Color c = (Color) this.paint;
+            return c.getAlpha() / 255.0f; 
+        } 
+        return 1f;
+    }
+    
+    /**
      * Returns a fill style string based on the current paint and
      * alpha settings.
      * 
@@ -1318,8 +1333,8 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill: ").append(svgColorStr()).append(";");
-        b.append("fill-opacity: ").append(getAlpha());
+        b.append("fill: ").append(svgColorStr()).append("; ");
+        b.append("fill-opacity: ").append(getColorAlpha() * getAlpha());
         return b.toString();
     }
 
@@ -1385,6 +1400,8 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getSVGFontStyle() {
         StringBuilder b = new StringBuilder();
         b.append("fill: ").append(svgColorStr()).append("; ");
+        b.append("fill-opacity: ").append(getColorAlpha() * getAlpha())
+                .append("; ");
         String fontFamily = this.fontMapper.mapFont(this.font.getFamily());
         b.append("font-family: ").append(fontFamily).append("; ");
         b.append("font-size: ").append(this.font.getSize()).append("px; ");
