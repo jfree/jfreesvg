@@ -179,6 +179,12 @@ public final class SVGGraphics2D extends Graphics2D {
     private final RenderingHints hints;
     
     /** 
+     * A flag that controls whether or not the KEY_STROKE_CONTROL hint is
+     * checked.
+     */
+    private boolean checkStrokeControlHint = true;
+    
+    /** 
      * The number of decimal places to use when writing the matrix values
      * for transformations. 
      */
@@ -481,6 +487,35 @@ public final class SVGGraphics2D extends Graphics2D {
             throw new IllegalArgumentException("Unrecognised value: " + value);
         }
         this.textRendering = value;
+    }
+    
+    /**
+     * Returns the flag that controls whether or not this object will observe
+     * the {@code KEY_STROKE_CONTROL} rendering hint.  The default value is
+     * {@code true}.
+     * 
+     * @return A boolean.
+     * 
+     * @see #setCheckStrokeControlHint(boolean) 
+     * @since 2.0
+     */
+    public boolean getCheckStrokeControlHint() {
+        return this.checkStrokeControlHint;
+    }
+    
+    /**
+     * Sets the flag that controls whether or not this object will observe
+     * the {@code KEY_STROKE_CONTROL} rendering hint.  When enabled (the 
+     * default), a hint to normalise strokes will write a {@code stroke-style}
+     * attribute with the value {@code crispEdges}. 
+     * 
+     * @param check  the new flag value.
+     * 
+     * @see #getCheckStrokeControlHint() 
+     * @since 2.0
+     */
+    public void setCheckStrokeControlHint(boolean check) {
+        this.checkStrokeControlHint = check;
     }
     
     /**
@@ -1307,6 +1342,17 @@ public final class SVGGraphics2D extends Graphics2D {
                 b.append(dashArray[i]);
             }
             b.append(";");
+        }
+        if (this.checkStrokeControlHint) {
+            Object hint = getRenderingHint(RenderingHints.KEY_STROKE_CONTROL);
+            if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint) 
+                    && !this.shapeRendering.equals("crispEdges")) {
+                b.append("shape-rendering:crispEdges;");
+            }
+            if (RenderingHints.VALUE_STROKE_PURE.equals(hint) 
+                    && !this.shapeRendering.equals("geometricPrecision")) {
+                b.append("shape-rendering:geometricPrecision;");
+            }
         }
         return b.toString();
     }
