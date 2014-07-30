@@ -41,7 +41,8 @@
                debug="on"
                deprecation="true"
                source="${src.version}"
-               target="${target.version}">
+               target="${target.version}"
+               includeantruntime="false">
             <classpath refid="build.classpath" />
         </javac>
 
