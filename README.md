@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 1.9, 6 May 2014
+Version 2.0, 30 July 2014
 
 (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
 
@@ -12,33 +12,42 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-Version 1.0 was released on 31 July 2013 and the most recent version (1.9) was released on 6 May 2014.  Changes since the initial release are listed towards the end of this file.
+This version (2.0) was released on 30 July 2014.  A change history appears at the end of this file.
 
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-1.9.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-2.0.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
        http://docs.oracle.com/javase/tutorial/2d/
 
-There are some demonstration applications included in the org.jfree.graphics2d.demo.* package.  These applications make use of JFreeChart, so you'll find two additional jars in the 'lib' directory (jfreechart-1.0.17.jar and jcommon-1.0.22.jar).  These are required for the demo code only.
+There are some demonstration applications included in the org.jfree.graphics2d.demo.* package.  These applications make use of JFreeChart, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
 
 
 License
 -------
-JFreeSVG is free software under the terms of the GNU Affero General Public License version 3 (AGPLv3) or later.  The license file is included in this distribution (agpl-3.0.txt).  If you prefer not to be bound by the terms of the AGPLv3, you can purchase an alternative license from Object Refinery Limited (please e-mail info@object-refinery.com for details, or check the JFreeSVG home page).
+JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license from Object Refinery Limited (please e-mail info@object-refinery.com for details, or check the JFreeSVG home page).
 
 Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Please refer to the license for details.
 
 Other code distributed with JFreeSVG:
 
-- the JFreeChart and JCommon libraries (required for the demos only) are licensed under the GNU Lesser General Public License (GNU LGPL), a copy of this license can be found in the lib folder (the LGPL is not the same as the AGPL).  To get the source code and other information about JFreeChart and JCommon, please visit http://www.jfree.org/jfreechart/ 
+- the JFreeChart library (required for the demos only) is licensed under the GNU Lesser General Public License (GNU LGPL), a copy of this license can be found in the lib folder (the LGPL is not the same as the GPL).  To get the source code and other information about JFreeChart, please visit http://www.jfree.org/jfreechart/ 
 
 
 Change History
 --------------
+
+Version 2.0 (30 July 2014)
+- added configurable text-rendering and shape-rendering properties to the SVG element;
+- observe KEY_STROKE_CONTROL rendering hints;
+- fixed create() method so that Swing components can be rendered correctly;
+- modified the font render context info to fix glyph positioning for text drawn as vector graphics;
+- write colors using rgb() rather than rgba(), and write the alpha value to separate opacity attribute; 
+- changed the license from AGPLv3 to GPLv3.
+
 
 Version 1.9 (6 May 2014) 
 - added defsKeyPrefix attribute to allow unique ids for DEFS when generating multiple SVG elements for use in a single HTML page;
