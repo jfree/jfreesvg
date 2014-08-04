@@ -237,7 +237,7 @@ public final class SVGHints {
         }
         if (isJFreeChartOnClasspath()) {
             beginGroupKeys.add(getJFreeChartBeginElementKey());
-            endGroupKeys.add(getJFreeChartBeginElementKey());
+            endGroupKeys.add(getJFreeChartEndElementKey());
         }
     }
     
