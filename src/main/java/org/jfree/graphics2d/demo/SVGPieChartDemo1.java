@@ -34,8 +34,6 @@ package org.jfree.graphics2d.demo;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Point;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -44,14 +42,16 @@ import java.io.IOException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.drawable.GradientPainter;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.ui.HorizontalAlignment;
+import org.jfree.chart.ui.RectangleAnchor;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
-import org.jfree.ui.HorizontalAlignment;
-import org.jfree.ui.RectangleEdge;
 
 /**
  * A demo/test for a pie chart.
@@ -92,15 +92,13 @@ public class SVGPieChartDemo1 {
 
         JFreeChart chart = ChartFactory.createPieChart(
             "Smart Phones Manufactured / Q3 2011",  // chart title
-            dataset,            // data
-            false,              // no legend
-            true,               // tooltips
-            false               // no URL generation
-        );
+            dataset);
+        chart.removeLegend();
 
         // set a custom background for the chart
-        chart.setBackgroundPaint(new GradientPaint(new Point(0, 0), 
-                new Color(20, 20, 20), new Point(400, 200), Color.DARK_GRAY));
+        chart.setBackgroundPainter(new GradientPainter(new Color(20, 20, 20), 
+                RectangleAnchor.TOP_LEFT, Color.DARK_GRAY, 
+                RectangleAnchor.BOTTOM_RIGHT));
 
         // customise the title position and font
         TextTitle t = chart.getTitle();
@@ -109,9 +107,9 @@ public class SVGPieChartDemo1 {
         t.setFont(new Font("Arial", Font.BOLD, 26));
 
         PiePlot plot = (PiePlot) chart.getPlot();
-        plot.setBackgroundPaint(null);
+        plot.setBackgroundPainter(null);
         plot.setInteriorGap(0.04);
-        plot.setOutlineVisible(false);
+        plot.setBorderPainter(null);
 
         // use gradients and white borders for the section colours
         plot.setSectionPaint("Others", createGradientPaint(new Color(200, 200, 255), Color.BLUE));
