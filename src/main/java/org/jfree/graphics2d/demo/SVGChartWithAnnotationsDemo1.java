@@ -49,11 +49,12 @@ import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.TickUnitSource;
 import org.jfree.chart.axis.TickUnits;
+import org.jfree.chart.drawable.ColorPainter;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.time.Month;
@@ -63,7 +64,6 @@ import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
-import org.jfree.ui.RectangleInsets;
 
 /**
  * A demo/test for a pie chart.
@@ -80,8 +80,7 @@ public class SVGChartWithAnnotationsDemo1 {
     private static JFreeChart createChart(XYDataset dataset) {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "XYDrawableAnnotationDemo1",
-                null, "$ million", dataset,
-                true, true, false);
+                null, "$ million", dataset);
         XYPlot plot = (XYPlot) chart.getPlot();
         plot.setDomainPannable(true);
         plot.setRangePannable(true);
@@ -106,7 +105,7 @@ public class SVGChartWithAnnotationsDemo1 {
         renderer.setSeriesFillPaint(1, Color.white);
         renderer.setUseFillPaint(true);
 
-        renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator());
+        renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
         renderer.setDefaultEntityRadius(6);
 
         renderer.addAnnotation(new XYDrawableAnnotation(
@@ -147,14 +146,14 @@ public class SVGChartWithAnnotationsDemo1 {
         dataset.setValue("Research", 13.2);
         dataset.setValue("Advertising", 20.9);
         PiePlot plot = new PiePlot(dataset);
-        plot.setBackgroundPaint(null);
-        plot.setOutlinePaint(null);
+        plot.setBackgroundPainter(null);
+        plot.setBorderPainter(null);
         plot.setBaseSectionOutlinePaint(Color.white);
         plot.setBaseSectionOutlineStroke(new BasicStroke(2.0f));
         plot.setLabelFont(new Font("Dialog", Font.PLAIN, 18));
         plot.setMaximumLabelWidth(0.25);
         JFreeChart chart = new JFreeChart(plot);
-        chart.setBackgroundPaint(null);
+        chart.setBackgroundPainter(null);
         chart.removeLegend();
         chart.setPadding(RectangleInsets.ZERO_INSETS);
         return chart;
@@ -171,9 +170,11 @@ public class SVGChartWithAnnotationsDemo1 {
         dataset.addValue(8.5, "R2", "Q3");
         dataset.addValue(4.3, "R2", "Q4");
         JFreeChart chart = ChartFactory.createBarChart("Sales 2008", null,
-                null, dataset, PlotOrientation.VERTICAL, false, false, false);
-        chart.setBackgroundPaint(null);
-        chart.getPlot().setBackgroundPaint(new Color(200, 200, 255, 60));
+                null, dataset);
+        chart.removeLegend();
+        chart.setBackgroundPainter(null);
+        chart.getPlot().setBackgroundPainter(new ColorPainter(
+                new Color(200, 200, 255, 60)));
         return chart;
     }
 
