@@ -44,16 +44,18 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
-import org.jfree.ui.HorizontalAlignment;
 
 /**
- * A demo for SVG output of a time series chart.
+ * A demo for SVG output of a time series chart.  Running this application
+ * will save a file {@code SVGTimeSeriesChartDemo1.svg} to the filesystem - you
+ * can open this file in a browser to see the resulting chart.
  */
 public class SVGTimeSeriesChartDemo1 {
     
@@ -68,7 +70,7 @@ public class SVGTimeSeriesChartDemo1 {
 
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
             "International Coffee Organisation : Coffee Prices",
-            null, "US cents/lb", dataset, true, false, false);
+            null, "US cents/lb", dataset);
 
         String fontName = "Palatino";
         chart.getTitle().setFont(new Font(fontName, Font.BOLD, 18));
@@ -86,8 +88,8 @@ public class SVGTimeSeriesChartDemo1 {
         plot.getDomainAxis().setTickLabelFont(new Font(fontName, Font.PLAIN, 12));
         plot.getRangeAxis().setLabelFont(new Font(fontName, Font.BOLD, 14));
         plot.getRangeAxis().setTickLabelFont(new Font(fontName, Font.PLAIN, 12));
-        plot.setRangeGridlinePaint(Color.red);
-        plot.setDomainGridlinePaint(Color.red);
+        plot.setRangeGridlinePaint(Color.GRAY);
+        plot.setDomainGridlinePaint(Color.GRAY);
         chart.getLegend().setItemFont(new Font(fontName, Font.PLAIN, 14));
         chart.getLegend().setFrame(BlockBorder.NONE);
         chart.getLegend().setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -98,8 +100,8 @@ public class SVGTimeSeriesChartDemo1 {
             renderer.setDrawSeriesLineAsPath(true);
             // set the default stroke for all series
             renderer.setAutoPopulateSeriesStroke(false);
-            renderer.setBaseStroke(new BasicStroke(3.0f, BasicStroke.CAP_ROUND, 
-                    BasicStroke.JOIN_BEVEL), false);
+            renderer.setDefaultStroke(new BasicStroke(3.0f, 
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), false);
             renderer.setSeriesPaint(0, Color.RED);
             renderer.setSeriesPaint(1, new Color(24, 123, 58));
             renderer.setSeriesPaint(2, new Color(149, 201, 136));
