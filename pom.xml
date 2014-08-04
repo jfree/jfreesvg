@@ -4,7 +4,7 @@
  
   <groupId>org.jfree</groupId>
   <artifactId>jfreesvg</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
   <packaging>jar</packaging>
  
   <!-- this is required to host it on Sonatype's OSSRH -->

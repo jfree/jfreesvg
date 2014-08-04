@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 2.0, 30 July 2014
+Version 2.1, 4 August 2014
 
 (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-This version (2.0) was released on 30 July 2014.  A change history appears at the end of this file.
+This version (2.1) was released on 4 August 2014.  A change history appears at the end of this file.
 
 
 Getting Started
@@ -39,6 +39,11 @@ Other code distributed with JFreeSVG:
 
 Change History
 --------------
+
+Version 2.1 (4 August 2014)
+- fixed bug with element end tag for JFreeChart;
+- fixed compilation error in demos.
+
 
 Version 2.0 (30 July 2014)
 - added configurable text-rendering and shape-rendering properties to the SVG element;
