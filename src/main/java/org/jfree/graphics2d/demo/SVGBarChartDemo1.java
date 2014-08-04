@@ -45,11 +45,11 @@ import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.StatisticalBarRenderer;
+import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.jfree.graphics2d.svg.SVGUtils;
-import org.jfree.ui.TextAnchor;
 
 /**
  * A demo/test for a bar chart.
@@ -104,11 +104,11 @@ public class SVGBarChartDemo1 {
         // ensure the current theme is applied to the renderer just added
         ChartUtilities.applyCurrentTheme(chart);
 
-        renderer.setBaseItemLabelGenerator(
+        renderer.setDefaultItemLabelGenerator(
                 new StandardCategoryItemLabelGenerator());
-        renderer.setBaseItemLabelsVisible(true);
-        renderer.setBaseItemLabelPaint(Color.yellow);
-        renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+        renderer.setDefaultItemLabelsVisible(true);
+        renderer.setDefaultItemLabelPaint(Color.yellow);
+        renderer.setDefaultPositiveItemLabelPosition(new ItemLabelPosition(
                 ItemLabelAnchor.INSIDE6, TextAnchor.BOTTOM_CENTER));
 
         // set up gradient paints for series...
