@@ -47,15 +47,15 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.StatisticalBarRenderer;
+import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.DefaultStatisticalCategoryDataset;
 import org.jfree.graphics2d.canvas.CanvasGraphics2D;
 import org.jfree.graphics2d.canvas.CanvasUtils;
-import org.jfree.ui.TextAnchor;
 
 /**
  * A demo using {@link CanvasGraphics2D} and JFreeChart to write a bar chart 
- * to an HTML file where a Javascript function draws the chart on an
+ * to an HTML file where a JavaScript function draws the chart on an
  * HTML5 canvas.
  */
 public class CanvasBarChartDemo1 {
@@ -93,12 +93,7 @@ public class CanvasBarChartDemo1 {
             "Statistical Bar Chart Demo 1", // chart title
             "Type",                         // domain axis label
             "Value",                        // range axis label
-            dataset,                        // data
-            PlotOrientation.VERTICAL,       // orientation
-            true,                           // include legend
-            true,                           // tooltips
-            false                           // urls
-        );
+            dataset);
 
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -118,11 +113,11 @@ public class CanvasBarChartDemo1 {
         // ensure the current theme is applied to the renderer just added
         ChartUtilities.applyCurrentTheme(chart);
 
-        renderer.setBaseItemLabelGenerator(
+        renderer.setDefaultItemLabelGenerator(
                 new StandardCategoryItemLabelGenerator());
-        renderer.setBaseItemLabelsVisible(true);
-        renderer.setBaseItemLabelPaint(Color.yellow);
-        renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+        renderer.setDefaultItemLabelsVisible(true);
+        renderer.setDefaultItemLabelPaint(Color.yellow);
+        renderer.setDefaultPositiveItemLabelPosition(new ItemLabelPosition(
                 ItemLabelAnchor.INSIDE6, TextAnchor.BOTTOM_CENTER));
 
         // set up gradient paints for series...
