@@ -44,13 +44,13 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.graphics2d.canvas.CanvasGraphics2D;
 import org.jfree.graphics2d.canvas.CanvasUtils;
-import org.jfree.ui.HorizontalAlignment;
 
 /**
  * A demo/test for a time series chart.
@@ -70,11 +70,7 @@ public class CanvasTimeSeriesChartDemo1 {
             "International Coffee Organisation : Coffee Prices",    // title
             null,             // x-axis label
             "US cents/lb",      // y-axis label
-            dataset,            // data
-            true,               // create legend?
-            true,               // generate tooltips?
-            false               // generate URLs?
-        );
+            dataset);
 
         String fontName = "Palatino";
         chart.getTitle().setFont(new Font(fontName, Font.BOLD, 18));
@@ -102,7 +98,8 @@ public class CanvasTimeSeriesChartDemo1 {
             renderer.setDrawSeriesLineAsPath(true);
             // set the default stroke for all series
             renderer.setAutoPopulateSeriesStroke(false);
-            renderer.setBaseStroke(new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), false);
+            renderer.setDefaultStroke(new BasicStroke(3.0f, 
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL), false);
             renderer.setSeriesPaint(0, Color.RED);
             renderer.setSeriesPaint(1, new Color(24, 123, 58));
             renderer.setSeriesPaint(2, new Color(149, 201, 136));
