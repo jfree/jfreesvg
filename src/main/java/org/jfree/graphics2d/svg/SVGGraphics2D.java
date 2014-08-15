@@ -1199,7 +1199,6 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getSVGPathData(Path2D path) {
         StringBuilder b = new StringBuilder("d=\"");
         float[] coords = new float[6];
-        double[] closePt = null;
         boolean first = true;
         PathIterator iterator = path.getPathIterator(null);
         while (!iterator.isDone()) {
@@ -1210,9 +1209,6 @@ public final class SVGGraphics2D extends Graphics2D {
             first = false;
             switch (type) {
             case (PathIterator.SEG_MOVETO):
-                closePt = new double[2];
-                closePt[0] = coords[0];
-                closePt[1] = coords[1];
                 b.append("M ").append(geomDP(coords[0])).append(" ")
                         .append(geomDP(coords[1]));
                 break;
@@ -1235,10 +1231,7 @@ public final class SVGGraphics2D extends Graphics2D {
                         .append(geomDP(coords[5]));
                 break;
             case (PathIterator.SEG_CLOSE):
-                if (closePt != null) {
-                    b.append("M ").append(geomDP(closePt[0])).append(" ")
-                            .append(geomDP(closePt[1]));
-                }
+                b.append("Z ");
                 break;
             default:
                 break;
