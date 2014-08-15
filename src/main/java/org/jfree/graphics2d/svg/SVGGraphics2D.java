@@ -1307,6 +1307,10 @@ public final class SVGGraphics2D extends Graphics2D {
         return b.toString();
     }
     
+    private static final String DEFAULT_STROKE_CAP = "butt";
+    private static final String DEFAULT_STROKE_JOIN = "miter";
+    private static final float DEFAULT_MITER_LIMIT = 4.0f;
+    
     /**
      * Returns a stroke style string based on the current stroke and
      * alpha settings.
@@ -1315,12 +1319,37 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String strokeStyle() {
         double strokeWidth = 1.0f;
+        String strokeCap = DEFAULT_STROKE_CAP;
+        String strokeJoin = DEFAULT_STROKE_JOIN;
+        float miterLimit = DEFAULT_MITER_LIMIT;
         float[] dashArray = new float[0];
         if (this.stroke instanceof BasicStroke) {
-            // in fact this method doesn't get called for other stroke types
             BasicStroke bs = (BasicStroke) this.stroke;
             strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth() 
                     : this.zeroStrokeWidth;
+            switch (bs.getEndCap()) {
+                case BasicStroke.CAP_ROUND:
+                    strokeCap = "round";
+                    break;
+                case BasicStroke.CAP_SQUARE:
+                    strokeCap = "square";
+                    break;
+                case BasicStroke.CAP_BUTT:
+                default:
+                    // already set to "butt"    
+            }
+            switch (bs.getLineJoin()) {
+                case BasicStroke.JOIN_BEVEL:
+                    strokeJoin = "bevel";
+                    break;
+                case BasicStroke.JOIN_ROUND:
+                    strokeJoin = "round";
+                    break;
+                case BasicStroke.JOIN_MITER:
+                default:
+                    // already set to "miter"
+            }
+            miterLimit = bs.getMiterLimit();
             dashArray = bs.getDashArray();
         }
         StringBuilder b = new StringBuilder();
@@ -1328,6 +1357,15 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("stroke: ").append(svgColorStr()).append(";");
         b.append("stroke-opacity: ").append(getColorAlpha() * getAlpha())
                 .append(";");
+        if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
+            b.append("stroke-linecap: ").append(strokeCap).append(";");        
+        }
+        if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
+            b.append("stroke-linejoin: ").append(strokeJoin).append(";");        
+        }
+        if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) < 0.001) {
+            b.append("stroke-miterlimit: ").append(geomDP(miterLimit));        
+        }
         if (dashArray != null && dashArray.length != 0) {
             b.append("stroke-dasharray: ");
             for (int i = 0; i < dashArray.length; i++) {

@@ -41,6 +41,7 @@ Change History
 --------------
 
 Version 2.2 (?? ??? 2014)
+- add handling for BasicStroke cap, join and miterlimit;
 - fixed handling of PathIterator.SEG_CLOSE.
 
 
