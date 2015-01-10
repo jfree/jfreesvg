@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -58,15 +58,15 @@ public final class GraphicsUtils {
     
     /**
      * Returns a shape that is (more or less) equivalent to the supplied shape.
-     * For some known shape implementations (<code>Line2D</code>, 
-     * <code>Rectangle2D</code>, <code>RoundRectangle2D</code>, 
-     * <code>Arc2D</code>, <code>Ellipse2D</code>, and <code>Polygon</code>) 
-     * the copy will be an instance of that class.  For other shapes, a 
-     * <code>Path2D</code> containing the outline of the shape is returned.
+     * For some known shape implementations ({@code Line2D}, 
+     * {@code Rectangle2D}, {@code RoundRectangle2D}, {@code Arc2D}, 
+     * {@code Ellipse2D}, and {@code Polygon}) the copy will be an instance of 
+     * that class.  For other shapes, a {@code Path2D} containing the outline 
+     * of the shape is returned.
      * 
-     * @param shape  the shape (<code>null</code> not permitted).
+     * @param shape  the shape ({@code null} not permitted).
      * 
-     * @return A copy of the shape or shape outline (never <code>null</code>). 
+     * @return A copy of the shape or shape outline (never {@code null}). 
      */
     public static Shape copyOf(Shape shape) {
        Args.nullNotPermitted(shape, "shape");
@@ -104,8 +104,8 @@ public final class GraphicsUtils {
     }
 
     /**
-     * Creates a polygon from the specified <code>x</code> and 
-     * <code>y</code> coordinate arrays.
+     * Creates a polygon from the specified {@code x} and {@code y} coordinate 
+     * arrays.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -128,7 +128,7 @@ public final class GraphicsUtils {
     }
 
     /**
-     * Converts a rendered image to a <code>BufferedImage</code>.  This utility
+     * Converts a rendered image to a {@code BufferedImage}.  This utility
      * method has come from a forum post by Jim Moore at:
      * <p>
      * <a href="http://www.jguru.com/faq/view.jsp?EID=114602">

@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -35,21 +35,21 @@ package org.jfree.graphics2d;
 import java.awt.GradientPaint;
 
 /**
- * A wrapper for a <code>GradientPaint</code> that can be used as the key for 
- * a <code>Map</code> (including a <code>HashMap</code>).  This class is used 
- * internally by <code>SVGGraphics2D</code> to track and re-use gradient 
- * definitions.  <code>GradientPaint</code> itself does not implement the 
+ * A wrapper for a {@code GradientPaint} that can be used as the key for 
+ * a {@code Map} (including a {@code HashMap}).  This class is used 
+ * internally by {@code SVGGraphics2D} to track and re-use gradient 
+ * definitions.  {@code GradientPaint} itself does not implement the 
  * equals() and hashCode() methods, so it doesn't make a good key for a 
- * <code>Map</code>.
+ * {@code Map}.
  */
 public final class GradientPaintKey {
 
     private final GradientPaint paint;
     
     /**
-     * Creates a new instance based on the specified <code>paint</code>.
+     * Creates a new instance based on the specified {@code paint}.
      * 
-     * @param paint  the paint (<code>null</code> not permitted). 
+     * @param paint  the paint ({@code null} not permitted). 
      */
     public GradientPaintKey(GradientPaint paint) {
         Args.nullNotPermitted(paint, "paint");
@@ -57,10 +57,10 @@ public final class GradientPaintKey {
     }
     
     /**
-     * Returns the <code>GradientPaint</code> that was supplied to the 
+     * Returns the {@code GradientPaint} that was supplied to the 
      * constructor.
      * 
-     * @return The <code>GradientPaint</code> (never <code>null</code>). 
+     * @return The {@code GradientPaint} (never {@code null}). 
      */
     public GradientPaint getPaint() {
         return this.paint;
@@ -69,7 +69,7 @@ public final class GradientPaintKey {
     /**
      * Checks this instance for equality with an arbitrary object.
      * 
-     * @param obj  the object to test against (<code>null</code> permitted).
+     * @param obj  the object to test against ({@code null} permitted).
      * 
      * @return A boolean. 
      */
