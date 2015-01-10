@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -36,9 +36,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 import org.jfree.graphics2d.Args;
 
 /**
@@ -54,7 +56,7 @@ public class SVGUtils {
      * Returns a new string where any special characters in the source string
      * have been encoded.
      * 
-     * @param source  the source string (<code>null</code> not permitted).
+     * @param source  the source string ({@code null} not permitted).
      * 
      * @return A new string with special characters escaped for XML.
      * 
@@ -104,8 +106,8 @@ public class SVGUtils {
     /**
      * Writes a file containing the SVG element.
      * 
-     * @param file  the file (<code>null</code> not permitted).
-     * @param svgElement  the SVG element (<code>null</code> not permitted).
+     * @param file  the file ({@code null} not permitted).
+     * @param svgElement  the SVG element ({@code null} not permitted).
      * 
      * @throws IOException if there is an I/O problem.
      * 
@@ -113,10 +115,29 @@ public class SVGUtils {
      */
     public static void writeToSVG(File file, String svgElement) 
             throws IOException {
+        writeToSVG(file, svgElement, false);
+    }
+    
+    /**
+     * Writes a file containing the SVG element.
+     * 
+     * @param file  the file ({@code null} not permitted).
+     * @param svgElement  the SVG element ({@code null} not permitted).
+     * @param zip  compress the output.
+     * 
+     * @throws IOException if there is an I/O problem.
+     * 
+     * @since 2.2
+     */
+    public static void writeToSVG(File file, String svgElement, boolean zip) 
+            throws IOException {    
         BufferedWriter writer = null;
         try {
-            FileOutputStream fos = new FileOutputStream(file);
-            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            OutputStream os = new FileOutputStream(file);
+            if (zip) {
+                os = new GZIPOutputStream(os);
+            }
+            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
             writer = new BufferedWriter(osw);
             writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
             writer.write(svgElement + "\n");

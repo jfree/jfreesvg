@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 2.2, ?? ??? 2014
+Version 2.2, ?? January 2015
 
-(C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
 
 
 Overview
@@ -12,7 +12,7 @@ JFreeSVG is a graphics library for the Java(tm) platform that allows you to gene
 
     http://www.jfree.org/jfreesvg/
 
-This version (2.2) was released on ?? ??? 2014.  A change history appears at the end of this file.
+This version (2.2) was released on ?? January 2015.  A change history appears at the end of this file.
 
 
 Getting Started
@@ -40,8 +40,9 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 2.2 (?? ??? 2014)
+Version 2.2 (?? January 2015)
 - add handling for BasicStroke cap, join and miterlimit;
+- add ZIP option when writing SVG to files;
 - fixed handling of PathIterator.SEG_CLOSE.
 
 
