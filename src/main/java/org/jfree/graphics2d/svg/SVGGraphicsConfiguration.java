@@ -37,8 +37,10 @@ import java.awt.GraphicsDevice;
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
+import java.awt.image.WritableRaster;
 
 /**
  * A graphics configuration for the {@link SVGGraphics2D} class.
@@ -132,6 +134,25 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
     @Override
     public Rectangle getBounds() {
         return new Rectangle(this.width, this.height);
+    }
+
+    /**
+     * Creates a compatible image.n  This override is only here to provide
+     * support for Java 6 because from Java 7 onwards the super class has a
+     * non-abstract implementation for this method.
+     * 
+     * @param width  the width.
+     * @param height  the height.
+     * 
+     * @return A compatible image. 
+     */
+    @Override
+    public BufferedImage createCompatibleImage(int width, int height) {
+        ColorModel model = getColorModel();
+        WritableRaster raster = model.createCompatibleWritableRaster(width, 
+                height);
+        return new BufferedImage(model, raster, model.isAlphaPremultiplied(), 
+                null);
     }
     
 }
