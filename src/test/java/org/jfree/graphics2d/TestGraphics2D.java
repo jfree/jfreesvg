@@ -1,5 +1,5 @@
 /**
- * (C)opyright 2013, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  * 
  * This test file is internal, it will not be released.
  */
@@ -25,6 +25,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -40,11 +41,11 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        this.g2 = img.createGraphics();
+        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        //this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
-        //this.g2 = new SVGGraphics2D(10, 20);
+        this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
 //        PDFDocument pdfDoc = new PDFDocument();
