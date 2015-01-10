@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -42,10 +42,10 @@ public class Args {
     }
  
     /**
-     * Checks that an argument is non-<code>null</code> and throws an 
-     * <code>IllegalArgumentException</code> otherwise.
+     * Checks that an argument is non-{@code null} and throws an 
+     * {@code IllegalArgumentException} otherwise.
      * 
-     * @param obj  the object to check for <code>null</code>.
+     * @param obj  the object to check for {@code null}.
      * @param ref  the text name for the parameter (to include in the exception
      *     message).
      */
@@ -57,7 +57,7 @@ public class Args {
     
     /**
      * Checks an array to ensure it has the correct length and throws an
-     * <code>IllegalArgumentException</code> if it does not.
+     * {@code IllegalArgumentException} if it does not.
      * 
      * @param length  the required length.
      * @param array  the array to check.
@@ -75,10 +75,10 @@ public class Args {
 
     /**
      * Checks an array to ensure it has the correct length and throws an
-     * <code>IllegalArgumentException</code> if it does not.
+     * {@code IllegalArgumentException} if it does not.
      * 
      * @param length  the required length.
-     * @param array  the array to check.
+     * @param array  the array to check ({@code null} not permitted).
      * @param ref  the text name of the array parameter (to include in the 
      *     exception message).
      */
