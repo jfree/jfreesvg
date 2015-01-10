@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -43,14 +43,14 @@ public final class ObjectUtils {
     }
     
     /**
-     * Returns <code>true</code> if the objects are equal or both 
-     * <code>null</code>, and <code>false</code> otherwise.
+     * Returns {@code true} if the objects are equal or both 
+     * {@code null}, and {@code false} otherwise.
      * <br><br>
-     * In Java 7, we could use methods in the <code>Objects</code> class 
+     * In Java 7, we could use methods in the {@code Objects} class 
      * instead, but for now JFreeSVG is supporting Java 6 and above.
      * 
-     * @param obj1  object 1 (<code>null</code> permitted).
-     * @param obj2  object 2 (<code>null</code> permitted).
+     * @param obj1  object 1 ({@code null} permitted).
+     * @param obj2  object 2 ({@code null} permitted).
      * 
      * @return A boolean. 
      */
@@ -63,13 +63,13 @@ public final class ObjectUtils {
     }
     
     /**
-     * Returns the hash code for the object, or <code>0</code> if the object is 
-     * <code>null</code>.
+     * Returns the hash code for the object, or {@code 0} if the object is 
+     * {@code null}.
      * <br><br>
-     * In Java 7, we could use methods in the <code>Objects</code> class 
+     * In Java 7, we could use methods in the {@code Objects} class 
      * instead, but for now JFreeSVG is supporting Java 6 and above.
      * 
-     * @param obj  the object (<code>null</code> permitted).
+     * @param obj  the object ({@code null} permitted).
      * 
      * @return The hash code or 0. 
      */

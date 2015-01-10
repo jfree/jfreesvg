@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -36,12 +36,12 @@ import java.awt.LinearGradientPaint;
 import java.util.Arrays;
 
 /**
- * A wrapper for a <code>LinearGradientPaint</code> that can be used as the key 
- * for a <code>Map</code> (including a <code>HashMap</code>).  This class is 
- * used internally by <code>SVGGraphics2D</code> to track and re-use gradient 
- * definitions.  <code>LinearGradientPaint</code> itself does not implement the 
- * equals() and hashCode() methods, so it doesn't make a good key for a 
- * <code>Map</code>.
+ * A wrapper for a {@code LinearGradientPaint} that can be used as the key 
+ * for a {@code Map} (including a {@code HashMap}).  This class is 
+ * used internally by {@code SVGGraphics2D} to track and re-use gradient 
+ * definitions.  {@code LinearGradientPaint} itself does not implement the 
+ * {@code equals()} and {@code hashCode()} methods, so it doesn't make a good 
+ * key for a {@code Map}.
  * 
  * @since 1.9
  */
@@ -52,7 +52,7 @@ public class LinearGradientPaintKey {
     /**
      * Creates a new instance.
      * 
-     * @param lgp  the linear gradient paint (<code>null</code> not permitted).
+     * @param lgp  the linear gradient paint ({@code null} not permitted).
      */
     public LinearGradientPaintKey(LinearGradientPaint lgp) {
         Args.nullNotPermitted(lgp, "lgp");
@@ -60,10 +60,10 @@ public class LinearGradientPaintKey {
     }
  
     /**
-     * Returns the <code>LinearGradientPaint</code> that was supplied to the 
+     * Returns the {@code LinearGradientPaint} that was supplied to the 
      * constructor.
      * 
-     * @return The <code>LinearGradientPaint</code> (never <code>null</code>). 
+     * @return The {@code LinearGradientPaint} (never {@code null}). 
      */
     public LinearGradientPaint getPaint() {
         return this.paint;
@@ -72,7 +72,7 @@ public class LinearGradientPaintKey {
     /**
      * Tests this instance for equality with an arbitrary object.
      * 
-     * @param obj  the object to test (<code>null</code> permitted).
+     * @param obj  the object to test ({@code null} permitted).
      * 
      * @return A boolean.
      */
