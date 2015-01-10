@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -36,7 +36,7 @@ import java.awt.Image;
 import org.jfree.graphics2d.Args;
 
 /**
- * A <code>(String, Image)</code> pair that links together a reference ID and 
+ * A {@code (String, Image)} pair that links together a reference ID and 
  * the source image.  This is used internally by {@link SVGGraphics2D} to track
  * images as they are rendered.  This is important when images are not embedded
  * in the SVG output, in which case you may need to generate corresponding
@@ -53,8 +53,8 @@ public final class ImageElement {
     /**
      * Creates a new instance.
      * 
-     * @param href  the href (<code>null</code> not permitted).
-     * @param image  the image (<code>null</code> not permitted).
+     * @param href  the href ({@code null} not permitted).
+     * @param image  the image ({@code null} not permitted).
      */
     public ImageElement(String href, Image image) {
         Args.nullNotPermitted(href, "href");
@@ -66,7 +66,7 @@ public final class ImageElement {
     /**
      * Returns the reference ID that was specified in the constructor.
      * 
-     * @return The href (never <code>null</code>).
+     * @return The href (never {@code null}).
      */
     public String getHref() {
         return href;
@@ -75,7 +75,7 @@ public final class ImageElement {
     /**
      * Returns the image that was specified in the constructor.
      * 
-     * @return The image (never <code>null</code>).
+     * @return The image (never {@code null}).
      */
     public Image getImage() {
         return image;

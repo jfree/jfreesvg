@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -45,17 +45,17 @@ import java.util.List;
  * <li>{@link #KEY_IMAGE_HREF} that allows the caller to specify the image
  * href attribute for the next image;</li>
  * <li>{@link #KEY_TEXT_RENDERING} that allows configuration of the preferred 
- * value of the SVG <code>text-rendering</code> attribute in text elements;</li>
+ * value of the SVG {@code text-rendering} attribute in text elements;</li>
  * <li>{@link #KEY_ELEMENT_ID} that allows the caller to specify the element
  * ID for the next element;</li>
- * <li>{@link #KEY_BEGIN_GROUP} tells the <code>SVGGraphics2D</code> instance 
+ * <li>{@link #KEY_BEGIN_GROUP} tells the {@code SVGGraphics2D} instance 
  * to start a new group element with an id equal to the hint value (which must 
- * be an instance of String).  Any other <code>Graphics2D</code> implementation 
+ * be an instance of String).  Any other {@code Graphics2D} implementation 
  * will ignore this hint;</li>
- * <li>{@link #KEY_END_GROUP} tells the <code>SVGGraphics2D</code> instance 
+ * <li>{@link #KEY_END_GROUP} tells the {@code SVGGraphics2D} instance 
  * to end a group element.  The hint value is ignored.  The caller assumes 
- * responsibility for balancing the number of <code>KEY_BEGIN_GROUP</code> and 
- * <code>KEY_END_GROUP</code> hints.  Any other <code>Graphics2D</code> 
+ * responsibility for balancing the number of {@code KEY_BEGIN_GROUP} and 
+ * {@code KEY_END_GROUP} hints.  Any other {@code Graphics2D} 
  * implementation will ignore this hint.</li>
  * </ul>
  * 
@@ -75,15 +75,15 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_IMAGE_HANDLING = new SVGHints.Key(0);
     
     /**
-     * Hint value for <code>KEY_IMAGE_HANDLING</code> to specify that images 
-     * should be embedded in the SVG output using PNG data <code>Base64</code> 
+     * Hint value for {@code KEY_IMAGE_HANDLING} to specify that images 
+     * should be embedded in the SVG output using PNG data {@code Base64} 
      * encoded.
      */
     public static final Object VALUE_IMAGE_HANDLING_EMBED 
             = "VALUE_IMAGE_HANDLING_EMBED";
     
     /**
-     * Hint value for <code>KEY_IMAGE_HANDLING</code> to say that images should
+     * Hint value for {@code KEY_IMAGE_HANDLING} to say that images should
      * be referenced externally.
      */
     public static final Object VALUE_IMAGE_HANDLING_REFERENCE 
@@ -97,37 +97,37 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_TEXT_RENDERING = new SVGHints.Key(1);
      
     /**
-     * Hint value for <code>KEY_TEXT_RENDERING</code> to set the 
-     * <code>text-rendering</code> attribute in SVG text elements to 'auto'. 
+     * Hint value for {@code KEY_TEXT_RENDERING} to set the 
+     * {@code text-rendering} attribute in SVG text elements to 'auto'. 
      */
     public static final String VALUE_TEXT_RENDERING_AUTO = "auto";
     
     /**
-     * Hint value for <code>KEY_TEXT_RENDERING</code> to set the 
-     * <code>text-rendering</code> attribute in SVG text elements to 
+     * Hint value for {@code KEY_TEXT_RENDERING} to set the 
+     * {@code text-rendering} attribute in SVG text elements to 
      * 'optimizeSpeed'. 
      */
     public static final String VALUE_TEXT_RENDERING_SPEED = "optimizeSpeed";
     
     /**
-     * Hint value for <code>KEY_TEXT_RENDERING</code> to set the 
-     * <code>text-rendering</code> attribute in SVG text elements to 
+     * Hint value for {@code KEY_TEXT_RENDERING} to set the 
+     * {@code text-rendering} attribute in SVG text elements to 
      * 'optimizeLegibility'. 
      */
     public static final String VALUE_TEXT_RENDERING_LEGIBILITY 
             = "optimizeLegibility";
     
     /**
-     * Hint value for <code>KEY_TEXT_RENDERING</code> to set the 
-     * <code>text-rendering</code> attribute in SVG text elements to 
+     * Hint value for {@code KEY_TEXT_RENDERING} to set the 
+     * {@code text-rendering} attribute in SVG text elements to 
      * 'geometricPrecision'. 
      */
     public static final String VALUE_TEXT_RENDERING_PRECISION 
             = "geometricPrecision";
     
     /**
-     * Hint value for <code>KEY_TEXT_RENDERING</code> to set the 
-     * <code>text-rendering</code> attribute in SVG text elements to 
+     * Hint value for {@code KEY_TEXT_RENDERING} to set the 
+     * {@code text-rendering} attribute in SVG text elements to 
      * 'inherit'. 
      */
     public static final String VALUE_TEXT_RENDERING_INHERIT = "inherit";
@@ -150,7 +150,7 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_ELEMENT_ID = new SVGHints.Key(3);
 
     /**
-     * Hint key that informs the <code>SVGGraphics2D</code> that the caller 
+     * Hint key that informs the {@code SVGGraphics2D} that the caller 
      * would like to begin a new group element.  The hint value is the id for 
      * the new group.  After opening the new group the hint is cleared and it 
      * is the caller's responsibility to close the group later using 
@@ -161,7 +161,7 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_BEGIN_GROUP = new SVGHints.Key(4);
 
     /**
-     * Hint key that informs the <code>SVGGraphics2D</code> that the caller
+     * Hint key that informs the {@code SVGGraphics2D} that the caller
      * would like to close a previously opened group element.  The hint
      * value is ignored.
      * 
@@ -170,7 +170,7 @@ public final class SVGHints {
     public static final SVGHints.Key KEY_END_GROUP = new SVGHints.Key(5);
 
     /**
-     * Hint key that informs the <code>SVGGraphics2D</code> that the caller
+     * Hint key that informs the {@code SVGGraphics2D} that the caller
      * would like to add a title element to the output (with the hint value
      * being a string containing the title text).
      * 
@@ -245,7 +245,7 @@ public final class SVGHints {
      * Creates and returns a list of keys that are synonymous with 
      * {@link #KEY_BEGIN_GROUP}.
      * 
-     * @return A list (never <code>null</code>).
+     * @return A list (never {@code null}).
      * 
      * @since 1.8
      */
@@ -257,7 +257,7 @@ public final class SVGHints {
      * Adds a key to the list of keys that are synonyms for 
      * {@link SVGHints#KEY_BEGIN_GROUP}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.8
      */
@@ -269,7 +269,7 @@ public final class SVGHints {
      * Removes a key from the list of keys that are synonyms for
      * {@link SVGHints#KEY_BEGIN_GROUP}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.8
      */
@@ -288,16 +288,16 @@ public final class SVGHints {
     }
     
     /**
-     * Returns <code>true</code> if this key is equivalent to 
-     * {@link #KEY_BEGIN_GROUP}, and <code>false</code> otherwise.  The purpose 
+     * Returns {@code true} if this key is equivalent to 
+     * {@link #KEY_BEGIN_GROUP}, and {@code false} otherwise.  The purpose 
      * of this method is to allow certain keys from external packages (such as 
-     * Orson Charts) to use their own keys to drive the behaviour of
-     * SVGHints.KEY_BEGIN_GROUP.  This has two benefits: (1) it avoids the 
-     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
-     * grouping behaviour generic from the point of view of the external
-     * package, rather than SVG-specific.
+     * JFreeChart and Orson Charts) to use their own keys to drive the 
+     * behaviour of {@code SVGHints.KEY_BEGIN_GROUP}.  This has two benefits: 
+     * (1) it avoids the necessity to make JFreeSVG a direct dependency, and 
+     * (2) it makes the grouping behaviour generic from the point of view of 
+     * the external package, rather than SVG-specific.
      * 
-     * @param key  the key (<code>null</code> not permitted)
+     * @param key  the key ({@code null} not permitted)
      * 
      * @return A boolean.
      * 
@@ -312,7 +312,7 @@ public final class SVGHints {
      * Creates and returns a list of keys that are synonymous with 
      * {@link #KEY_END_GROUP}.
      * 
-     * @return A list (never <code>null</code>).
+     * @return A list (never {@code null}).
      * 
      * @since 1.8
      */
@@ -324,7 +324,7 @@ public final class SVGHints {
      * Adds a key to the list of keys that are synonyms for 
      * {@link SVGHints#KEY_END_GROUP}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.8
      */
@@ -336,7 +336,7 @@ public final class SVGHints {
      * Removes a key from the list of keys that are synonyms for
      * {@link SVGHints#KEY_END_GROUP}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.8
      */
@@ -355,16 +355,16 @@ public final class SVGHints {
     }
     
     /**
-     * Returns <code>true</code> if this key is equivalent to 
-     * {@link #KEY_END_GROUP}, and <code>false</code> otherwise.  The purpose 
+     * Returns {@code true} if this key is equivalent to 
+     * {@link #KEY_END_GROUP}, and {@code false} otherwise.  The purpose 
      * of this method is to allow certain keys from external packages (such as 
-     * Orson Charts) to use their own keys to drive the behaviour of
-     * SVGHints.KEY_END_GROUP.  This has two benefits: (1) it avoids the 
-     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
-     * grouping behaviour generic from the point of view of the external
-     * package, rather than SVG-specific.
+     * JFreeChart and Orson Charts) to use their own keys to drive the 
+     * behaviour of {@code SVGHints.KEY_END_GROUP}.  This has two benefits: 
+     * (1) it avoids the necessity to make JFreeSVG a direct dependency, and 
+     * (2) it makes the grouping behaviour generic from the point of view of 
+     * the external package, rather than SVG-specific.
      * 
-     * @param key  the key (<code>null</code> not permitted)
+     * @param key  the key ({@code null} not permitted).
      * 
      * @return A boolean.
      * 
@@ -378,7 +378,7 @@ public final class SVGHints {
      * Creates and returns a list of keys that are synonymous with 
      * {@link #KEY_ELEMENT_TITLE}.
      * 
-     * @return A list (never <code>null</code>).
+     * @return A list (never {@code null}).
      * 
      * @since 1.9
      */
@@ -390,7 +390,7 @@ public final class SVGHints {
      * Adds a key to the list of keys that are synonyms for 
      * {@link SVGHints#KEY_ELEMENT_TITLE}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.9
      */
@@ -402,7 +402,7 @@ public final class SVGHints {
      * Removes a key from the list of keys that are synonyms for
      * {@link SVGHints#KEY_ELEMENT_TITLE}.
      * 
-     * @param key  the key (<code>null</code> not permitted).
+     * @param key  the key ({@code null} not permitted).
      * 
      * @since 1.9
      */
@@ -421,16 +421,16 @@ public final class SVGHints {
     }
     
     /**
-     * Returns <code>true</code> if this key is equivalent to 
-     * {@link #KEY_ELEMENT_TITLE}, and <code>false</code> otherwise.  The 
+     * Returns {@code true} if this key is equivalent to 
+     * {@link #KEY_ELEMENT_TITLE}, and {@code false} otherwise.  The 
      * purpose of this method is to allow certain keys from external packages 
-     * (such as Orson Charts) to use their own keys to drive the behaviour of
-     * SVGHints.KEY_ELEMENT_TITLE.  This has two benefits: (1) it avoids the 
-     * necessity to make JFreeSVG a direct dependency, and (2) it makes the
-     * element title behaviour generic from the point of view of the external
-     * package, rather than SVG-specific.
+     * (such as JFreeChart and Orson Charts) to use their own keys to drive the 
+     * behaviour of {@code SVGHints.KEY_ELEMENT_TITLE}.  This has two benefits: 
+     * (1) it avoids the necessity to make JFreeSVG a direct dependency, and 
+     * (2) it makes the element title behaviour generic from the point of view 
+     * of the external package, rather than SVG-specific.
      * 
-     * @param key  the key (<code>null</code> not permitted)
+     * @param key  the key ({@code null} not permitted)
      * 
      * @return A boolean.
      * 
@@ -442,8 +442,8 @@ public final class SVGHints {
     }
 
     /**
-     * Returns <code>true</code> if Orson Charts (version 1.3 or later) is on 
-     * the classpath, and <code>false</code> otherwise.  This method is used to
+     * Returns {@code true} if Orson Charts (version 1.3 or later) is on 
+     * the classpath, and {@code false} otherwise.  This method is used to
      * auto-register keys from Orson Charts that should translate to the 
      * behaviour of {@link SVGHints#KEY_BEGIN_GROUP} and 
      * {@link SVGHints#KEY_END_GROUP}.
@@ -460,8 +460,8 @@ public final class SVGHints {
     }
     
     /**
-     * Returns <code>true</code> if JFreeChart (1.0.18 or later) is on 
-     * the classpath, and <code>false</code> otherwise.  This method is used to
+     * Returns {@code true} if JFreeChart (1.0.18 or later) is on 
+     * the classpath, and {@code false} otherwise.  This method is used to
      * auto-register keys from JFreeChart that should translate to the 
      * behaviour of {@link SVGHints#KEY_BEGIN_GROUP} and 
      * {@link SVGHints#KEY_END_GROUP}.
@@ -532,8 +532,8 @@ public final class SVGHints {
         }
     
         /**
-         * Returns <code>true</code> if <code>val</code> is a value that is
-         * compatible with this key, and <code>false</code> otherwise.
+         * Returns {@code true} if {@code val} is a value that is
+         * compatible with this key, and {@code false} otherwise.
          * 
          * @param val  the value.
          * 

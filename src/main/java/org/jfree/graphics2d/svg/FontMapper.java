@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -34,7 +34,7 @@ package org.jfree.graphics2d.svg;
 
 /**
  * An object that can (optionally) translate one font family name to an
- * alternative.  A <code>FontMapper</code> is assigned to an 
+ * alternative.  A {@code FontMapper} is assigned to an 
  * {@link SVGGraphics2D} instance.  The default implementation will map
  * Java logical font names to the equivalent SVG generic font names.
  * 
@@ -46,10 +46,9 @@ public interface FontMapper {
      * Maps the specified font family name to an alternative, or else returns
      * the same family name.
      * 
-     * @param family  the font family name (<code>null</code> not permitted).
+     * @param family  the font family name ({@code null} not permitted).
      * 
-     * @return The same font family name or an alternative (never 
-     *     <code>null</code>).
+     * @return The same font family name or an alternative (never {@code null}).
      */
     String mapFont(String family);
 

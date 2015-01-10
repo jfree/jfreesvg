@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -64,7 +64,7 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
     /**
      * Returns the graphics device that this configuration is associated with.
      * 
-     * @return The graphics device (never <code>null</code>).
+     * @return The graphics device (never {@code null}).
      */
     @Override
     public GraphicsDevice getDevice() {
@@ -87,11 +87,11 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
 
     /**
      * Returns the color model for the specified transparency type, or 
-     * <code>null</code>.
+     * {@code null}.
      * 
      * @param transparency  the transparency type.
      * 
-     * @return A color model (possibly <code>null</code>).
+     * @return A color model (possibly {@code null}).
      */
     @Override
     public ColorModel getColorModel(int transparency) {

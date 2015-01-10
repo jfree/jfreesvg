@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -64,9 +64,9 @@ public class StandardFontMapper implements FontMapper {
     /**
      * Returns the mapped (alternate) font family name.
      * 
-     * @param family  the font family (<code>null</code> not permitted).
+     * @param family  the font family ({@code null} not permitted).
      * 
-     * @return The alternate font family name (possibly <code>null</code>). 
+     * @return The alternate font family name (possibly {@code null}). 
      */
     public String get(String family) {
         Args.nullNotPermitted(family, "family");
@@ -75,10 +75,10 @@ public class StandardFontMapper implements FontMapper {
     
     /**
      * Adds a font family mapping (if the specified alternate is 
-     * <code>null</code> it has the effect of clearing any existing mapping).
+     * {@code null} it has the effect of clearing any existing mapping).
      * 
-     * @param family  the font family name (<code>null</code> not permitted).
-     * @param alternate  the alternate (<code>null</code> permitted).
+     * @param family  the font family name ({@code null} not permitted).
+     * @param alternate  the alternate ({@code null} permitted).
      */
     public void put(String family, String alternate) {
         Args.nullNotPermitted(family, "family");
@@ -89,10 +89,9 @@ public class StandardFontMapper implements FontMapper {
      * Maps the specified font family name to an alternative, or else returns
      * the same family name.
      * 
-     * @param family  the font family name (<code>null</code> not permitted).
+     * @param family  the font family name ({@code null} not permitted).
      * 
-     * @return The same font family name or an alternative (never 
-     *     <code>null</code>).
+     * @return The same font family name or an alternative (never {@code null}).
      */
     @Override
     public String mapFont(String family) {
