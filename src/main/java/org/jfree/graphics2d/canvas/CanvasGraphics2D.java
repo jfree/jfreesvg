@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013, 2014, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -76,20 +76,20 @@ import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GraphicsUtils;
 
 /**
- * A <code>Graphics2D</code> implementation that writes out JavaScript code 
+ * A {@code Graphics2D} implementation that writes out JavaScript code 
  * that will draw to an HTML5 Canvas. 
  * <p>
  * Implementation notes:
  * <ul>
  * <li>all rendering hints are ignored;</li>
  * <li>images are not yet supported;</li>
- * <li>the <code>drawString()</code> methods that work with an 
- * <code>AttributedCharacterIterator</code> currently ignore the formatting 
+ * <li>the {@code drawString()} methods that work with an 
+ * {@code AttributedCharacterIterator} currently ignore the formatting 
  * information.</li>
  * </ul>
  * <p>
  * For some demos of the use of this class, please look in the
- * <code>org.jfree.graphics2d.demo</code> package in the <code>src</code>
+ * {@code org.jfree.graphics2d.demo} package in the {@code src}
  * directory.
  */
 public final class CanvasGraphics2D extends Graphics2D {
@@ -224,8 +224,8 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Sets the number of decimal places used to write the transformation
      * matrices in the Javascript output.  Values in the range 1 to 10 will be 
      * used to configure a formatter to that number of decimal places, for all 
-     * other values we revert to the normal <code>String</code> conversion of 
-     * <code>double</code> primitives (approximately 16 decimals places).
+     * other values we revert to the normal {@code String} conversion of 
+     * {@code double} primitives (approximately 16 decimals places).
      * <p>
      * Note that there is a separate attribute to control the number of decimal
      * places for geometrical elements in the output (see 
@@ -320,7 +320,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Returns the paint used to draw or fill shapes (or text).  The default 
      * value is {@link Color#BLACK}.
      * 
-     * @return The paint (never <code>null</code>). 
+     * @return The paint (never {@code null}). 
      * 
      * @see #setPaint(java.awt.Paint) 
      */
@@ -331,12 +331,12 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Sets the paint used to draw or fill shapes (or text).  If 
-     * <code>paint</code> is an instance of <code>Color</code>, this method will
+     * {@code paint} is an instance of {@code Color}, this method will
      * also update the current color attribute (see {@link #getColor()}). If 
-     * you pass <code>null</code> to this method, it does nothing (in 
+     * you pass {@code null} to this method, it does nothing (in 
      * accordance with the JDK specification).
      * 
-     * @param paint  the paint (<code>null</code> is permitted but ignored).
+     * @param paint  the paint ({@code null} is permitted but ignored).
      * 
      * @see #getPaint() 
      */
@@ -371,7 +371,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Returns the foreground color.  This method exists for backwards
      * compatibility in AWT, you should use the {@link #getPaint()} method.
      * 
-     * @return The foreground color (never <code>null</code>).
+     * @return The foreground color (never {@code null}).
      * 
      * @see #getPaint() 
      */
@@ -385,7 +385,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * compatibility in AWT, you should use the 
      * {@link #setPaint(java.awt.Paint)} method.
      * 
-     * @param c  the color (<code>null</code> permitted but ignored). 
+     * @param c  the color ({@code null} permitted but ignored). 
      * 
      * @see #setPaint(java.awt.Paint) 
      */
@@ -406,7 +406,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * A utility method that translates a Color object to a CSS color string.
      * 
-     * @param c  the color (<code>null</code> not permitted).
+     * @param c  the color ({@code null} not permitted).
      * 
      * @return The CSS string for the color specification.
      */
@@ -419,7 +419,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Returns the background color.  The default value is {@link Color#BLACK}.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
      * 
-     * @return The background color (possibly <code>null</code>). 
+     * @return The background color (possibly {@code null}). 
      * 
      * @see #setBackground(java.awt.Color) 
      */
@@ -431,11 +431,11 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Sets the background color.  This is used by the 
      * {@link #clearRect(int, int, int, int)} method.  The reference 
-     * implementation allows <code>null</code> for the background color so
+     * implementation allows {@code null} for the background color so
      * we allow that too (but for that case, the clearRect method will do 
      * nothing).
      * 
-     * @param color  the color (<code>null</code> permitted).
+     * @param color  the color ({@code null} permitted).
      * 
      * @see #getBackground() 
      */
@@ -447,7 +447,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns the current composite.
      * 
-     * @return The current composite (never <code>null</code>).
+     * @return The current composite (never {@code null}).
      * 
      * @see #setComposite(java.awt.Composite) 
      */
@@ -457,9 +457,9 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
     
     /**
-     * Sets the composite (only <code>AlphaComposite</code> is handled).
+     * Sets the composite (only {@code AlphaComposite} is handled).
      * 
-     * @param comp  the composite (<code>null</code> not permitted).
+     * @param comp  the composite ({@code null} not permitted).
      * 
      * @see #getComposite() 
      */
@@ -504,7 +504,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns the current stroke (used when drawing shapes). 
      * 
-     * @return The current stroke (never <code>null</code>). 
+     * @return The current stroke (never {@code null}). 
      * 
      * @see #setStroke(java.awt.Stroke) 
      */
@@ -515,9 +515,9 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Sets the stroke that will be used to draw shapes.  Only 
-     * <code>BasicStroke</code> is supported.
+     * {@code BasicStroke} is supported.
      * 
-     * @param s  the stroke (<code>null</code> not permitted).
+     * @param s  the stroke ({@code null} not permitted).
      * 
      * @see #getStroke() 
      */
@@ -547,11 +547,11 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Returns the current value for the specified hint.  Note that all hints
      * are currently ignored in this implementation.
      * 
-     * @param hintKey  the hint key (<code>null</code> permitted, but the
-     *     result will be <code>null</code> also).
+     * @param hintKey  the hint key ({@code null} permitted, but the
+     *     result will be {@code null} also).
      * 
      * @return The current value for the specified hint 
-     *     (possibly <code>null</code>).
+     *     (possibly {@code null}).
      * 
      * @see #setRenderingHint(java.awt.RenderingHints.Key, java.lang.Object) 
      */
@@ -564,7 +564,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Sets the value for a hint.  Note that all hints are currently
      * ignored in this implementation.
      * 
-     * @param hintKey  the hint key (<code>null</code> not permitted).
+     * @param hintKey  the hint key ({@code null} not permitted).
      * @param hintValue  the hint value.
      * 
      * @see #getRenderingHint(java.awt.RenderingHints.Key) 
@@ -578,7 +578,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * Returns a copy of the rendering hints.  Modifying the returned copy
      * will have no impact on the state of this Graphics2D instance.
      * 
-     * @return The rendering hints (never <code>null</code>). 
+     * @return The rendering hints (never {@code null}). 
      * 
      * @see #setRenderingHints(java.util.Map) 
      */
@@ -590,7 +590,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Sets the rendering hints to the specified collection.
      * 
-     * @param hints  the new set of hints (<code>null</code> not permitted).
+     * @param hints  the new set of hints ({@code null} not permitted).
      * 
      * @see #getRenderingHints() 
      */
@@ -603,7 +603,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Adds all the supplied rendering hints.
      * 
-     * @param hints  the hints (<code>null</code> not permitted).
+     * @param hints  the hints ({@code null} not permitted).
      */
     @Override
     public void addRenderingHints(Map<?, ?> hints) {
@@ -611,13 +611,13 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified shape with the current <code>paint</code> and 
-     * <code>stroke</code>.  There is direct handling for <code>Line2D</code>, 
-     * <code>Rectangle2D</code> and <code>Path2D</code>. All other shapes are
-     * mapped to a <code>GeneralPath</code> and then drawn (effectively as 
-     * <code>Path2D</code> objects).
+     * Draws the specified shape with the current {@code paint} and 
+     * {@code stroke}.  There is direct handling for {@code Line2D}, 
+     * {@code Rectangle2D} and {@code Path2D}. All other shapes are
+     * mapped to a {@code GeneralPath} and then drawn (effectively as 
+     * {@code Path2D} objects).
      * 
-     * @param s  the shape (<code>null</code> not permitted).
+     * @param s  the shape ({@code null} not permitted).
      * 
      * @see #fill(java.awt.Shape) 
      */
@@ -633,12 +633,12 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified shape with the current <code>paint</code>.  There is
-     * direct handling for <code>Rectangle2D</code> and <code>Path2D</code>.  
-     * All other shapes are mapped to a <code>GeneralPath</code> and then 
+     * Fills the specified shape with the current {@code paint}.  There is
+     * direct handling for {@code Rectangle2D} and {@code Path2D}.  
+     * All other shapes are mapped to a {@code GeneralPath} and then 
      * filled.
      * 
-     * @param s  the shape (<code>null</code> not permitted). 
+     * @param s  the shape ({@code null} not permitted). 
      * 
      * @see #draw(java.awt.Shape) 
      */
@@ -736,7 +736,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns the current font used for drawing text.
      * 
-     * @return The current font (never <code>null</code>).
+     * @return The current font (never {@code null}).
      * 
      * @see #setFont(java.awt.Font) 
      */
@@ -748,7 +748,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Sets the font to be used for drawing text.
      * 
-     * @param font  the font (<code>null</code> is permitted but ignored).
+     * @param font  the font ({@code null} is permitted but ignored).
      * 
      * @see #getFont() 
      */
@@ -776,7 +776,7 @@ public final class CanvasGraphics2D extends Graphics2D {
  
     /**
      * Returns the font render context.  The implementation here returns the
-     * <code>FontRenderContext</code> for an image that is maintained 
+     * {@code FontRenderContext} for an image that is maintained 
      * internally (as for {@link #getFontMetrics}).
      * 
      * @return The font render context.
@@ -787,10 +787,10 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at <code>(x, y)</code>.  The start of the text at the
-     * baseline level will be aligned with the <code>(x, y)</code> point.
+     * Draws a string at {@code (x, y)}.  The start of the text at the
+     * baseline level will be aligned with the {@code (x, y)} point.
      * 
-     * @param str  the string (<code>null</code> not permitted).
+     * @param str  the string ({@code null} not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * 
@@ -802,10 +802,10 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string at <code>(x, y)</code>. The start of the text at the
-     * baseline level will be aligned with the <code>(x, y)</code> point.
+     * Draws a string at {@code (x, y)}. The start of the text at the
+     * baseline level will be aligned with the {@code (x, y)} point.
      * 
-     * @param str  the string (<code>null</code> not permitted).
+     * @param str  the string ({@code null} not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
@@ -827,7 +827,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string of attributed characters at <code>(x, y)</code>.  The 
+     * Draws a string of attributed characters at {@code (x, y)}.  The 
      * call is delegated to 
      * {@link #drawString(java.text.AttributedCharacterIterator, float, float)}. 
      * 
@@ -841,7 +841,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a string of attributed characters at <code>(x, y)</code>. 
+     * Draws a string of attributed characters at {@code (x, y)}. 
      * 
      * @param iterator  an iterator over the characters (<code>null</code> not 
      *     permitted).
@@ -856,7 +856,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified glyph vector at the location (x, y).
+     * Draws the specified glyph vector at the location {@code (x, y)}.
      * 
      * @param g  the glyph vector.
      * @param x  the x-coordinate.
@@ -868,7 +868,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Translates the origin to <code>(tx, ty)</code>.  This call is delegated 
+     * Translates the origin to {@code (tx, ty)}.  This call is delegated 
      * to {@link #translate(double, double)}.
      * 
      * @param tx  the x-translation.
@@ -880,7 +880,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies the translation (tx, ty).
+     * Applies the translation {@code (tx, ty)}.
      * 
      * @param tx  the x-translation.
      * @param ty  the y-translation.
@@ -893,7 +893,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies a rotation (anti-clockwise) about <code>(0, 0)</code>.
+     * Applies a rotation (anti-clockwise) about {@code (0, 0)}.
      * 
      * @param theta  the rotation angle (in radians). 
      */
@@ -904,7 +904,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies a rotation (anti-clockwise) about <code>(x, y)</code>.
+     * Applies a rotation (anti-clockwise) about {@code (x, y)}.
      * 
      * @param theta  the rotation angle (in radians).
      * @param x  the x-coordinate.
@@ -932,10 +932,10 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Applies a shear transformation. This is equivalent to the following 
-     * call to the <code>transform</code> method:
+     * call to the {@code transform} method:
      * <br><br>
-     * <ul><li>
-     * <code>transform(AffineTransform.getShearInstance(shx, shy));</code>
+     * <ul>
+     * <li>{@code transform(AffineTransform.getShearInstance(shx, shy));}
      * </ul>
      * 
      * @param shx  the x-shear factor.
@@ -949,7 +949,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Applies this transform to the existing transform by concatenating it.
      * 
-     * @param t  the transform (<code>null</code> not permitted). 
+     * @param t  the transform ({@code null} not permitted). 
      */
     @Override
     public void transform(AffineTransform t) {
@@ -969,7 +969,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns a copy of the current transform.
      * 
-     * @return A copy of the current transform (never <code>null</code>).
+     * @return A copy of the current transform (never {@code null}).
      * 
      * @see #setTransform(java.awt.geom.AffineTransform) 
      */
@@ -981,7 +981,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Sets the transform.
      * 
-     * @param t  the new transform (<code>null</code> permitted, resets to the
+     * @param t  the new transform ({@code null} permitted, resets to the
      *     identity transform).
      */
     @Override
@@ -1002,8 +1002,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns <code>true</code> if the rectangle (in device space) intersects
-     * with the shape (the interior, if <code>onStroke</code> is false, 
+     * Returns {@code true} if the rectangle (in device space) intersects
+     * with the shape (the interior, if {@code onStroke} is false, 
      * otherwise the stroked outline of the shape).
      * 
      * @param rect  a rectangle (in device space).
@@ -1051,7 +1051,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Returns the clip bounds.
      * 
-     * @return The clip bounds (possibly <code>null</code>). 
+     * @return The clip bounds (possibly {@code null}). 
      */
     @Override
     public Rectangle getClipBounds() {
@@ -1063,9 +1063,9 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Returns the user clipping region.  The initial default value is 
-     * <code>null</code>.
+     * {@code null}.
      * 
-     * @return The user clipping region (possibly <code>null</code>).
+     * @return The user clipping region (possibly {@code null}).
      * 
      * @see #setClip(java.awt.Shape) 
      */
@@ -1086,7 +1086,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     /**
      * Sets the user clipping region.
      * 
-     * @param shape  the new user clipping region (<code>null</code> permitted).
+     * @param shape  the new user clipping region ({@code null} permitted).
      * 
      * @see #getClip()
      */
@@ -1101,12 +1101,12 @@ public final class CanvasGraphics2D extends Graphics2D {
      * specified shape. 
      * 
      * According to the Oracle API specification, this method will accept a 
-     * <code>null</code> argument, but there is an open bug report (since 2004) 
+     * {@code null} argument, but there is an open bug report (since 2004) 
      * that suggests this is wrong:
      * 
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189
      * 
-     * @param s  the clip shape (<code>null</code> not permitted). 
+     * @param s  the clip shape ({@code null} not permitted). 
      */
     @Override
     public void clip(Shape s) {
@@ -1172,8 +1172,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a line from <code>(x1, y1)</code> to <code>(x2, y2)</code> using 
-     * the current <code>paint</code> and <code>stroke</code>.
+     * Draws a line from {@code (x1, y1)} to {@code (x2, y2)} using 
+     * the current {@code paint} and {@code stroke}.
      * 
      * @param x1  the x-coordinate of the start point.
      * @param y1  the y-coordinate of the start point.
@@ -1191,7 +1191,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified rectangle with the current <code>paint</code>.
+     * Fills the specified rectangle with the current {@code paint}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1206,7 +1206,7 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Clears the specified rectangle by filling it with the current 
-     * background color.  If the background color is <code>null</code>, this
+     * background color.  If the background color is {@code null}, this
      * method will do nothing.
      * 
      * @param x  the x-coordinate.
@@ -1229,7 +1229,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     
     /**
      * Draws a rectangle with rounded corners using the current 
-     * <code>paint</code> and <code>stroke</code>.
+     * {@code paint} and {@code stroke}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1248,8 +1248,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills a rectangle with rounded corners using the current 
-     * <code>paint</code>.
+     * Fills a rectangle with rounded corners using the current {@code paint}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1268,8 +1267,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
     
     /**
-     * Draws an oval framed by the rectangle <code>(x, y, width, height)</code>
-     * using the current <code>paint</code> and <code>stroke</code>.
+     * Draws an oval framed by the rectangle {@code (x, y, width, height)}
+     * using the current {@code paint} and {@code stroke}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1285,7 +1284,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an oval framed by the rectangle <code>(x, y, width, height)</code>.
+     * Fills an oval framed by the rectangle {@code (x, y, width, height)}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1302,9 +1301,9 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Draws an arc contained within the rectangle 
-     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
-     * and continuing through <code>arcAngle</code> degrees using 
-     * the current <code>paint</code> and <code>stroke</code>.
+     * {@code (x, y, width, height)}, starting at {@code startAngle}
+     * and continuing through {@code arcAngle} degrees using 
+     * the current {@code paint}  and {@code stroke}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1324,9 +1323,9 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Fills an arc contained within the rectangle 
-     * <code>(x, y, width, height)</code>, starting at <code>startAngle</code>
-     * and continuing through <code>arcAngle</code> degrees, using 
-     * the current <code>paint</code>
+     * {@code (x, y, width, height)}, starting at {@code startAngle}
+     * and continuing through {@code arcAngle} degrees, using 
+     * the current {@code paint}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1346,7 +1345,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     
     /**
      * Draws the specified multi-segment line using the current 
-     * <code>paint</code> and <code>stroke</code>.
+     * {@code paint} and {@code stroke}.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -1360,8 +1359,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified polygon using the current <code>paint</code> and 
-     * <code>stroke</code>.
+     * Draws the specified polygon using the current {@code paint} and 
+     * {@code stroke}.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -1376,7 +1375,7 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills the specified polygon using the current <code>paint</code>.
+     * Fills the specified polygon using the current {@code paint}.
      * 
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
@@ -1393,7 +1392,7 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Draws an image with the specified transform. Note that the 
-     * <code>observer</code> is ignored.     
+     * {@code observer} is ignored.     
      * 
      * @param img  the image.
      * @param xform  the transform.
@@ -1412,8 +1411,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the image resulting from applying the <code>BufferedImageOp</code>
-     * to the specified image at the location <code>(x, y)</code>.
+     * Draws the image resulting from applying the {@code BufferedImageOp}
+     * to the specified image at the location {@code (x, y)}.
      * 
      * @param img  the image.
      * @param op  the operation.
@@ -1452,8 +1451,8 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image at the location <code>(x, y)</code>.  Note that the 
-     * <code>observer</code> is ignored.
+     * Draws an image at the location {@code (x, y)}.  Note that the 
+     * {@code observer} is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
@@ -1483,7 +1482,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
-     * @param observer  the observer (<code>null</code> permitted).
+     * @param observer  the observer ({@code null} permitted).
      * 
      * @return A boolean. 
      */
@@ -1495,13 +1494,13 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image at the location <code>(x, y)</code>.  Note that the 
-     * <code>observer</code> is ignored.
+     * Draws an image at the location {@code (x, y)}.  Note that the 
+     * {@code observer} is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
-     * @param bgcolor  the background color (<code>null</code> permitted).
+     * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1521,16 +1520,16 @@ public final class CanvasGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image to the rectangle <code>(x, y, w, h)</code> (scaling it if
+     * Draws an image to the rectangle {@code (x, y, w, h)} (scaling it if
      * required), first filling the background with the specified color.  Note 
-     * that the <code>observer</code> is ignored.
+     * that the {@code observer} is ignored.
      * 
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param w  the width.
      * @param h  the height.
-     * @param bgcolor  the background color (<code>null</code> permitted).
+     * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn.      
@@ -1547,8 +1546,8 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Draws part of an image (defined by the source rectangle 
-     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
-     * <code>(dx1, dy1, dx2, dy2)</code>.  Note that the <code>observer</code> 
+     * {@code (sx1, sy1, sx2, sy2)}) into the destination rectangle
+     * {@code (dx1, dy1, dx2, dy2)}.  Note that the {@code observer} 
      * is ignored.
      * 
      * @param img  the image.
@@ -1577,10 +1576,10 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Draws part of an image (defined by the source rectangle 
-     * <code>(sx1, sy1, sx2, sy2)</code>) into the destination rectangle
-     * <code>(dx1, dy1, dx2, dy2)</code>.  The destination rectangle is first
-     * cleared by filling it with the specified <code>bgcolor</code>. Note that
-     * the <code>observer</code> is ignored. 
+     * {@code (sx1, sy1, sx2, sy2)}) into the destination rectangle
+     * {@code (dx1, dy1, dx2, dy2)}.  The destination rectangle is first
+     * cleared by filling it with the specified {@code bgcolor}. Note that
+     * the {@code observer} is ignored. 
      * 
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
@@ -1591,7 +1590,7 @@ public final class CanvasGraphics2D extends Graphics2D {
      * @param sy1 the y-coordinate for the top left of the source.
      * @param sx2 the x-coordinate for the bottom right of the source.
      * @param sy2 the y-coordinate for the bottom right of the source.
-     * @param bgcolor  the background color (<code>null</code> permitted).
+     * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
      * 
      * @return {@code true} if the image is drawn. 
@@ -1617,7 +1616,7 @@ public final class CanvasGraphics2D extends Graphics2D {
 
     /**
      * Returns the script that has been generated by calls to this 
-     * <code>Graphics2D</code> implementation.
+     * {@code Graphics2D} implementation.
      * 
      * @return The script.
      */
