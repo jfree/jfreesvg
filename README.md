@@ -8,7 +8,7 @@ Version 2.2, ?? May 2015
 
 Overview
 --------
-JFreeSVG is a graphics library for the Java(tm) platform that allows you to generate content in SVG and Javascript (HTML5 Canvas) format using the standard Java2D drawing API (Graphics2D).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
+JFreeSVG is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (Graphics2D).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
 
     http://www.jfree.org/jfreesvg/
 
@@ -17,7 +17,7 @@ This version (2.2) was released on ?? May 2015.  A change history appears at the
 
 Getting Started
 ---------------
-The Javadocs for the SVGGraphics2D and CanvasGraphics2D classes give examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-2.0.jar to your classpath and start coding.
+The Javadocs for the SVGGraphics2D class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-2.2.jar to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
@@ -44,6 +44,7 @@ Version 2.2 (?? May 2015)
 - added handling for BasicStroke cap, join and miterlimit;
 - added ZIP option when writing SVG to files;
 - added demo for exporting Swing UIs to SVG;
+- removed CanvasGraphics2D implementation;
 - fixed handling of PathIterator.SEG_CLOSE;
 - fixed y-coordinate bug in drawImage();
 - added workaround for ClassCastException on MacOSX with Nimbus L&F.
