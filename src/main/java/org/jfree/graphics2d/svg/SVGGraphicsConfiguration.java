@@ -32,14 +32,17 @@
 
 package org.jfree.graphics2d.svg;
 
+import java.awt.AWTException;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.awt.ImageCapabilities;
 import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DirectColorModel;
+import java.awt.image.VolatileImage;
 import java.awt.image.WritableRaster;
 
 /**
@@ -154,5 +157,33 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
         return new BufferedImage(model, raster, model.isAlphaPremultiplied(), 
                 null);
     }
+
+    private BufferedImage img;
+    private GraphicsConfiguration gc;
     
+    /**
+     * Returns a volatile image.  This method is a workaround for a
+     * ClassCastException that occurs on MacOSX when exporting a Swing UI
+     * that uses the Nimbus Look and Feel to SVG.
+     * 
+     * @param width  the image width.
+     * @param height  the image height.
+     * @param caps  the image capabilities.
+     * @param transparency  the transparency.
+     * 
+     * @return The volatile image.
+     * 
+     * @throws AWTException 
+     */
+    @Override
+    public VolatileImage createCompatibleVolatileImage(int width, int height, 
+            ImageCapabilities caps, int transparency) throws AWTException {
+        if (img == null) {
+            img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            gc = img.createGraphics().getDeviceConfiguration();
+        }
+        return gc.createCompatibleVolatileImage(width, height, caps, 
+                transparency);
+    }
+
 }
