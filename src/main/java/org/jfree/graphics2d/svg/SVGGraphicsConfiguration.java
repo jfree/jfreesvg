@@ -173,7 +173,7 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
      * 
      * @return The volatile image.
      * 
-     * @throws AWTException 
+     * @throws AWTException if there is a problem creating the image.
      */
     @Override
     public VolatileImage createCompatibleVolatileImage(int width, int height, 
