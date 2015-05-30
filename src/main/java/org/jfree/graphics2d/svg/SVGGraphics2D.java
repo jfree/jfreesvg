@@ -207,7 +207,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private DecimalFormat geometryFormat;
     
     /** The buffer that accumulates the SVG output. */
-    private final StringBuilder sb;
+    private StringBuilder sb;
 
     /** 
      * A prefix for the keys used in the DEFS element.  This can be used to 
@@ -221,7 +221,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
      */
-    private final Map<GradientPaintKey, String> gradientPaints 
+    private Map<GradientPaintKey, String> gradientPaints 
             = new HashMap<GradientPaintKey, String>();
     
     /** 
@@ -229,7 +229,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the linear gradient paints used must be 
      * defined in the defs element.
      */
-    private final Map<LinearGradientPaintKey, String> linearGradientPaints 
+    private Map<LinearGradientPaintKey, String> linearGradientPaints 
             = new HashMap<LinearGradientPaintKey, String>();
     
     /** 
@@ -237,14 +237,14 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the radial gradient paints used must be 
      * defined in the defs element.
      */
-    private final Map<RadialGradientPaintKey, String> radialGradientPaints
+    private Map<RadialGradientPaintKey, String> radialGradientPaints
             = new HashMap<RadialGradientPaintKey, String>();
     
     /**
      * A list of the registered clip regions.  These will be written to the
      * DEFS element.
      */
-    private final List<String> clipPaths = new ArrayList<String>();
+    private List<String> clipPaths = new ArrayList<String>();
     
     /** 
      * The filename prefix for images that are referenced rather than
@@ -265,7 +265,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * After the SVG is generated, the caller can make use of this list to
      * write PNG files if they don't already exist.  
      */
-    private final List<ImageElement> imageElements;
+    private List<ImageElement> imageElements;
     
     /** The user clip (can be null). */
     private Shape clip;
@@ -407,6 +407,30 @@ public final class SVGGraphics2D extends Graphics2D {
         this.elementIDs = new HashSet<String>();
     }
 
+    /**
+     * Creates a new instance that is a child of the supplied parent.
+     * 
+     * @param parent 
+     */
+    private SVGGraphics2D(SVGGraphics2D parent) {
+        this(parent.width, parent.height, parent.sb);
+        this.shapeRendering = parent.shapeRendering;
+        this.textRendering = parent.textRendering;
+        getRenderingHints().add(parent.hints);
+        this.checkStrokeControlHint = parent.checkStrokeControlHint;
+        setTransformDP(parent.transformDP);
+        setGeometryDP(parent.geometryDP);
+        this.defsKeyPrefix = parent.defsKeyPrefix;
+        this.gradientPaints = parent.gradientPaints;
+        this.linearGradientPaints = parent.linearGradientPaints;
+        this.radialGradientPaints = parent.radialGradientPaints;
+        this.clipPaths = parent.clipPaths;
+        this.filePrefix = parent.filePrefix;
+        this.fileSuffix = parent.fileSuffix;
+        this.imageElements = parent.imageElements;
+        this.zeroStrokeWidth = parent.zeroStrokeWidth;
+    }
+    
     /**
      * Returns the width for the SVG element, specified in the constructor.
      * This value will be written to the SVG element returned by the 
@@ -732,8 +756,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public Graphics create() {
-        SVGGraphics2D copy = new SVGGraphics2D(this.width, this.height, 
-                this.sb);
+        SVGGraphics2D copy = new SVGGraphics2D(this);
         copy.setRenderingHints(getRenderingHints());
         copy.setTransform(getTransform());
         copy.setClip(getClip());
