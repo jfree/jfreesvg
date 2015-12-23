@@ -127,7 +127,7 @@ public class SVGUtils {
      * 
      * @throws IOException if there is an I/O problem.
      * 
-     * @since 2.2
+     * @since 3.0
      */
     public static void writeToSVG(File file, String svgElement, boolean zip) 
             throws IOException {    
