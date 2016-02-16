@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 3.0, 8 June 2015
+Version 3.1, not yet released.
 
-(C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
 
 
 Overview
@@ -39,6 +39,10 @@ Other code distributed with JFreeSVG:
 
 Change History
 --------------
+
+Version 3.1 (not yet released)
+- use fractional metrics for FontMetrics;
+
 
 Version 3.0 (8 June 2015)
 - added handling for BasicStroke cap, join and miterlimit;
