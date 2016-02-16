@@ -312,8 +312,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private Color background = Color.BLACK;
 
     /** A hidden image used for font metrics. */
-    private final BufferedImage fmImage = new BufferedImage(10, 10, 
-            BufferedImage.TYPE_INT_RGB);
+    private BufferedImage fmImage;
     
     private Graphics2D fmImageG2D;
 
@@ -1525,6 +1524,10 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public FontMetrics getFontMetrics(Font f) {
+        if (this.fmImage == null) {
+            this.fmImage = new BufferedImage(10, 10, 
+                    BufferedImage.TYPE_INT_RGB);  
+        }
         if (this.fmImageG2D == null) {
             this.fmImageG2D = this.fmImage.createGraphics();
             this.fmImageG2D.setRenderingHint(
