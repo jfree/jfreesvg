@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -314,6 +314,8 @@ public final class SVGGraphics2D extends Graphics2D {
     /** A hidden image used for font metrics. */
     private final BufferedImage fmImage = new BufferedImage(10, 10, 
             BufferedImage.TYPE_INT_RGB);
+    
+    private Graphics2D fmImageG2D;
 
     /**
      * An instance that is lazily instantiated in drawLine and then 
@@ -1523,7 +1525,13 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public FontMetrics getFontMetrics(Font f) {
-        return this.fmImage.createGraphics().getFontMetrics(f);
+        if (this.fmImageG2D == null) {
+            this.fmImageG2D = this.fmImage.createGraphics();
+            this.fmImageG2D.setRenderingHint(
+                    RenderingHints.KEY_FRACTIONALMETRICS, 
+                    RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        }
+        return this.fmImageG2D.getFontMetrics(f);
     }
     
     /**
