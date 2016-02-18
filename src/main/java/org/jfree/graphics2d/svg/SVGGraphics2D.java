@@ -1526,9 +1526,7 @@ public final class SVGGraphics2D extends Graphics2D {
     public FontMetrics getFontMetrics(Font f) {
         if (this.fmImage == null) {
             this.fmImage = new BufferedImage(10, 10, 
-                    BufferedImage.TYPE_INT_RGB);  
-        }
-        if (this.fmImageG2D == null) {
+                    BufferedImage.TYPE_INT_RGB);
             this.fmImageG2D = this.fmImage.createGraphics();
             this.fmImageG2D.setRenderingHint(
                     RenderingHints.KEY_FRACTIONALMETRICS, 
