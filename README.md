@@ -10,7 +10,7 @@ Overview
 --------
 **JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  *JFreeSVG* is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
 
-    http://www.jfree.org/jfreesvg/
+http://www.jfree.org/jfreesvg/
 
 This version (3.0) was released on 8 June 2015.  A change history appears at the end of this file.
 
@@ -21,9 +21,9 @@ The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and
 
 Oracle provides tutorials for Java2D here:
 
-       http://docs.oracle.com/javase/tutorial/2d/
+http://docs.oracle.com/javase/tutorial/2d/
 
-There are some demonstration applications included in the org.jfree.graphics2d.demo.* package.  These applications make use of JFreeChart, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
+There are some demonstration applications included in the `org.jfree.graphics2d.demo.*` package.  These applications make use of **JFreeChart**, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
 
 
 License
@@ -118,7 +118,7 @@ Version 1.3 (24 September 2013)
 
 Version 1.2 (13 September 2013)
 - added SVG and XLINK namespaces to SVG element;
-- fixed capitalisation of linearGradient element, to pass W3C validator;
+- fixed capitalisation of `linearGradient` element, to pass W3C validator;
 - added support for Java2D's RadialGradientPaint;
 - added `SVGUtils.writeToSVG()` method; 
 - added new demo `SVGTimeSeriesChartDemo1.java`.
