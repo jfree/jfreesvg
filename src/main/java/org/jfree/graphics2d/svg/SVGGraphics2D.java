@@ -1105,9 +1105,9 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Draws the specified shape with the current {@code paint} and 
      * {@code stroke}.  There is direct handling for {@code Line2D}, 
-     * {@code Rectangle2D} and {@code Path2D}. All other shapes are
-     * mapped to a {@code GeneralPath} and then drawn (effectively as 
-     * {@code Path2D} objects).
+     * {@code Rectangle2D}, {@code Ellipse2D} and {@code Path2D}.  All other 
+     * shapes are mapped to a {@code GeneralPath} and then drawn (effectively 
+     * as {@code Path2D} objects).
      * 
      * @param s  the shape ({@code null} not permitted).
      * 
@@ -1150,6 +1150,21 @@ public final class SVGGraphics2D extends Graphics2D {
                     this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append("/>");
+        } else if (s instanceof Ellipse2D) {
+            Ellipse2D e = (Ellipse2D) s;
+            this.sb.append("<ellipse ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("cx=\"").append(geomDP(e.getCenterX()))
+                    .append("\" cy=\"").append(geomDP(e.getCenterY()))
+                    .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
+                    .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
+                    .append("\" ");
+            this.sb.append("style=\"").append(strokeStyle())
+                    .append("; fill: none").append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
+            this.sb.append(getClipPathRef());
+            this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g ");
@@ -1169,9 +1184,9 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Fills the specified shape with the current {@code paint}.  There is
-     * direct handling for {@code Rectangle2D} and {@code Path2D}.  
-     * All other shapes are mapped to a {@code GeneralPath} and then 
-     * filled.
+     * direct handling for {@code Rectangle2D}, {@code Ellipse2D} and 
+     * {@code Path2D}.  All other shapes are mapped to a {@code GeneralPath} 
+     * and then filled.
      * 
      * @param s  the shape ({@code null} not permitted). 
      * 
@@ -1196,6 +1211,20 @@ public final class SVGGraphics2D extends Graphics2D {
                     this.transform)).append("\" ");
             this.sb.append(getClipPathRef());
             this.sb.append("/>");
+        } else if (s instanceof Ellipse2D) {
+            Ellipse2D e = (Ellipse2D) s;
+            this.sb.append("<ellipse ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("cx=\"").append(geomDP(e.getCenterX()))
+                    .append("\" cy=\"").append(geomDP(e.getCenterY()))
+                    .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
+                    .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
+                    .append("\" ");
+            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append("transform=\"").append(getSVGTransform(
+                    this.transform)).append("\" ");
+            this.sb.append(getClipPathRef());
+            this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g ");
