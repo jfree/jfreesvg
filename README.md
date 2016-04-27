@@ -42,6 +42,7 @@ Change History
 
 Version 3.1 (not yet released)
 - use fractional metrics for `FontMetrics`;
+- use `ellipse` element to draw/fill `Ellipse2D` instances.
 
 
 Version 3.0 (8 June 2015)
