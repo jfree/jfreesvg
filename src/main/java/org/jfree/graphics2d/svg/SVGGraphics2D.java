@@ -2682,10 +2682,24 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
         b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
         b.append("gradientUnits=\"userSpaceOnUse\">");
-        b.append("<stop offset=\"0%\" style=\"stop-color: ").append(
-                rgbColorStr(paint.getColor1())).append(";\"/>");
-        b.append("<stop offset=\"100%\" style=\"stop-color: ").append(
-                rgbColorStr(paint.getColor2())).append(";\"/>");
+        Color c1 = paint.getColor1();
+        b.append("<stop offset=\"0%\" stop-color=\"").append(rgbColorStr(c1))
+                .append("\"");
+        if (c1.getAlpha() < 255) {
+            double alphaPercent = c1.getAlpha() / 255.0;
+            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
+                    .append("\"");
+        }
+        b.append("/>");
+        Color c2 = paint.getColor2();
+        b.append("<stop offset=\"100%\" stop-color=\"").append(rgbColorStr(c2))
+                .append("\"");
+        if (c2.getAlpha() < 255) {
+            double alphaPercent = c2.getAlpha() / 255.0;
+            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
+                    .append("\"");
+        }
+        b.append("/>");
         return b.append("</linearGradient>").toString();
     }
     
@@ -2698,7 +2712,8 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return The SVG element.
      */
-    private String getLinearGradientElement(String id, LinearGradientPaint paint) {
+    private String getLinearGradientElement(String id, 
+            LinearGradientPaint paint) {
         StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
                 .append("\" ");
         Point2D p1 = paint.getStartPoint();
@@ -2717,8 +2732,14 @@ public final class SVGGraphics2D extends Graphics2D {
             Color c = paint.getColors()[i];
             float fraction = paint.getFractions()[i];
             b.append("<stop offset=\"").append(geomDP(fraction * 100))
-                    .append("%\" style=\"stop-color: ")
-                    .append(rgbColorStr(c)).append(";\"/>");
+                    .append("%\" stop-color=\"")
+                    .append(rgbColorStr(c)).append("\"");
+            if (c.getAlpha() < 255) {
+                double alphaPercent = c.getAlpha() / 255.0;
+                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
+                        .append("\"");                
+            }
+            b.append("/>");
         }
         return b.append("</linearGradient>").toString();
     }
@@ -2750,7 +2771,13 @@ public final class SVGGraphics2D extends Graphics2D {
             Color c = colors[i];
             float f = fractions[i];
             b.append("<stop offset=\"").append(geomDP(f * 100)).append("%\" ");
-            b.append("stop-color=\"").append(rgbColorStr(c)).append("\"/>");
+            b.append("stop-color=\"").append(rgbColorStr(c)).append("\"");
+            if (c.getAlpha() < 255) {
+                double alphaPercent = c.getAlpha() / 255.0;
+                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
+                        .append("\"");                
+            }            
+            b.append("/>");
         }
         return b.append("</radialGradient>").toString();
     }
