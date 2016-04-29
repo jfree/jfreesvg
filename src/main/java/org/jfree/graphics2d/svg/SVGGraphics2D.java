@@ -107,10 +107,10 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * into the element.  Finally, retrieve the SVG element that has been 
  * accumulated.  For example:
  * <p>
- * {@code SVGGraphics2D g2 = new SVGGraphics2D(300, 200);}
- * {@code g2.setPaint(Color.RED);}
- * {@code g2.draw(new Rectangle(10, 10, 280, 180);}
- * {@code String svgElement = g2.getSVGElement();}
+ * &nbsp;&nbsp;&nbsp;&nbsp;{@code SVGGraphics2D g2 = new SVGGraphics2D(300, 200);}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;{@code g2.setPaint(Color.RED);}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;{@code g2.draw(new Rectangle(10, 10, 280, 180);}<br>
+ * &nbsp;&nbsp;&nbsp;&nbsp;{@code String svgElement = g2.getSVGElement();}
  * <p>
  * For the content generation step, you can make use of third party libraries,
  * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and
