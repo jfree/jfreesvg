@@ -95,18 +95,20 @@ import org.jfree.graphics2d.LinearGradientPaintKey;
 import org.jfree.graphics2d.RadialGradientPaintKey;
 
 /**
+ * <p>
  * A {@code Graphics2D} implementation that creates SVG output.  After 
  * rendering the graphics via the {@code SVGGraphics2D}, you can retrieve
  * an SVG element (see {@link #getSVGElement()}) or an SVG document (see 
  * {@link #getSVGDocument()}) containing your content.
- * <p>
+ * </p>
  * <b>Usage</b><br>
+ * <p>
  * Using the {@code SVGGraphics2D} class is straightforward.  First, 
  * create an instance specifying the height and width of the SVG element that 
  * will be created.  Then, use standard Java2D API calls to draw content 
  * into the element.  Finally, retrieve the SVG element that has been 
  * accumulated.  For example:
- * <p>
+ * </p>
  * <pre>{@code 
  * SVGGraphics2D g2 = new SVGGraphics2D(300, 200);
  * g2.setPaint(Color.RED);
@@ -118,14 +120,15 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and
  * <a href="http://www.object-refinery.com/orsoncharts/">Orson Charts</a>, that 
  * render output using standard Java2D API calls.
- * <p>
+ * </p>
  * <b>Rendering Hints</b><br>
+ * <p>
  * The {@code SVGGraphics2D} supports a couple of custom rendering hints -  
  * for details, refer to the {@link SVGHints} class documentation.  Also see
  * the examples in this blog post: 
  * <a href="http://www.object-refinery.com/blog/blog-20140509.html">
  * Orson Charts 3D / Enhanced SVG Export</a>.
- * <p>
+ * </p>
  * <b>Other Notes</b><br>
  * Some additional notes:
  * <ul>
