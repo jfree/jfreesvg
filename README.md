@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.1, not yet released.
+Version 3.1, 30 April 2016.
 
 (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ Overview
 
 http://www.jfree.org/jfreesvg/
 
-This version (3.0) was released on 8 June 2015.  A change history appears at the end of this file.
+This version (3.1) was released on 30 April 2016.  A change history appears at the end of this file.
 
 
 Getting Started
@@ -24,6 +24,28 @@ Oracle provides tutorials for Java2D here:
 http://docs.oracle.com/javase/tutorial/2d/
 
 There are some demonstration applications included in the `org.jfree.graphics2d.demo.*` package.  These applications make use of **JFreeChart**, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
+
+
+Maven
+-----
+JFreeSVG is published to the Central Repository:
+
+    <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreesvg</artifactId>
+        <version>3.1</version>
+    </dependency>
+
+
+Build
+-----
+JFreeSVG can be built using Ant or Maven.  For Ant, use this command from the project root directory:
+
+    ant -f ant/build.xml
+
+This will build the project, generate Javadocs and create a ZIP file containing all the project files.
+
+For Maven-based builds, you can use the `pom.xml` file in the root directory.
 
 
 License
