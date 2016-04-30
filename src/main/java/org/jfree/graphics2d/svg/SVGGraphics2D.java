@@ -2183,7 +2183,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Fills an arc contained within the rectangle 
      * {@code (x, y, width, height)}, starting at {@code startAngle}
      * and continuing through {@code arcAngle} degrees, using 
-     * the current {@code paint}
+     * the current {@code paint}.
      * 
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -2630,7 +2630,9 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns an SVG document.
+     * Returns an SVG document (this contains the content returned by the
+     * {@link #getSVGElement()} method, prepended with the required document 
+     * header).
      * 
      * @return An SVG document.
      */
