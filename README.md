@@ -142,14 +142,14 @@ Version 1.3 (24 September 2013)
 Version 1.2 (13 September 2013)
 - added SVG and XLINK namespaces to SVG element;
 - fixed capitalisation of `linearGradient` element, to pass W3C validator;
-- added support for Java2D's RadialGradientPaint;
+- added support for Java2D's `RadialGradientPaint`;
 - added `SVGUtils.writeToSVG()` method; 
 - added new demo `SVGTimeSeriesChartDemo1.java`.
 
 
 Version 1.1 (4 September 2013)
-- reimplemented `drawString(AttributedCharacterIterator, float, float)` using `TextLayout` and modified `drawGlyphVector()` to fill rather than stroke shapes (for SVG/CanvasGraphics2D);
-- removed the PDF code (to a separate project, OrsonPDF);
+- reimplemented `drawString(AttributedCharacterIterator, float, float)` using `TextLayout` and modified `drawGlyphVector()` to fill rather than stroke shapes (for `SVG/CanvasGraphics2D`);
+- removed the PDF code (to a separate project, **OrsonPDF**);
 - fixed clipping bug in `SVGGraphics2D`;
 - added `geomDP` and `transformDP` attributes to `CanvasGraphics2D` to control number of decimal places for numbers written to script; 
 
