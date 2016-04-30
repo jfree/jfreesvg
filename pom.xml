@@ -6,13 +6,6 @@
   <artifactId>jfreesvg</artifactId>
   <version>3.1</version>
   <packaging>jar</packaging>
- 
-  <!-- this is required to host it on Sonatype's OSSRH -->
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>9</version>
-  </parent>
 
   <name>JFreeSVG</name>
   <url>http://www.jfree.org/jfreesvg</url>
@@ -73,7 +66,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.2</version>
+        <version>1.6.3</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
@@ -90,6 +83,10 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
   </distributionManagement>    
 
   <profiles>
