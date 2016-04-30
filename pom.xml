@@ -9,7 +9,16 @@
 
   <name>JFreeSVG</name>
   <url>http://www.jfree.org/jfreesvg</url>
- 
+  <description>A fast, lightweight Java library for creating SVG output.</description>
+  
+  <developers>
+    <developer>
+      <email>dave@jfree.org</email>
+      <name>David Gilbert</name>
+      <url>https://github.com/jfree</url>
+    </developer>
+  </developers>
+
   <licenses>
     <license>
       <name>GNU General Public License (GPL)</name>
@@ -17,6 +26,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <scm>
+    <url>https://github.com/jfree/jfreesvg</url>
+    <connection>scm:git:git://github.com/jfree/jfreesvg.git</connection>
+    <developerConnection>scm:git:git@github.com:jfree/jfreesvg.git</developerConnection>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
