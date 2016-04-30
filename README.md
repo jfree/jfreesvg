@@ -8,7 +8,7 @@ Version 3.1, 30 April 2016.
 
 Overview
 --------
-**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  *JFreeSVG* is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
+**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
 
 http://www.jfree.org/jfreesvg/
 
@@ -17,18 +17,18 @@ This version (3.1) was released on 30 April 2016.  A change history appears at t
 
 Getting Started
 ---------------
-The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add jfreesvg-3.0.jar to your classpath and start coding.
+The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add `jfreesvg-3.1.jar` to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
 http://docs.oracle.com/javase/tutorial/2d/
 
-There are some demonstration applications included in the `org.jfree.graphics2d.demo.*` package.  These applications make use of **JFreeChart**, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
+There are some demonstration applications included in the `org.jfree.graphics2d.demo` package.  These applications make use of **JFreeChart**, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
 
 
-Maven
------
-JFreeSVG is published to the Central Repository:
+Build Info
+----------
+JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency:
 
     <dependency>
         <groupId>org.jfree</groupId>
@@ -36,23 +36,20 @@ JFreeSVG is published to the Central Repository:
         <version>3.1</version>
     </dependency>
 
+JFreeSVG can be built using either Maven or Ant.  For Maven-based builds, use the `pom.xml` file in the root directory.
 
-Build
------
-JFreeSVG can be built using Ant or Maven.  For Ant, use this command from the project root directory:
+For Ant, use this command from the project root directory:
 
     ant -f ant/build.xml
 
 This will build the project, generate Javadocs and create a ZIP file containing all the project files.
-
-For Maven-based builds, you can use the `pom.xml` file in the root directory.
 
 
 License
 -------
 JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license from Object Refinery Limited (please e-mail info@object-refinery.com for details, or check the JFreeSVG home page).
 
-Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Please refer to the license for details.
+    Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Please refer to the license for details.
 
 Other code distributed with JFreeSVG:
 
@@ -62,7 +59,7 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 3.1 (not yet released)
+Version 3.1 (30 April 2016)
 - use fractional metrics for `FontMetrics`;
 - use `ellipse` element to draw/fill `Ellipse2D` instances;
 - handle alpha in gradient paints.
