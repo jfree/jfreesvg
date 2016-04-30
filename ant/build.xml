@@ -117,6 +117,9 @@
         <copy file="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar" tofile="${basedir}/distribution/lib/${jfreechart.name}-${jfreechart.version}.jar" />
         <copy file="${basedir}/lib/license-LGPL.txt" tofile="${basedir}/distribution/lib/license-LGPL.txt" />
 
+        <!-- copy across pom.xml -->
+        <copy file="${basedir}/pom.xml" tofile="${basedir}/distribution/pom.xml" />
+
         <!-- copy across source files -->
         <copy todir="${basedir}/distribution/src">
             <fileset dir="${basedir}/src">
