@@ -31,40 +31,16 @@
 
 package org.jfree.graphics2d.svg;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.awt.LinearGradientPaint;
+import org.jfree.graphics2d.*;
+
+import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
+import java.awt.*;
 import java.awt.MultipleGradientPaint.CycleMethod;
-import java.awt.Paint;
-import java.awt.RadialGradientPaint;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
@@ -77,22 +53,11 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.text.AttributedString;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
-import org.jfree.graphics2d.Args;
-import org.jfree.graphics2d.GradientPaintKey;
-import org.jfree.graphics2d.GraphicsUtils;
-import org.jfree.graphics2d.LinearGradientPaintKey;
-import org.jfree.graphics2d.RadialGradientPaintKey;
 
 /**
  * <p>
@@ -161,7 +126,23 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /** The prefix for keys used to identify clip paths. */
     private static final String CLIP_KEY_PREFIX = "clip-";
-    
+
+    /**
+     * Allowed values for the align parameter of the preserveAspectRatio attribute
+     **/
+    private static final String[] PRESERVE_ASPECT_RATIO_ALIGN_VALUES = {
+            "none",
+            "xMinYMin",
+            "xMidYMin",
+            "xMaxYMin",
+            "xMinYMid",
+            "xMidYMid", // default
+            "xMaxYMid",
+            "xMinYMax",
+            "xMidYMax",
+            "xMaxYMax",
+    };
+
     private final int width;
     
     private final int height;
@@ -179,7 +160,24 @@ public final class SVGGraphics2D extends Graphics2D {
      * "geometricPrecision".
      */
     private String textRendering = "auto";
-    
+
+    /**
+     * The preserveAspectRatio property for the SVG element.
+     */
+    private String preserveAspectRatio = "";
+
+    /**
+     * The viewBox property for the SVG element.
+     */
+    private String viewBox = "";
+
+    /**
+     * By default the SVG will have its width and height set.
+     * This can be disabled by setting printDimensions to false.
+     * Can be useful for responsiveness on the web.
+     */
+    private boolean printDimensions = true;
+
     /** Rendering hints (see SVGHints). */
     private final RenderingHints hints;
     
@@ -518,7 +516,63 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         this.textRendering = value;
     }
-    
+
+    /**
+     * Sets the value of the 'preserveAspectRatio' property that will be written to
+     * the SVG element.
+     *
+     * @param align The align parameter of the value.
+     * @param meetOrSlice The meetOrSlice parameter of the value.
+     *
+     * @since 3.2
+     */
+    public void setPreserveAspectRatio(String align, String meetOrSlice) {
+        align = align.trim();
+        meetOrSlice = meetOrSlice.trim();
+        String value = align + " " + meetOrSlice;
+        if ((!align.isEmpty()
+                && !Arrays.asList(PRESERVE_ASPECT_RATIO_ALIGN_VALUES).contains(align))
+                || (!meetOrSlice.equals("")
+                && !meetOrSlice.equals("meet")
+                && !meetOrSlice.equals("slice"))) {
+            throw new IllegalArgumentException("Unrecognized value: " + value);
+        }
+        this.preserveAspectRatio = value;
+    }
+
+    /**
+     * Sets the value of the 'viewBox' property that will be written to
+     * the SVG element.
+     **
+     * @param x The x coordinate of the viewbox.
+     * @param y The y coordinate of the viewbox.
+     * @param width The width of the viewbox.
+     * @param height The height of the viewbox.
+     *
+     * @since 3.2
+     */
+    public void setViewBox(int x, int y, int width, int height) {
+        String value = String.join(" ", String.valueOf(x), String.valueOf(y),
+                String.valueOf(width), String.valueOf(height));
+        if (width < 0 || height < 0) {
+            throw new IllegalArgumentException("Unrecognized value: " + value);
+        }
+        this.viewBox = value;
+    }
+
+    /**
+     * Sets flag determining if the width and height of the SVG are to be written
+     * to the element. The default value is {@code true}. Not printing the
+     * dimensions can be useful for responsive SVG displayed on the web.
+     *
+     * @param printDimensions the new value.
+     *
+     * @since 3.2
+     */
+    public void setPrintDimensions(boolean printDimensions) {
+        this.printDimensions = printDimensions;
+    }
+
     /**
      * Returns the flag that controls whether or not this object will observe
      * the {@code KEY_STROKE_CONTROL} rendering hint.  The default value is
@@ -2592,11 +2646,15 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
            .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
-           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ")
-           .append("width=\"").append(this.width)
-           .append("\" height=\"").append(this.height)
-           .append("\" text-rendering=\"").append(this.textRendering)
+           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
+        if (printDimensions) {
+           svg.append("\" width=\"").append(this.width)
+              .append("\" height=\"").append(this.height);
+        }
+        svg.append("\" text-rendering=\"").append(this.textRendering)
            .append("\" shape-rendering=\"").append(this.shapeRendering)
+           .append("\" viewBox=\"").append(this.viewBox)
+           .append("\" preserveAspectRatio=\"").append(this.preserveAspectRatio)
            .append("\">\n");
         StringBuilder defs = new StringBuilder("<defs>");
         for (GradientPaintKey key : this.gradientPaints.keySet()) {
