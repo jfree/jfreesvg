@@ -2646,7 +2646,7 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
            .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
-           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
+           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg");
         if (printDimensions) {
            svg.append("\" width=\"").append(this.width)
               .append("\" height=\"").append(this.height);
