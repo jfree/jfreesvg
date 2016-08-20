@@ -416,12 +416,13 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Creates a new instance that is a child of the supplied parent.
      * 
-     * @param parent 
+     * @param parent  the parent ({@code null} not permitted).
      */
     private SVGGraphics2D(SVGGraphics2D parent) {
         this(parent.width, parent.height, parent.sb);
         this.shapeRendering = parent.shapeRendering;
         this.textRendering = parent.textRendering;
+        this.fontMapper = parent.fontMapper;
         getRenderingHints().add(parent.hints);
         this.checkStrokeControlHint = parent.checkStrokeControlHint;
         setTransformDP(parent.transformDP);
@@ -756,7 +757,9 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Creates a new graphics object that is a copy of this graphics object
      * (except that it has not accumulated the drawing operations).  Not sure
-     * yet when or why this would be useful when creating SVG output.
+     * yet when or why this would be useful when creating SVG output.  Note
+     * that the {@code fontMapper} object ({@see #getFontMapper()}) is shared 
+     * between the existing instance and the new one.
      * 
      * @return A new graphics object.
      */
