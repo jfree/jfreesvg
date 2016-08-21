@@ -140,7 +140,7 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
     }
 
     /**
-     * Creates a compatible image.n  This override is only here to provide
+     * Creates a compatible image. This override is only here to provide
      * support for Java 6 because from Java 7 onwards the super class has a
      * non-abstract implementation for this method.
      * 
