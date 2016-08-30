@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2015, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -58,7 +58,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Some tests for a Graphics2D implementation.
+ * Some tests for a Graphics2D implementation.  All tests should pass with the
+ * Graphics2D instance from a BufferedImage (which we can treat as a reference
+ * implementation).
  */
 public class TestGraphics2D {
     
@@ -68,8 +70,8 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
+        // BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        // this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
         this.g2 = new SVGGraphics2D(10, 20);
@@ -724,5 +726,16 @@ public class TestGraphics2D {
     public void drawImageWithNullBackground() {
         Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(img, 10, 10, null, null);
+        assertTrue(true); // won't get here if there's an exception above
+    }
+    
+    /**
+     * https://github.com/jfree/jfreesvg/issues/6
+     */
+    @Test
+    public void drawImageWithNullTransform() {
+        Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(img, null, null);
+        assertTrue(true); // won't get here if there's an exception above
     }
 }
