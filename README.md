@@ -61,6 +61,13 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
+Version 3.2 (not yet released)
+- added facility to specify `units` for `width` and `height` attributes;
+- added option to suppress `width` and `height` from SVG element;
+- add option to include `viewBox` and associated parameters in the SVG element;
+- fixed `NullPointerException` in `drawImage(Image, AffineTransform, ImageObserver)` (bug #6);
+- copy `fontMapper` in `create()` method (bug #5).
+
 Version 3.1 (30 April 2016)
 - use fractional metrics for `FontMetrics`;
 - use `ellipse` element to draw/fill `Ellipse2D` instances;
