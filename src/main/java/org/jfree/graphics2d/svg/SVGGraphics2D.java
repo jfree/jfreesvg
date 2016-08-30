@@ -2560,7 +2560,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * {@code observer} is ignored.     
      * 
      * @param img  the image.
-     * @param xform  the transform.
+     * @param xform  the transform ({@code null} permitted).
      * @param obs  the image observer (ignored).
      * 
      * @return {@code true} if the image is drawn. 
@@ -2569,9 +2569,13 @@ public final class SVGGraphics2D extends Graphics2D {
     public boolean drawImage(Image img, AffineTransform xform, 
             ImageObserver obs) {
         AffineTransform savedTransform = getTransform();
-        transform(xform);
+        if (xform != null) {
+            transform(xform);
+        }
         boolean result = drawImage(img, 0, 0, obs);
-        setTransform(savedTransform);
+        if (xform != null) {
+            setTransform(savedTransform);
+        }
         return result;
     }
 
