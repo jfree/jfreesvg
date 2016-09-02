@@ -2332,15 +2332,18 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws an image at the location {@code (x, y)}.  Note that the 
      * {@code observer} is ignored.
      * 
-     * @param img  the image ({@code null} not permitted).
+     * @param img  the image ({@code null} permitted...method will do nothing).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param observer  ignored.
      * 
-     * @return {@code true} if the image is drawn. 
+     * @return {@code true} if there is no more drawing to be done. 
      */
     @Override
     public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
+        if (img == null) {
+            return true;
+        }
         int w = img.getWidth(observer);
         if (w < 0) {
             return false;
@@ -2357,19 +2360,22 @@ public final class SVGGraphics2D extends Graphics2D {
      * Note that the {@code observer} is ignored (it is not useful in this
      * context).
      * 
-     * @param img  the image.
+     * @param img  the image ({@code null} permitted...draws nothing).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param w  the width.
      * @param h  the height.
      * @param observer  ignored.
      * 
-     * @return {@code true} if the image is drawn. 
+     * @return {@code true} if there is no more drawing to be done. 
      */
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             ImageObserver observer) {
 
+        if (img == null) {
+            return true; 
+        }
         // the rendering hints control whether the image is embedded or
         // referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
@@ -2422,17 +2428,20 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws an image at the location {@code (x, y)}.  Note that the 
      * {@code observer} is ignored.
      * 
-     * @param img  the image ({@code null} not permitted).
+     * @param img  the image ({@code null} permitted...draws nothing).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
      * 
-     * @return {@code true} if the image is drawn. 
+     * @return {@code true} if there is no more drawing to be done. 
      */
     @Override
     public boolean drawImage(Image img, int x, int y, Color bgcolor, 
             ImageObserver observer) {
+        if (img == null) {
+            return true;
+        }
         int w = img.getWidth(null);
         if (w < 0) {
             return false;
