@@ -32,13 +32,13 @@
 
 package org.jfree.graphics2d;
 
-import java.awt.BasicStroke;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -70,8 +70,8 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        // BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        // this.g2 = img.createGraphics();
+        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        //this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
         this.g2 = new SVGGraphics2D(10, 20);
@@ -289,6 +289,16 @@ public class TestGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(0.25, 0.25, 0.5, 0.5);
         this.g2.setClip(r);
         assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClipBounds());       
+    }
+
+    /**
+     * Checks that getClipBounds() returns {@code null} when the clip is
+     * {@code null}.
+     */
+    @Test
+    public void checkGetClipBoundsWhenClipIsNull() {
+        this.g2.setClip(null);
+        assertNull(this.g2.getClipBounds());
     }
 
     /**
@@ -738,4 +748,24 @@ public class TestGraphics2D {
         g2.drawImage(img, null, null);
         assertTrue(true); // won't get here if there's an exception above
     }
+    
+    @Test
+    public void drawImageWithNullImage() {
+        // API docs say method does nothing if img is null
+        // still seems to return true
+        assertTrue(g2.drawImage(null, 10, 20, null));
+        assertTrue(g2.drawImage(null, 10, 20, 30, 40, null));
+        assertTrue(g2.drawImage(null, 10, 20, Color.YELLOW, null));
+        assertTrue(g2.drawImage(null, 1, 2, 3, 4, Color.RED, null));
+        assertTrue(g2.drawImage(null, 1, 2, 3, 4, 5, 6, 7, 8, null));
+        assertTrue(g2.drawImage(null, 1, 2, 3, 4, 5, 6, 7, 8, Color.RED, null));
+    }
+    
+    @Test
+    public void drawImageWithNegativeDimensions() {
+        Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        assertTrue(g2.drawImage(img, 1, 2, -10, 10, null));
+        assertTrue(g2.drawImage(img, 1, 2, 10, -10, null)); 
+    }
+
 }
