@@ -2693,11 +2693,11 @@ public final class SVGGraphics2D extends Graphics2D {
             svg.append("viewBox=\"").append(viewBox.valueStr()).append("\" ");
             if (preserveAspectRatio != null) {
                 svg.append("preserveAspectRatio=\"")
-                        .append(preserveAspectRatio.toString()).append("\" ");
+                        .append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
-                    svg.append("meetOrSlice=\"").append(meetOrSlice.toString())
-                            .append("\" ");                    
+                    svg.append(" ").append(meetOrSlice.toString());
                 }
+                svg.append("\" ");                    
             }
         }
         svg.append("text-rendering=\"").append(this.textRendering)
