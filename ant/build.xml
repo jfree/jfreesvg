@@ -14,7 +14,7 @@
     <target name="initialise" description="Initialise required settings.">
         <tstamp />
         <property name="jfreesvg.name" value="jfreesvg" />
-        <property name="jfreesvg.version" value="3.1" />
+        <property name="jfreesvg.version" value="3.2" />
         <property name="jfreechart.name" value="jfreechart-nofx" />
         <property name="jfreechart.version" value="2.0-pre1" />
         <property name="builddir" value="${basedir}/build" />
