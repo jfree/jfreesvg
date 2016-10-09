@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.2, 30 September 2016.
+Version 3.2, 9 October 2016.
 
 (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ Overview
 
 http://www.jfree.org/jfreesvg/
 
-This version (3.2) was released on 30 September 2016.  A change history appears at the end of this file.
+This version (3.2) was released on 9 October 2016.  A change history appears at the end of this file.
 
 
 Getting Started
@@ -33,7 +33,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.1</version>
+        <version>3.2</version>
     </dependency>
 
 JFreeSVG can be built using either Maven or Ant.  For Maven-based builds, use the `pom.xml` file in the root directory.
@@ -61,12 +61,13 @@ Other code distributed with JFreeSVG:
 Change History
 --------------
 
-Version 3.2 (30 September 2016)
+Version 3.2 (9 October 2016)
 - added facility to specify `units` for `width` and `height` attributes;
 - added option to suppress `width` and `height` from SVG element;
 - add option to include `viewBox` and associated parameters in the SVG element;
 - fixed `NullPointerException` in `drawImage(Image, AffineTransform, ImageObserver)` (bug #6);
 - copy `fontMapper` in `create()` method (bug #5).
+
 
 Version 3.1 (30 April 2016)
 - use fractional metrics for `FontMetrics`;
