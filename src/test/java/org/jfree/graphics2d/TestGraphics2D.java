@@ -71,11 +71,11 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        this.g2 = img.createGraphics();
+        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        //this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
-        //this.g2 = new SVGGraphics2D(10, 20);
+        this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
 //        PDFDocument pdfDoc = new PDFDocument();
