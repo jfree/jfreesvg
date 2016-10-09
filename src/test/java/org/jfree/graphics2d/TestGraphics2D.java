@@ -41,6 +41,7 @@ import static org.junit.Assert.fail;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -70,11 +71,11 @@ public class TestGraphics2D {
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
-        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
+        BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+        this.g2 = img.createGraphics();
         
         // Test SVGGraphics2D...
-        this.g2 = new SVGGraphics2D(10, 20);
+        //this.g2 = new SVGGraphics2D(10, 20);
  
         // Test PDFGraphics2D...
 //        PDFDocument pdfDoc = new PDFDocument();
@@ -768,4 +769,21 @@ public class TestGraphics2D {
         assertTrue(g2.drawImage(img, 1, 2, 10, -10, null)); 
     }
 
+    /** 
+     * A test to check whether setting a transform on the Graphics2D affects
+     * the results of text measurements performed via getFontMetrics().
+     */
+    @Test
+    public void testGetFontMetrics() {
+        Font f = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+        FontMetrics fm = this.g2.getFontMetrics(f);
+        int w = fm.stringWidth("ABC");
+        Rectangle2D bounds = fm.getStringBounds("ABC", this.g2);
+        
+        // after scaling, the string width is not changed
+        this.g2.setTransform(AffineTransform.getScaleInstance(3.0, 2.0));
+        fm = this.g2.getFontMetrics(f);
+        assertEquals(w, fm.stringWidth("ABC"));
+        assertEquals(bounds.getWidth(), fm.getStringBounds("ABC", this.g2).getWidth(), EPSILON);
+    }
 }
