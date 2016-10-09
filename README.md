@@ -17,7 +17,7 @@ This version (3.2) was released on 9 October 2016.  A change history appears at 
 
 Getting Started
 ---------------
-The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add `jfreesvg-3.1.jar` to your classpath and start coding.
+The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add `jfreesvg-3.2.jar` to your classpath and start coding.
 
 Oracle provides tutorials for Java2D here:
 
