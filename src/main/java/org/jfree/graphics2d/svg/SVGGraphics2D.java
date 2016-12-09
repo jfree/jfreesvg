@@ -111,7 +111,7 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * </p>
  * <pre>{@code SVGGraphics2D g2 = new SVGGraphics2D(300, 200);
  * g2.setPaint(Color.RED);
- * g2.draw(new Rectangle(10, 10, 280, 180);
+ * g2.draw(new Rectangle(10, 10, 280, 180));
  * String svgElement = g2.getSVGElement();}</pre>
  * <p>
  * For the content generation step, you can make use of third party libraries,
