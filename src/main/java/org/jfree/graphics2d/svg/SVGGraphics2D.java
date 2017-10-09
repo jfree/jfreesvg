@@ -430,7 +430,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.units = units;
         this.shapeRendering = "auto";
         this.textRendering = "auto";
-        this.defsKeyPrefix = String.valueOf(System.nanoTime());
+        this.defsKeyPrefix = "_" + String.valueOf(System.nanoTime());
         this.clip = null;
         this.imageElements = new ArrayList<ImageElement>();
         this.filePrefix = "image-";
@@ -600,7 +600,7 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /**
      * Returns the prefix used for all keys in the DEFS element.  The default
-     * value is {@code String.valueOf(System.nanoTime())}.
+     * value is {@code "_"+ String.valueOf(System.nanoTime())}.
      * 
      * @return The prefix string (never {@code null}).
      * 

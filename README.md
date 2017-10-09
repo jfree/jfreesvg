@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 3.2, 9 October 2016.
+Version 3.3, ?? ????? 2017.
 
-(C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2017, by Object Refinery Limited.  All rights reserved.
 
 
 Overview
@@ -60,6 +60,10 @@ Other code distributed with JFreeSVG:
 
 Change History
 --------------
+
+Version 3.3 (?? ??? 2017)
+- the default `DEFS` key prefix should not begin with a number;
+
 
 Version 3.2 (9 October 2016)
 - added facility to specify `units` for `width` and `height` attributes;
