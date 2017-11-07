@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.3, ?? ????? 2017.
+Version 3.3, 7 November 2017.
 
 (C)opyright 2013-2017, by Object Refinery Limited.  All rights reserved.
 
@@ -12,8 +12,6 @@ Overview
 
 http://www.jfree.org/jfreesvg/
 
-This version (3.2) was released on 9 October 2016.  A change history appears at the end of this file.
-
 
 Getting Started
 ---------------
@@ -23,26 +21,24 @@ Oracle provides tutorials for Java2D here:
 
 http://docs.oracle.com/javase/tutorial/2d/
 
-There are some demonstration applications included in the `org.jfree.graphics2d.demo` package.  These applications make use of **JFreeChart**, so you'll find an additional jar in the 'lib' directory (jfreechart-nofx-2.0-pre1.jar).  This jar file is required for the demo code only.
+There are some demonstration applications in the [JFree-Demos](https://github.com/jfree/jfree-demos) project at GitHub.
 
 
-Build Info
-----------
+Include
+-------
 JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency:
 
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.2</version>
+        <version>3.3</version>
     </dependency>
 
-JFreeSVG can be built using either Maven or Ant.  For Maven-based builds, use the `pom.xml` file in the root directory.
+Build
+-----
+You can build `JFreeSVG` from sources using Maven:
 
-For Ant, use this command from the project root directory:
-
-    ant -f ant/build.xml
-
-This will build the project, generate Javadocs and create a ZIP file containing all the project files.
+    mvn clean install
 
 
 License
@@ -53,16 +49,13 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     Please refer to the license for details.
 
-Other code distributed with JFreeSVG:
-
-- the JFreeChart library (required for the demos only) is licensed under the GNU Lesser General Public License (GNU LGPL), a copy of this license can be found in the lib folder (the LGPL is not the same as the GPL).  To get the source code and other information about JFreeChart, please visit http://www.jfree.org/jfreechart/ 
-
 
 Change History
 --------------
 
-Version 3.3 (?? ??? 2017)
+Version 3.3 (7 November 2017)
 - the default `DEFS` key prefix should not begin with a number;
+- transferred demo code to the [JFree-Demos](https://github.com/jfree/jfree-demos) project to streamline the distribution process.
 
 
 Version 3.2 (9 October 2016)
