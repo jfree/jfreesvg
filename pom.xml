@@ -4,7 +4,7 @@
  
   <groupId>org.jfree</groupId>
   <artifactId>jfreesvg</artifactId>
-  <version>3.3-SNAPSHOT</version>
+  <version>3.3</version>
   <packaging>jar</packaging>
 
   <name>JFreeSVG</name>
