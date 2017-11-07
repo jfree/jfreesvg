@@ -15,7 +15,7 @@ http://www.jfree.org/jfreesvg/
 
 Getting Started
 ---------------
-The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add `jfreesvg-3.2.jar` to your classpath and start coding.
+The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add the JFreeSVG dependency and start coding.
 
 Oracle provides tutorials for Java2D here:
 
@@ -33,6 +33,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
         <artifactId>jfreesvg</artifactId>
         <version>3.3</version>
     </dependency>
+
 
 Build
 -----
