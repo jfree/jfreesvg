@@ -1,9 +1,11 @@
 JFreeSVG
 ========
 
-Version 3.3, 7 November 2017.
+Version 3.3, by David Gilbert, 7 November 2017.
 
 (C)opyright 2013-2017, by Object Refinery Limited.  All rights reserved.
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
 
 Overview
