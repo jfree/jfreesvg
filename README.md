@@ -8,7 +8,11 @@ Version 3.3, 7 November 2017.
 
 Overview
 --------
-**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  The home page for the project is:
+**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  
+
+![Sample from JFreeChart](http://www.jfree.org/jfreesvg/javadoc/doc-files/SVGTimeSeriesChartDemo1.svg)
+
+The home page for the project is:
 
 http://www.jfree.org/jfreesvg/
 
