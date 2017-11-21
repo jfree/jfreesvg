@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   
     <modelVersion>4.0.0</modelVersion>
  
     <groupId>org.jfree</groupId>
     <artifactId>jfreesvg</artifactId>
     <version>3.3</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <name>JFreeSVG</name>
     <url>http://www.jfree.org/jfreesvg</url>
@@ -58,6 +58,29 @@
                     <target>1.6</target>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <encoding>${project.build.sourceEncoding}</encoding>               
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.jfree.graphics2d,org.jfree.graphics2d.svg</Export-Package>
+                        <Import-Package>
+                            javax.xml.bind,
+                            javax.imageio
+                        </Import-Package>
+                    </instructions>
                 </configuration>
             </plugin>
         </plugins>
