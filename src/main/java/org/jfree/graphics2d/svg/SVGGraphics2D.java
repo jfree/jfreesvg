@@ -1685,8 +1685,9 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             if (!this.transform.isIdentity()) {
             	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\">");
+                    this.transform));
             }
+            this.sb.append("\">");
             this.sb.append("<text x=\"").append(geomDP(x))
                     .append("\" y=\"").append(geomDP(y))
                     .append("\"");
