@@ -6,7 +6,7 @@
     <groupId>org.jfree</groupId>
     <artifactId>jfreesvg</artifactId>
     <version>3.3</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <name>JFreeSVG</name>
     <url>http://www.jfree.org/jfreesvg</url>
@@ -60,6 +60,14 @@
                     <encoding>${project.build.sourceEncoding}</encoding>               
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                </configuration>
+            </plugin>			
         </plugins>
     </build>
 
