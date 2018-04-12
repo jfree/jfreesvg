@@ -1685,9 +1685,9 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             if (!this.transform.isIdentity()) {
             	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform));
+                    this.transform)).append("\"");
             }
-            this.sb.append("\">");
+            this.sb.append(">");
             this.sb.append("<text x=\"").append(geomDP(x))
                     .append("\" y=\"").append(geomDP(y))
                     .append("\"");
@@ -2620,8 +2620,13 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        BufferedImage imageToDraw = op.filter(img, null);
-        drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
+		BufferedImage imageToDraw;
+		if (op != null)
+			imageToDraw = op.filter(img, null);
+		else
+			imageToDraw = img;
+		
+		drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
     }
 
     /**
