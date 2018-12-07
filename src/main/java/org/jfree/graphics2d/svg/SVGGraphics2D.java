@@ -1679,6 +1679,9 @@ public final class SVGGraphics2D extends Graphics2D {
         if (str == null) {
             throw new NullPointerException("Null 'str' argument.");
         }
+        if (str.isEmpty()) {
+            return;
+        }
         if (!SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR.equals(
                 this.hints.get(SVGHints.KEY_DRAW_STRING_TYPE))) {
             this.sb.append("<g ");
@@ -2614,13 +2617,16 @@ public final class SVGGraphics2D extends Graphics2D {
      * to the specified image at the location {@code (x, y)}.
      * 
      * @param img  the image.
-     * @param op  the operation.
+     * @param op  the operation ({@code null} permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        BufferedImage imageToDraw = op.filter(img, null);
+        BufferedImage imageToDraw = img;
+        if (op != null) {
+            imageToDraw = op.filter(img, null);
+        }
         drawImage(imageToDraw, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
     }
 

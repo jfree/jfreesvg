@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2018, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -54,6 +54,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGHints;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -444,6 +445,15 @@ public class TestGraphics2D {
         }
     }
     
+    @Test
+    public void checkDrawStringWithEmptyString() {
+        // this should not cause any exception 
+        g2.setRenderingHint(SVGHints.KEY_DRAW_STRING_TYPE, SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR);
+        g2.drawString("", 1, 2);
+        g2.setRenderingHint(SVGHints.KEY_DRAW_STRING_TYPE, null);
+        g2.drawString("", 1, 2);
+    }
+
     /**
      * Some checks for the create() method.
      */
@@ -785,5 +795,12 @@ public class TestGraphics2D {
         fm = this.g2.getFontMetrics(f);
         assertEquals(w, fm.stringWidth("ABC"));
         assertEquals(bounds.getWidth(), fm.getStringBounds("ABC", this.g2).getWidth(), EPSILON);
+    }
+    
+    @Test
+    public void drawImageWithNullImageOp() {
+        BufferedImage img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+        g2.drawImage(img, null, 2, 3);
+        assertTrue(true); // won't get here if there's an exception above        
     }
 }
