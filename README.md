@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.3, by David Gilbert, 7 November 2017.
+Version 3.4, by David Gilbert, not yet released.
 
 (C)opyright 2013-2017, by Object Refinery Limited.  All rights reserved.
 
@@ -59,6 +59,11 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 
 Change History
 --------------
+
+Version 3.4 (not yet released)
+- fixed `drawString()` method for empty string;
+- fixed `drawImage()` method for `null` `ImageOp`.
+
 
 Version 3.3 (7 November 2017)
 - the default `DEFS` key prefix should not begin with a number;
