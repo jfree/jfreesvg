@@ -3,7 +3,7 @@ JFreeSVG
 
 Version 3.4, by David Gilbert, not yet released.
 
-(C)opyright 2013-2017, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2018, by Object Refinery Limited.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
@@ -40,6 +40,8 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
         <version>3.3</version>
     </dependency>
 
+For developers using the Java Module System, JFreeSVG defines the automatic module name `org.jfree.jfreesvg`.
+
 
 Build
 -----
@@ -61,6 +63,8 @@ Change History
 --------------
 
 Version 3.4 (not yet released)
+- added automatic module name (`org.jfree.jfreesvg`);
+- omit transformation if it is the identity transform;
 - fixed `drawString()` method for empty string;
 - fixed `drawImage()` method for `null` `ImageOp`.
 
