@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 3.4, by David Gilbert, not yet released.
+Version 3.4, by David Gilbert, 9 February 2019.
 
-(C)opyright 2013-2018, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
     </dependency>
 
 For developers using the Java Module System, JFreeSVG defines the automatic module name `org.jfree.jfreesvg`.
@@ -62,7 +62,8 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 3.4 (not yet released)
+Version 3.4 (9 February 2019)
+- added attribute for font size units override;
 - added automatic module name (`org.jfree.jfreesvg`);
 - omit transformation if it is the identity transform;
 - fixed `drawString()` method for empty string;
