@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2018, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -165,7 +165,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private final int width;
     
     private final int height;
-    
+
     private final SVGUnits units;
     
     /** 
@@ -181,6 +181,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * "geometricPrecision".
      */
     private String textRendering = "auto";
+    
+    /** The font size units. */
+    private SVGUnits fontSizeUnits = SVGUnits.PX;
     
     /** Rendering hints (see SVGHints). */
     private final RenderingHints hints;
@@ -1593,6 +1596,31 @@ public final class SVGGraphics2D extends Graphics2D {
         this.fontMapper = mapper;
     }
     
+    /** 
+     * Returns the font size units.  The default value is {@code SVGUnits.PX}.
+     * 
+     * @return The font size units. 
+     * 
+     * @since 3.4
+     */
+    public SVGUnits getFontSizeUnits() {
+        return this.fontSizeUnits;
+    }
+    
+    /**
+     * Sets the font size units.  In general, if this method is used it should 
+     * be called immediately after the {@code SVGGraphics2D} instance is 
+     * created and before any content is generated.
+     * 
+     * @param fontSizeUnits  the font size units ({@code null} not permitted).
+     * 
+     * @since 3.4
+     */
+    public void setFontSizeUnits(SVGUnits fontSizeUnits) {
+        Args.nullNotPermitted(fontSizeUnits, "fontSizeUnits");
+        this.fontSizeUnits = fontSizeUnits;
+    }
+    
     /**
      * Returns a string containing font style info.
      * 
@@ -1605,7 +1633,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 .append("; ");
         String fontFamily = this.fontMapper.mapFont(this.font.getFamily());
         b.append("font-family: ").append(fontFamily).append("; ");
-        b.append("font-size: ").append(this.font.getSize()).append("px;");
+        b.append("font-size: ").append(this.font.getSize()).append(this.fontSizeUnits).append(";");
         if (this.font.isBold()) {
             b.append(" font-weight: bold;");
         }
