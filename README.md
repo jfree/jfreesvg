@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.4, by David Gilbert, 9 February 2019.
+Version 3.4, by David Gilbert, 10 February 2019.
 
 (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
 
@@ -62,7 +62,7 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 3.4 (9 February 2019)
+Version 3.4 (10 February 2019)
 - added attribute for font size units override;
 - added automatic module name (`org.jfree.jfreesvg`);
 - omit transformation if it is the identity transform;
