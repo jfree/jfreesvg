@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.4, by David Gilbert, 10 February 2019.
+Version 3.5, by David Gilbert, not yet released.
 
 (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
 
@@ -61,6 +61,10 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 
 Change History
 --------------
+
+Version 3.5 (not yet released)
+- fix drawArc() and fillArc() methods to draw pie arcs;
+
 
 Version 3.4 (10 February 2019)
 - added attribute for font size units override;
