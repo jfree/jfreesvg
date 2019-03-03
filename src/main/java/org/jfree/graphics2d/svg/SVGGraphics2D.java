@@ -3024,10 +3024,10 @@ public final class SVGGraphics2D extends Graphics2D {
             int arcAngle) {
         if (this.arc == null) {
             this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.OPEN);
+                    arcAngle, Arc2D.PIE);
         } else {
             this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.OPEN);
+                    Arc2D.PIE);
         }        
     }
     
