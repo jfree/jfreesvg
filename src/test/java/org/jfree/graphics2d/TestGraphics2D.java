@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2018, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -78,13 +78,6 @@ public class TestGraphics2D {
         // Test SVGGraphics2D...
         this.g2 = new SVGGraphics2D(10, 20);
  
-        // Test PDFGraphics2D...
-//        PDFDocument pdfDoc = new PDFDocument();
-//        Page page = pdfDoc.createPage(new Rectangle(0, 0, 300, 200));
-//        this.g2 = page.getGraphics2D();
-
-        // Test CanvasGraphics2D...
-        //this.g2 = new CanvasGraphics2D("id");
     }
     
     /**

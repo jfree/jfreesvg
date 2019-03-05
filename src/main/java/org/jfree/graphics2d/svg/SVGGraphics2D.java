@@ -78,6 +78,7 @@ import java.text.AttributedString;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +88,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.GraphicsUtils;
@@ -2432,7 +2432,7 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append("preserveAspectRatio=\"none\" ");
             this.sb.append("xlink:href=\"data:image/png;base64,");
-            this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
+            this.sb.append(Base64.getEncoder().encode(getPNGBytes(
                     img)));
             this.sb.append("\" ");
             this.sb.append(getClipPathRef()).append(" ");
