@@ -64,6 +64,8 @@ Change History
 
 Version 3.5 (not yet released)
 - fix drawArc() and fillArc() methods to draw pie arcs;
+- use java.util.Base64 instead of javax.xml.bind.DatatypeConverter;
+- minimum required Java version is now 1.8.
 
 
 Version 3.4 (10 February 2019)
