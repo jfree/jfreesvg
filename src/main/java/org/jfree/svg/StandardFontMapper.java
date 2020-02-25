@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,12 +30,12 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
-import org.jfree.graphics2d.Args;
+import org.jfree.svg.util.Args;
 
 /**
  * A default implementation of the {@link FontMapper} interface.  This 
@@ -47,13 +47,13 @@ import org.jfree.graphics2d.Args;
 public class StandardFontMapper implements FontMapper {
     
     /** Storage for the alternates. */
-    private Map<String, String> alternates;
+    private final Map<String, String> alternates;
     
     /**
      * Creates a new instance with mappings for the Java logical fonts.
      */
     public StandardFontMapper() {
-        this.alternates = new HashMap<String, String>();
+        this.alternates = new HashMap<>();
         this.alternates.put(Font.DIALOG, "sans-serif");
         this.alternates.put(Font.DIALOG_INPUT, "monospace");
         this.alternates.put(Font.SANS_SERIF, "sans-serif");

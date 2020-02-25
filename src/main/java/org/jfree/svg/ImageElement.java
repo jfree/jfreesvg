@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,10 +30,10 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 import java.awt.Image;
-import org.jfree.graphics2d.Args;
+import org.jfree.svg.util.Args;
 
 /**
  * A {@code (String, Image)} pair that links together a reference ID and 
@@ -45,10 +45,10 @@ import org.jfree.graphics2d.Args;
 public final class ImageElement {
     
     /** The filename specified in the href. */
-    private String href;
+    private final String href;
     
     /** The image. */
-    private Image image;
+    private final Image image;
     
     /**
      * Creates a new instance.

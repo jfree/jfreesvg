@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,38 +30,22 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 /**
- * An enumeration of the values for the {@code preserveAspectRatio} attribute.
+ * An enumeration of the values for the {@code meetOrSlice} attribute.
  * 
  * @since 3.2
  */
-public enum PreserveAspectRatio {
+public enum MeetOrSlice {
     
-    NONE("none"), 
+    MEET("meet"), 
     
-    XMIN_YMIN("xMinYMin"),
-    
-    XMIN_YMID("xMinYMid"), 
-    
-    XMIN_YMAX("xMinYMax"),
-    
-    XMID_YMIN("xMidYMin"), 
-    
-    XMID_YMID("xMidYMid"), 
-    
-    XMID_YMAX("xMidYMax"),
-    
-    XMAX_YMIN("xMaxYMin"), 
-    
-    XMAX_YMID("xMaxYMid"), 
-    
-    XMAX_YMAX("xMaxYMax");
+    SLICE("slice");
 
     private final String label;
     
-    PreserveAspectRatio(String label) {
+    MeetOrSlice(String label) {
         this.label = label;
     }
    

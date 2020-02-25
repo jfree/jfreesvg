@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -29,7 +29,7 @@
  * http://www.jfree.org/jfreesvg
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -88,11 +88,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.jfree.graphics2d.Args;
-import org.jfree.graphics2d.GradientPaintKey;
-import org.jfree.graphics2d.GraphicsUtils;
-import org.jfree.graphics2d.LinearGradientPaintKey;
-import org.jfree.graphics2d.RadialGradientPaintKey;
+import org.jfree.svg.util.Args;
+import org.jfree.svg.util.GradientPaintKey;
+import org.jfree.svg.util.GraphicsUtils;
+import org.jfree.svg.util.LinearGradientPaintKey;
+import org.jfree.svg.util.RadialGradientPaintKey;
 
 /**
  * <p>
@@ -153,8 +153,8 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * </ul>
  *
  * <p>
- * For some demos showing how to use this class, look in the
- * {@code org.jfree.graphics2d.demo} package in the {@code src} directory.
+ * For some demos showing how to use this class, look at the JFree-Demos project
+ * at GitHub: https://github.com/jfree/jfree-demos.
  * </p>
  */
 public final class SVGGraphics2D extends Graphics2D {
@@ -231,8 +231,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
      */
-    private Map<GradientPaintKey, String> gradientPaints 
-            = new HashMap<GradientPaintKey, String>();
+    private Map<GradientPaintKey, String> gradientPaints = new HashMap<>();
     
     /** 
      * A map of all the linear gradients used, and the corresponding id.  When 
@@ -240,7 +239,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * defined in the defs element.
      */
     private Map<LinearGradientPaintKey, String> linearGradientPaints 
-            = new HashMap<LinearGradientPaintKey, String>();
+            = new HashMap<>();
     
     /** 
      * A map of all the radial gradients used, and the corresponding id.  When 
@@ -248,13 +247,13 @@ public final class SVGGraphics2D extends Graphics2D {
      * defined in the defs element.
      */
     private Map<RadialGradientPaintKey, String> radialGradientPaints
-            = new HashMap<RadialGradientPaintKey, String>();
+            = new HashMap<>();
     
     /**
      * A list of the registered clip regions.  These will be written to the
      * DEFS element.
      */
-    private List<String> clipPaths = new ArrayList<String>();
+    private List<String> clipPaths = new ArrayList<>();
     
     /** 
      * The filename prefix for images that are referenced rather than
@@ -435,7 +434,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.textRendering = "auto";
         this.defsKeyPrefix = "_" + String.valueOf(System.nanoTime());
         this.clip = null;
-        this.imageElements = new ArrayList<ImageElement>();
+        this.imageElements = new ArrayList<>();
         this.filePrefix = "image-";
         this.fileSuffix = ".png";
         this.font = new Font("SansSerif", Font.PLAIN, 12);
@@ -449,7 +448,7 @@ public final class SVGGraphics2D extends Graphics2D {
         dfs.setDecimalSeparator('.');
         this.transformFormat = new DecimalFormat("0.######", dfs);
         this.geometryFormat = new DecimalFormat("0.##", dfs);
-        this.elementIDs = new HashSet<String>();
+        this.elementIDs = new HashSet<>();
     }
 
     /**
@@ -1068,7 +1067,7 @@ public final class SVGGraphics2D extends Graphics2D {
                       continue;
                    }
                    if (otherKeysAndValues == null) {
-                      otherKeysAndValues = new ArrayList<Entry>();
+                      otherKeysAndValues = new ArrayList<>();
                    }
                    otherKeysAndValues.add(e);
                 }
@@ -1577,7 +1576,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return The font mapper (never {@code null}).
      * 
-     * @see #setFontMapper(org.jfree.graphics2d.svg.FontMapper) 
+     * @see #setFontMapper(org.jfree.svg.FontMapper) 
      * @since 1.5
      */
     public FontMapper getFontMapper() {
@@ -2351,11 +2350,12 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the bytes representing a PNG format image.
      * 
-     * @param img  the image to encode.
+     * @param img  the image to encode ({@code null} not permitted).
      * 
      * @return The bytes representing a PNG format image. 
      */
     private byte[] getPNGBytes(Image img) {
+        Args.nullNotPermitted(img, "img");
         RenderedImage ri;
         if (img instanceof RenderedImage) {
             ri = (RenderedImage) img;
@@ -2592,13 +2592,17 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the rendered image.
+     * Draws the rendered image.  If {@code img} is {@code null} this method
+     * does nothing.
      * 
-     * @param img  the image.
+     * @param img  the image ({@code null} permitted).
      * @param xform  the transform.
      */
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
+        if (img == null) {
+            return;
+        }
         BufferedImage bi = GraphicsUtils.convertRenderedImage(img);
         drawImage(bi, xform, null);
     }
@@ -2827,7 +2831,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @since 1.5
      */
     public Set<String> getElementIDs() {
-        return new HashSet<String>(this.elementIDs);
+        return new HashSet<>(this.elementIDs);
     }
     
     /**

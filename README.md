@@ -1,16 +1,16 @@
 JFreeSVG
 ========
 
-Version 3.5, by David Gilbert, not yet released.
+Version 4.0, by David Gilbert, not yet released.
 
-(C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
 
 Overview
 --------
-**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.6 or later).  
+**JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (11 or later).  
 
 ![Sample from JFreeChart](http://www.jfree.org/jfreesvg/javadoc/doc-files/SVGTimeSeriesChartDemo1.svg)
 
@@ -36,11 +36,12 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
 
     <dependency>
         <groupId>org.jfree</groupId>
-        <artifactId>jfreesvg</artifactId>
-        <version>3.4</version>
+        <artifactId>org.jfree.svg</artifactId>
+        <version>4.0</version>
     </dependency>
 
-For developers using the Java Module System, JFreeSVG defines the automatic module name `org.jfree.jfreesvg`.
+For developers using the Java Module System, from version 4.0 JFreeSVG is 
+a modular library with the module name `org.jfree.svg`.
 
 
 Build
@@ -62,10 +63,13 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 3.5 (not yet released)
+Version 4.0 (not yet released)
+- created a module for JFreeSVG: 'org.jfree.svg';
+- increased the minimum required Java version to 11;
+- changed the Maven artifact ID to match the module name;
+- removed 'graphics2d' from the package names;
 - fix drawArc() and fillArc() methods to draw pie arcs;
-- use java.util.Base64 instead of javax.xml.bind.DatatypeConverter;
-- minimum required Java version is now 1.8.
+- use java.util.Base64 instead of javax.xml.bind.DatatypeConverter.
 
 
 Version 3.4 (10 February 2019)

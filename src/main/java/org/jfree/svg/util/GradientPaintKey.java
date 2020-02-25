@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,9 +30,10 @@
  * 
  */
 
-package org.jfree.graphics2d;
+package org.jfree.svg.util;
 
 import java.awt.GradientPaint;
+import java.util.Objects;
 
 /**
  * A wrapper for a {@code GradientPaint} that can be used as the key for 

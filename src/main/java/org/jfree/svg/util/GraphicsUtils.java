@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,7 +30,7 @@
  * 
  */
 
-package org.jfree.graphics2d;
+package org.jfree.svg.util;
 
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -46,6 +46,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.util.Hashtable;
+import java.util.Objects;
 
 /**
  * A collection of static utility methods for shapes and images.
@@ -134,11 +135,12 @@ public final class GraphicsUtils {
      * <a href="http://www.jguru.com/faq/view.jsp?EID=114602">
      * http://www.jguru.com/faq/view.jsp?EID=114602</a>
      * 
-     * @param img  the rendered image.
+     * @param img  the rendered image ({@code null} not permitted).
      * 
      * @return A buffered image. 
      */
     public static BufferedImage convertRenderedImage(RenderedImage img) {
+        Args.nullNotPermitted(img, "img");
         if (img instanceof BufferedImage) {
             return (BufferedImage) img;	
         }

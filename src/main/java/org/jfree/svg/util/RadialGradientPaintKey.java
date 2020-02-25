@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,42 +30,40 @@
  * 
  */
 
-package org.jfree.graphics2d;
+package org.jfree.svg.util;
 
-import java.awt.LinearGradientPaint;
+import java.awt.RadialGradientPaint;
 import java.util.Arrays;
 
 /**
- * A wrapper for a {@code LinearGradientPaint} that can be used as the key 
+ * A wrapper for a {@code RadialGradientPaint} that can be used as the key
  * for a {@code Map} (including a {@code HashMap}).  This class is 
  * used internally by {@code SVGGraphics2D} to track and re-use gradient 
- * definitions.  {@code LinearGradientPaint} itself does not implement the 
+ * definitions.  {@code GradientPaint} itself does not implement the 
  * {@code equals()} and {@code hashCode()} methods, so it doesn't make a good 
  * key for a {@code Map}.
- * 
- * @since 1.9
  */
-public class LinearGradientPaintKey {
+public class RadialGradientPaintKey {
     
-    private final LinearGradientPaint paint;
+    private final RadialGradientPaint paint;
     
     /**
      * Creates a new instance.
      * 
-     * @param lgp  the linear gradient paint ({@code null} not permitted).
+     * @param rgp  the radial gradient paint ({@code null} not permitted).
      */
-    public LinearGradientPaintKey(LinearGradientPaint lgp) {
-        Args.nullNotPermitted(lgp, "lgp");
-        this.paint = lgp;
+    public RadialGradientPaintKey(RadialGradientPaint rgp) {
+        Args.nullNotPermitted(rgp, "rgp");
+        this.paint = rgp;
     }
  
     /**
-     * Returns the {@code LinearGradientPaint} that was supplied to the 
+     * Returns the {@code RadialGradientPaint} that was supplied to the 
      * constructor.
      * 
-     * @return The {@code LinearGradientPaint} (never {@code null}). 
+     * @return The {@code RadialGradientPaint} (never {@code null}). 
      */
-    public LinearGradientPaint getPaint() {
+    public RadialGradientPaint getPaint() {
         return this.paint;
     }
     
@@ -81,14 +79,14 @@ public class LinearGradientPaintKey {
         if (obj == this) {
             return true;
         }
-        if (! (obj instanceof LinearGradientPaint)) {
+        if (! (obj instanceof RadialGradientPaint)) {
             return false;
         }
-        LinearGradientPaint that = (LinearGradientPaint) obj;
-        if (!this.paint.getStartPoint().equals(that.getStartPoint())) {
+        RadialGradientPaint that = (RadialGradientPaint) obj;
+        if (!this.paint.getCenterPoint().equals(that.getCenterPoint())) {
             return false;
         }
-        if (!this.paint.getEndPoint().equals(that.getEndPoint())) {
+        if (!this.paint.getFocusPoint().equals(that.getCenterPoint())) {
             return false;
         }
         if (!Arrays.equals(this.paint.getColors(), that.getColors())) {
@@ -108,8 +106,9 @@ public class LinearGradientPaintKey {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 47 * hash + this.paint.getStartPoint().hashCode();
-        hash = 47 * hash + this.paint.getEndPoint().hashCode();
+        hash = 47 * hash + this.paint.getCenterPoint().hashCode();
+        hash = 47 * hash + this.paint.getFocusPoint().hashCode();
+        hash = 47 * hash + Float.floatToIntBits(this.paint.getRadius());
         hash = 47 * hash + Arrays.hashCode(this.paint.getColors());
         hash = 47 * hash + Arrays.hashCode(this.paint.getFractions());
         return hash;

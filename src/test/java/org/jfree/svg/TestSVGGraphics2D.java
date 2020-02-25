@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,7 +30,7 @@
  * 
  */
 
-package org.jfree.graphics2d;
+package org.jfree.svg;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -53,8 +53,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
-import org.jfree.graphics2d.svg.SVGHints;
+import org.jfree.svg.SVGGraphics2D;
+import org.jfree.svg.SVGHints;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -64,7 +64,7 @@ import org.junit.Test;
  * Graphics2D instance from a BufferedImage (which we can treat as a reference
  * implementation).
  */
-public class TestGraphics2D {
+public class TestSVGGraphics2D {
     
     private Graphics2D g2;
     
@@ -795,5 +795,14 @@ public class TestGraphics2D {
         BufferedImage img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(img, null, 2, 3);
         assertTrue(true); // won't get here if there's an exception above        
+    }
+    
+    /**
+     * API docs say the method does nothing when called with a null image.
+     */
+    @Test 
+    public void drawRenderedImageWithNullImage() {
+        g2.drawRenderedImage(null, AffineTransform.getTranslateInstance(0, 0));
+        assertTrue(true); // won't get here if there's an exception above                
     }
 }

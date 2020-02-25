@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
  
     <groupId>org.jfree</groupId>
-    <artifactId>jfreesvg</artifactId>
-    <version>3.5-SNAPSHOT</version>
+    <artifactId>org.jfree.svg</artifactId>
+    <version>4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>JFreeSVG</name>
@@ -52,24 +52,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <encoding>${project.build.sourceEncoding}</encoding>               
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Automatic-Module-Name>org.jfree.jfreesvg</Automatic-Module-Name>
-                        </manifestEntries>
-                    </archive>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <linksource>true</linksource>
                 </configuration>
             </plugin>
         </plugins>
@@ -115,11 +112,11 @@
                     </plugin>
 
                     <plugin>
-                        <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
+                        <version>3.1.1</version>
                         <configuration>
+                            <docfilessubdirs>true</docfilessubdirs>
                             <linksource>true</linksource>
                         </configuration>
                         <executions>
@@ -135,7 +132,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>

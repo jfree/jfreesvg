@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,7 +30,7 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,7 +41,7 @@ import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
-import org.jfree.graphics2d.Args;
+import org.jfree.svg.util.Args;
 
 /**
  * Utility methods related to the {@link SVGGraphics2D} implementation.

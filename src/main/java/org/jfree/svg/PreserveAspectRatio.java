@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2016, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -30,42 +30,38 @@
  * 
  */
 
-package org.jfree.graphics2d.svg;
+package org.jfree.svg;
 
 /**
- * An enumeration of the values for SVG units.
+ * An enumeration of the values for the {@code preserveAspectRatio} attribute.
  * 
  * @since 3.2
  */
-public enum SVGUnits {
+public enum PreserveAspectRatio {
     
-    /** The font size. */
-    EM("em"),
+    NONE("none"), 
     
-    /** Height of character 'x'. */
-    EX("ex"), 
+    XMIN_YMIN("xMinYMin"),
     
-    /** Pixels in user space coordinates. */
-    PX("px"),
+    XMIN_YMID("xMinYMid"), 
     
-    /** Points (1/72 inch). */
-    PT("pt"),
+    XMIN_YMAX("xMinYMax"),
     
-    /** Picas (1/6 inch). */
-    PC("pc"), 
+    XMID_YMIN("xMidYMin"), 
     
-    /** Centimeters. */
-    CM("cm"), 
+    XMID_YMID("xMidYMid"), 
     
-    /** Millimeters. */
-    MM("mm"),
+    XMID_YMAX("xMidYMax"),
     
-    /** Inches. */
-    IN("in");
+    XMAX_YMIN("xMaxYMin"), 
+    
+    XMAX_YMID("xMaxYMid"), 
+    
+    XMAX_YMAX("xMaxYMax");
 
     private final String label;
     
-    SVGUnits(String label) {
+    PreserveAspectRatio(String label) {
         this.label = label;
     }
    
