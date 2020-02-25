@@ -32,12 +32,20 @@ There are some demonstration applications in the [JFree-Demos](https://github.co
 
 Include
 -------
-JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency:
+JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency (once the release is done):
 
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
         <version>4.0</version>
+    </dependency>
+
+To use JFreeSVG with Java 8, you can use the following:
+
+    <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreesvg</artifactId>
+        <version>3.4</version>
     </dependency>
 
 For developers using the Java Module System, from version 4.0 JFreeSVG is 
