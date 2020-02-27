@@ -42,7 +42,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
 
-To use JFreeSVG with Java 8, you can use the following (note the different artifact ID:
+To use JFreeSVG with Java 8, you can use the following (note the different artifact ID):
 
     <dependency>
         <groupId>org.jfree</groupId>
@@ -71,12 +71,12 @@ Change History
 --------------
 
 Version 4.0 (27-February-2020)
-- created a module for JFreeSVG: 'org.jfree.svg';
+- created a module for JFreeSVG: `org.jfree.svg`;
 - increased the minimum required Java version to 11;
 - changed the Maven artifact ID to match the module name;
 - removed 'graphics2d' from the package names;
-- fix drawArc() and fillArc() methods to draw pie arcs;
-- use java.util.Base64 instead of javax.xml.bind.DatatypeConverter.
+- fix `drawArc()` and `fillArc()` methods to draw pie arcs;
+- use `java.util.Base64` instead of `javax.xml.bind.DatatypeConverter`.
 
 
 Version 3.4 (10 February 2019)
