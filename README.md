@@ -1,11 +1,11 @@
 JFreeSVG
 ========
 
-Version 4.0, by David Gilbert, not yet released.
+Version 4.0, by David Gilbert, 27 February 2020.
 
 (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
 
 
 Overview
@@ -32,7 +32,7 @@ There are some demonstration applications in the [JFree-Demos](https://github.co
 
 Include
 -------
-JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency (once the release is done):
+JFreeSVG is published to the Central Repository.  You can include it in your projects with the following dependency:
 
     <dependency>
         <groupId>org.jfree</groupId>
@@ -40,16 +40,15 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
         <version>4.0</version>
     </dependency>
 
-To use JFreeSVG with Java 8, you can use the following:
+JFreeSVG is a modular library with the module name `org.jfree.svg`.
+
+To use JFreeSVG with Java 8, you can use the following (note the different artifact ID:
 
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
         <version>3.4</version>
     </dependency>
-
-For developers using the Java Module System, from version 4.0 JFreeSVG is 
-a modular library with the module name `org.jfree.svg`.
 
 
 Build
@@ -71,7 +70,7 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 4.0 (not yet released)
+Version 4.0 (27-February-2020)
 - created a module for JFreeSVG: 'org.jfree.svg';
 - increased the minimum required Java version to 11;
 - changed the Maven artifact ID to match the module name;
