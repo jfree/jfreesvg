@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 4.0, by David Gilbert, 27 February 2020.
+Version 4.1, by David Gilbert, 26 March 2020.
 
 (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>4.0</version>
+        <version>4.1</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -70,7 +70,11 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 4.0 (27-February-2020)
+Version 4.1 (26 March 2020)
+- correction of fix for encoding of images (bug#21)
+
+
+Version 4.0 (27 February 2020)
 - created a module for JFreeSVG: `org.jfree.svg`;
 - increased the minimum required Java version to 11;
 - changed the Maven artifact ID to match the module name;

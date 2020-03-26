@@ -2432,7 +2432,7 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append("preserveAspectRatio=\"none\" ");
             this.sb.append("xlink:href=\"data:image/png;base64,");
-            this.sb.append(Base64.getEncoder().encode(getPNGBytes(
+            this.sb.append(Base64.getEncoder().encodeToString(getPNGBytes(
                     img)));
             this.sb.append("\" ");
             this.sb.append(getClipPathRef()).append(" ");
