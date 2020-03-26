@@ -40,7 +40,7 @@ import java.awt.GraphicsDevice;
  */
 public class SVGGraphicsDevice extends GraphicsDevice {
 
-    private String id;
+    private final String id;
     
     GraphicsConfiguration defaultConfig;
     

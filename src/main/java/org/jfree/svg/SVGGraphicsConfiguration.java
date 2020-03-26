@@ -52,7 +52,8 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
 
     private GraphicsDevice device;
     
-    private int width, height;
+    private final int width;
+    private final int height;
     
     /**
      * Creates a new instance.
@@ -74,8 +75,7 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
     @Override
     public GraphicsDevice getDevice() {
         if (this.device == null) {
-            this.device = new SVGGraphicsDevice("JFreeSVG-GraphicsDevice", 
-                    this);
+            this.device = new SVGGraphicsDevice("JFreeSVG-GraphicsDevice", this);
         }
         return this.device;
     }
@@ -100,12 +100,13 @@ public class SVGGraphicsConfiguration extends GraphicsConfiguration {
      */
     @Override
     public ColorModel getColorModel(int transparency) {
-        if (transparency == Transparency.TRANSLUCENT) {
-            return ColorModel.getRGBdefault();
-        } else if (transparency == Transparency.OPAQUE) {
-            return new DirectColorModel(32, 0x00ff0000, 0x0000ff00, 0x000000ff);
-        } else {
-            return null;
+        switch (transparency) {
+            case Transparency.TRANSLUCENT:
+                return ColorModel.getRGBdefault();
+            case Transparency.OPAQUE:
+                return new DirectColorModel(32, 0x00ff0000, 0x0000ff00, 0x000000ff);
+            default:
+                return null;
         }
     }
 
