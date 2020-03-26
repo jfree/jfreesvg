@@ -38,9 +38,11 @@ package org.jfree.svg;
  * @since 3.2
  */
 public enum MeetOrSlice {
-    
+
+    /** Value 'meet'. */
     MEET("meet"), 
     
+    /** Value 'slice'. */
     SLICE("slice");
 
     private final String label;
