@@ -227,9 +227,9 @@ public final class SVGHints {
     private static final List<RenderingHints.Key> elementTitleKeys;
     
     static {
-        beginGroupKeys = new ArrayList<RenderingHints.Key>();
-        endGroupKeys = new ArrayList<RenderingHints.Key>();
-        elementTitleKeys = new ArrayList<RenderingHints.Key>();
+        beginGroupKeys = new ArrayList<>();
+        endGroupKeys = new ArrayList<>();
+        elementTitleKeys = new ArrayList<>();
         if (isOrsonChartsOnClasspath()) {
             beginGroupKeys.add(getOrsonChartsBeginElementKey());
             endGroupKeys.add(getOrsonChartsEndElementKey());
@@ -250,7 +250,7 @@ public final class SVGHints {
      * @since 1.8
      */
     public static List<RenderingHints.Key> getBeginGroupKeys() {
-        return new ArrayList<RenderingHints.Key>(beginGroupKeys);    
+        return new ArrayList<>(beginGroupKeys);    
     }
     
     /**
@@ -317,7 +317,7 @@ public final class SVGHints {
      * @since 1.8
      */
     public static List<RenderingHints.Key> getEndGroupKeys() {
-        return new ArrayList<RenderingHints.Key>(endGroupKeys);    
+        return new ArrayList<>(endGroupKeys);    
     }
     
     /**
@@ -383,7 +383,7 @@ public final class SVGHints {
      * @since 1.9
      */
     public static List<RenderingHints.Key> getElementTitleKeys() {
-        return new ArrayList<RenderingHints.Key>(elementTitleKeys);    
+        return new ArrayList<>(elementTitleKeys);    
     }
     
     /**
