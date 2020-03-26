@@ -33,7 +33,6 @@
 package org.jfree.svg.util;
 
 import java.awt.GradientPaint;
-import java.util.Objects;
 
 /**
  * A wrapper for a {@code GradientPaint} that can be used as the key for 

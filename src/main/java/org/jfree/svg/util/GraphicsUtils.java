@@ -46,7 +46,6 @@ import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.util.Hashtable;
-import java.util.Objects;
 
 /**
  * A collection of static utility methods for shapes and images.
