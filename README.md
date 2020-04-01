@@ -70,8 +70,12 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
+Version 4.2 (not yet released)
+- add winding rule to path data if required (bug#25).
+
+
 Version 4.1 (26 March 2020)
-- correction of fix for encoding of images (bug#21)
+- correction of fix for encoding of images (bug#21).
 
 
 Version 4.0 (27 February 2020)

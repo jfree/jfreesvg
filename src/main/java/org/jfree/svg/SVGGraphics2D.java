@@ -1323,7 +1323,11 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return An SVG path string. 
      */
     private String getSVGPathData(Path2D path) {
-        StringBuilder b = new StringBuilder("d=\"");
+        StringBuilder b = new StringBuilder();
+        if (path.getWindingRule() == Path2D.WIND_EVEN_ODD) {
+            b.append("fill-rule=\"evenodd\" ");
+        }
+        b.append("d=\"");
         float[] coords = new float[6];
         boolean first = true;
         PathIterator iterator = path.getPathIterator(null);
