@@ -32,12 +32,12 @@
 
 package org.jfree.svg;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -53,11 +53,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import org.jfree.svg.SVGGraphics2D;
-import org.jfree.svg.SVGHints;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 /**
  * Some tests for a Graphics2D implementation.  All tests should pass with the
@@ -68,7 +66,7 @@ public class TestSVGGraphics2D {
     
     private Graphics2D g2;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         // to test a reference implementation, use this Graphics2D from a
         // BufferedImage in the JDK
@@ -77,7 +75,6 @@ public class TestSVGGraphics2D {
         
         // Test SVGGraphics2D...
         this.g2 = new SVGGraphics2D(10, 20);
- 
     }
     
     /**
@@ -272,7 +269,7 @@ public class TestSVGGraphics2D {
      */
     @Test
     public void checkDefaultClip() {
-        assertNull("Default user clip should be null.", g2.getClip());
+        assertNull(g2.getClip(), "Default user clip should be null.");
     }
     
     /**
@@ -384,7 +381,7 @@ public class TestSVGGraphics2D {
      * does that make sense?  Switching off the test for now.
      */
     @Test
-    @Ignore
+    @Disabled
     public void checkClipWithLine2D() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
