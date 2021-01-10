@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 4.1, by David Gilbert, 26 March 2020.
+Version 4.2, by David Gilbert, not yet released.
 
-(C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
 
@@ -71,11 +71,12 @@ Change History
 --------------
 
 Version 4.2 (not yet released)
-- add winding rule to path data if required (bug#25);
+- replace NumberFormat with Ryu algorithm ([#30](https://github.com/jfree/jfreesvg/pull/30));
+- add winding rule to path data if required ([#25](https://github.com/jfree/jfreesvg/issues/25));
 - migrated to JUnit 5.
 
 Version 4.1 (26 March 2020)
-- correction of fix for encoding of images (bug#21).
+- correction of fix for encoding of images ([#21](https://github.com/jfree/jfreesvg/issues/21)).
 
 
 Version 4.0 (27 February 2020)
