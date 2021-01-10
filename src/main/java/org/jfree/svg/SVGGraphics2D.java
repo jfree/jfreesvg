@@ -143,7 +143,7 @@ import static org.jfree.svg.util.RyuDouble.doubleToString;
  *
  * <p>
  * For some demos showing how to use this class, look at the JFree-Demos project
- * at GitHub: https://github.com/jfree/jfree-demos.
+ * at GitHub: <a href="https://github.com/jfree/jfree-demos">https://github.com/jfree/jfree-demos</a>.
  * </p>
  */
 public final class SVGGraphics2D extends Graphics2D {
