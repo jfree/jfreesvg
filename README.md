@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 4.2, by David Gilbert, not yet released.
+Version 4.2, by David Gilbert, 10 January 2021.
 
 (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>4.1</version>
+        <version>4.2</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -51,12 +51,15 @@ To use JFreeSVG with Java 8, you can use the following (note the different artif
     </dependency>
 
 
-Build
+Maven
 -----
 You can build `JFreeSVG` from sources using Maven:
 
-    mvn clean install
+    mvn clean verify
 
+To generate the Javadocs:
+
+    mvn clean compile javadoc:javadoc
 
 License
 -------
@@ -70,8 +73,8 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 4.2 (not yet released)
-- replace NumberFormat with Ryu algorithm ([#30](https://github.com/jfree/jfreesvg/pull/30));
+Version 4.2 (10 January 2021)
+- replace NumberFormat with Ryu algorithm for performance gains ([#30](https://github.com/jfree/jfreesvg/pull/30));
 - add winding rule to path data if required ([#25](https://github.com/jfree/jfreesvg/issues/25));
 - migrated to JUnit 5.
 
