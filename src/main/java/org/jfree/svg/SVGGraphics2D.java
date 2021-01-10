@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -31,11 +31,25 @@
 
 package org.jfree.svg;
 
-import org.jfree.svg.util.*;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
+import java.awt.LinearGradientPaint;
 import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.Paint;
+import java.awt.RadialGradientPaint;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
@@ -50,11 +64,22 @@ import java.io.IOException;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.text.AttributedString;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import org.jfree.svg.util.Args;
+import org.jfree.svg.util.GradientPaintKey;
+import org.jfree.svg.util.GraphicsUtils;
+import org.jfree.svg.util.LinearGradientPaintKey;
+import org.jfree.svg.util.RadialGradientPaintKey;
 
 import static org.jfree.svg.util.RyuDouble.doubleToString;
 
@@ -379,8 +404,8 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @since 3.2
      */
-    public SVGGraphics2D(
-        int width, int height, SVGUnits units, StringBuilder sb) {
+    public SVGGraphics2D(int width, int height, SVGUnits units, 
+            StringBuilder sb) {
         this.width = width;
         this.height = height;
         this.units = units;
@@ -1071,9 +1096,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * A utility method that appends an optional element id if one is 
      * specified via the rendering hints.
      * 
-     * @param sb  the string builder ({@code null} not permitted). 
+     * @param builder  the string builder ({@code null} not permitted). 
      */
-    private void appendOptionalElementIDFromHint(StringBuilder sb) {
+    private void appendOptionalElementIDFromHint(StringBuilder builder) {
         String elementID = (String) this.hints.get(SVGHints.KEY_ELEMENT_ID);
         if (elementID != null) {
             this.hints.put(SVGHints.KEY_ELEMENT_ID, null); // clear it
@@ -1083,7 +1108,7 @@ public final class SVGGraphics2D extends Graphics2D {
             } else {
                 this.elementIDs.add(elementID);
             }
-            this.sb.append("id=\"").append(elementID).append("\" ");
+            builder.append("id=\"").append(elementID).append("\" ");
         }
     }
     
