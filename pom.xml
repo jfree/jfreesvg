@@ -5,7 +5,7 @@
  
     <groupId>org.jfree</groupId>
     <artifactId>org.jfree.svg</artifactId>
-    <version>4.2-SNAPSHOT</version>
+    <version>4.2</version>
     <packaging>jar</packaging>
 
     <name>JFreeSVG</name>
@@ -100,6 +100,11 @@
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.0.0-M5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+		<version>3.0.0-M1</version>
             </plugin>
         </plugins>
     </build>
