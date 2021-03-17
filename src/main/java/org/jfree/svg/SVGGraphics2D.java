@@ -392,9 +392,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Creates a new instance with the specified width and height that will
-     * populate the supplied StringBuilder instance.  This constructor is 
-     * used by the {@link #create()} method, but won't normally be called
-     * directly by user code.
+     * populate the supplied StringBuilder instance.
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
@@ -406,6 +404,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public SVGGraphics2D(int width, int height, SVGUnits units, 
             StringBuilder sb) {
+        Args.nullNotPermitted(sb, "sb");
         this.width = width;
         this.height = height;
         this.units = units;
