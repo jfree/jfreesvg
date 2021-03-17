@@ -73,10 +73,15 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
+Version 4.3 (not yet released)
+- fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36));
+
+
 Version 4.2 (10 January 2021)
 - replace NumberFormat with Ryu algorithm for performance gains ([#30](https://github.com/jfree/jfreesvg/pull/30));
 - add winding rule to path data if required ([#25](https://github.com/jfree/jfreesvg/issues/25));
 - migrated to JUnit 5.
+
 
 Version 4.1 (26 March 2020)
 - correction of fix for encoding of images ([#21](https://github.com/jfree/jfreesvg/issues/21)).

@@ -1444,7 +1444,7 @@ public final class SVGGraphics2D extends Graphics2D {
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
             b.append("stroke-linejoin: ").append(strokeJoin).append(";");        
         }
-        if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) < 0.001) {
+        if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
             b.append("stroke-miterlimit: ").append(geomDP(miterLimit));        
         }
         if (dashArray != null && dashArray.length != 0) {
