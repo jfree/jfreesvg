@@ -73,7 +73,8 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 4.3 (not yet released)
+Version 5.0 (not yet released)
+- change width and height attributes from int to double ([#37](https://github.com/jfree/jfreesvg/issues/37));
 - fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36));
 
 

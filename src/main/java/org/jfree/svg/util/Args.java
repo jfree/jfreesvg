@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -52,6 +52,25 @@ public class Args {
     public static void nullNotPermitted(Object obj, String ref) {
         if (obj == null) {
             throw new IllegalArgumentException("Null '" + ref + "' argument.");
+        }
+    }
+    
+    /** 
+     * Checks that an argument is a finite positive value and throws an 
+     * {@code IllegalArgumentException} otherwise.
+     * 
+     * @param d  the value to check.
+     * @param ref  the text name for the parameter (to include in the exception
+     *     message).
+     */
+    public static void requireFinitePositive(double d, String ref) {
+        if (d <= 0.0) {
+            throw new IllegalArgumentException("Require positive value for '" 
+                    + ref + "' argument.");
+        }
+        if (!Double.isFinite(d)) {
+            throw new IllegalArgumentException("Require finite value for '" 
+                    + ref + "' argument.");
         }
     }
     

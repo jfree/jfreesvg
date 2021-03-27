@@ -151,10 +151,16 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The prefix for keys used to identify clip paths. */
     private static final String CLIP_KEY_PREFIX = "clip-";
     
-    private final int width;
+    /** The width of the SVG. */
+    private final double width;
     
-    private final int height;
+    /** The height of the SVG. */
+    private final double height;
 
+    /**
+     * Units for the width and height of the SVG, if null then no
+     * unit information is written in the SVG output.
+     */
     private final SVGUnits units;
     
     /** 
@@ -182,7 +188,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * checked.
      */
     private boolean checkStrokeControlHint = true;
-    
+
     /** 
      * The number of decimal places to use when writing the matrix values
      * for transformations. 
@@ -356,7 +362,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
      */
-    public SVGGraphics2D(int width, int height) {
+    public SVGGraphics2D(double width, double height) {
         this(width, height, null, new StringBuilder());
     }
 
@@ -366,28 +372,12 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
-     * @param units  the units for the width and height.
+     * @param units  the units for the width and height ({@code null} permitted).
      * 
      * @since 3.2
      */
-    public SVGGraphics2D(int width, int height, SVGUnits units) {
+    public SVGGraphics2D(double width, double height, SVGUnits units) {
         this(width, height, units, new StringBuilder());
-    }
-    
-    /**
-     * Creates a new instance with the specified width and height that will
-     * populate the supplied StringBuilder instance.  This constructor is 
-     * used by the {@link #create()} method, but won't normally be called
-     * directly by user code.
-     * 
-     * @param width  the width of the SVG element.
-     * @param height  the height of the SVG element.
-     * @param sb  the string builder ({@code null} not permitted).
-     * 
-     * @since 2.0
-     */
-    public SVGGraphics2D(int width, int height, StringBuilder sb) {
-        this(width, height, null, sb);
     }
 
     /**
@@ -396,15 +386,16 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
-     * @param units  the units for the width and height above ({@code null} 
-     *     permitted).
+     * @param units  the units for the width and height ({@code null} permitted).
      * @param sb  the string builder ({@code null} not permitted).
      * 
      * @since 3.2
      */
-    public SVGGraphics2D(int width, int height, SVGUnits units, 
+    public SVGGraphics2D(double width, double height, SVGUnits units, 
             StringBuilder sb) {
         Args.nullNotPermitted(sb, "sb");
+        Args.requireFinitePositive(width, "width");
+        Args.requireFinitePositive(height, "height");
         this.width = width;
         this.height = height;
         this.units = units;
@@ -449,7 +440,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return The width for the SVG element. 
      */
-    public int getWidth() {
+    public double getWidth() {
         return this.width;
     }
     
@@ -460,7 +451,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @return The height for the SVG element. 
      */
-    public int getHeight() {
+    public double getHeight() {
         return this.height;
     }
     
@@ -749,8 +740,8 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         if (this.deviceConfiguration == null) {
-            this.deviceConfiguration = new SVGGraphicsConfiguration(this.width,
-                    this.height);
+            this.deviceConfiguration = new SVGGraphicsConfiguration(
+                    (int) this.width, (int) this.height);
         }
         return this.deviceConfiguration;
     }
@@ -1990,10 +1981,28 @@ public final class SVGGraphics2D extends Graphics2D {
         return this.defsKeyPrefix + CLIP_KEY_PREFIX + index;
     }
     
+    /**
+     * Returns a string representation of the specified number for use in the
+     * SVG output.  The conversion will, on a "best efforts" basis, limit the
+     * output to {@link #getTransformDP()} decimal places.
+     * 
+     * @param d  the number.
+     * 
+     * @return A string representation of the number. 
+     */
     private String transformDP(final double d) {
         return doubleToString(d, transformDP);
     }
     
+    /**
+     * Returns a string representation of the specified number for use in the
+     * SVG output.  The conversion will, on a "best efforts" basis, limit the
+     * output to {@link #getGeometryDP()} decimal places.
+     * 
+     * @param d  the number.
+     * 
+     * @return A string representation of the number. 
+     */
     private String geomDP(final double d) {
         return doubleToString(d, geometryDP);
     }
@@ -2690,8 +2699,8 @@ public final class SVGGraphics2D extends Graphics2D {
            .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
            .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ");
         if (includeDimensions) {
-            svg.append("width=\"").append(this.width).append(unitStr)
-               .append("\" height=\"").append(this.height).append(unitStr)
+            svg.append("width=\"").append(geomDP(this.width)).append(unitStr)
+               .append("\" height=\"").append(geomDP(this.height)).append(unitStr)
                .append("\" ");
         }
         if (viewBox != null) {
