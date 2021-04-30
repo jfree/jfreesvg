@@ -1396,7 +1396,7 @@ public final class SVGGraphics2D extends Graphics2D {
         float[] dashArray = new float[0];
         if (this.stroke instanceof BasicStroke) {
             BasicStroke bs = (BasicStroke) this.stroke;
-            strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth() 
+            strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth()
                     : this.zeroStrokeWidth;
             switch (bs.getEndCap()) {
                 case BasicStroke.CAP_ROUND:
@@ -1429,13 +1429,13 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("stroke-opacity: ").append(getColorAlpha() * getAlpha())
                 .append(";");
         if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
-            b.append("stroke-linecap: ").append(strokeCap).append(";");        
+            b.append("stroke-linecap: ").append(strokeCap).append(";");
         }
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
-            b.append("stroke-linejoin: ").append(strokeJoin).append(";");        
+            b.append("stroke-linejoin: ").append(strokeJoin).append(";");
         }
         if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
-            b.append("stroke-miterlimit: ").append(geomDP(miterLimit));        
+            b.append("stroke-miterlimit: ").append(geomDP(miterLimit)).append(";");
         }
         if (dashArray != null && dashArray.length != 0) {
             b.append("stroke-dasharray: ");
