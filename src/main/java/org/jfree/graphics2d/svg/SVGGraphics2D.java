@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2019, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -78,6 +78,7 @@ import java.text.AttributedString;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +88,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
 import org.jfree.graphics2d.Args;
 import org.jfree.graphics2d.GradientPaintKey;
 import org.jfree.graphics2d.GraphicsUtils;
@@ -162,10 +162,16 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The prefix for keys used to identify clip paths. */
     private static final String CLIP_KEY_PREFIX = "clip-";
     
+    /** The width of the SVG. */
     private final int width;
     
+    /** The height of the SVG. */
     private final int height;
 
+    /**
+     * Units for the width and height of the SVG, if null then no
+     * unit information is written in the SVG output.
+     */
     private final SVGUnits units;
     
     /** 
@@ -200,8 +206,9 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private int transformDP;
     
-    /**
-     * The decimal formatter for transform matrices.
+    /** 
+     * The number of decimal places to use when writing the matrix values
+     * for transformations. 
      */
     private DecimalFormat transformFormat;
     
@@ -259,14 +266,14 @@ public final class SVGGraphics2D extends Graphics2D {
     /** 
      * The filename prefix for images that are referenced rather than
      * embedded but don't have an {@code href} supplied via the 
-     * {@link #KEY_IMAGE_HREF} hint.
+     * {@link SVGHints#KEY_IMAGE_HREF} hint.
      */
     private String filePrefix;
     
     /** 
      * The filename suffix for images that are referenced rather than
      * embedded but don't have an {@code href} supplied via the 
-     * {@link #KEY_IMAGE_HREF} hint.
+     * {@link SVGHints#KEY_IMAGE_HREF} hint.
      */
     private String fileSuffix;
     
@@ -388,7 +395,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
-     * @param units  the units for the width and height.
+     * @param units  the units for the width and height ({@code null} permitted).
      * 
      * @since 3.2
      */
@@ -1158,7 +1165,7 @@ public final class SVGGraphics2D extends Graphics2D {
             } else {
                 this.elementIDs.add(elementID);
             }
-            this.sb.append("id=\"").append(elementID).append("\" ");
+            sb.append("id=\"").append(elementID).append("\" ");
         }
     }
     
@@ -1324,7 +1331,11 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return An SVG path string. 
      */
     private String getSVGPathData(Path2D path) {
-        StringBuilder b = new StringBuilder("d=\"");
+        StringBuilder b = new StringBuilder();
+        if (path.getWindingRule() == Path2D.WIND_EVEN_ODD) {
+            b.append("fill-rule=\"evenodd\" ");
+        }
+        b.append("d=\"");
         float[] coords = new float[6];
         boolean first = true;
         PathIterator iterator = path.getPathIterator(null);
@@ -1490,8 +1501,8 @@ public final class SVGGraphics2D extends Graphics2D {
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
             b.append("stroke-linejoin: ").append(strokeJoin).append(";");        
         }
-        if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) < 0.001) {
-            b.append("stroke-miterlimit: ").append(geomDP(miterLimit));        
+        if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
+            b.append("stroke-miterlimit: ").append(geomDP(miterLimit)).append(";");
         }
         if (dashArray != null && dashArray.length != 0) {
             b.append("stroke-dasharray: ");
@@ -2351,11 +2362,12 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the bytes representing a PNG format image.
      * 
-     * @param img  the image to encode.
+     * @param img  the image to encode ({@code null} not permitted).
      * 
      * @return The bytes representing a PNG format image. 
      */
     private byte[] getPNGBytes(Image img) {
+        Args.nullNotPermitted(img, "img");
         RenderedImage ri;
         if (img instanceof RenderedImage) {
             ri = (RenderedImage) img;
@@ -2432,7 +2444,7 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append("preserveAspectRatio=\"none\" ");
             this.sb.append("xlink:href=\"data:image/png;base64,");
-            this.sb.append(DatatypeConverter.printBase64Binary(getPNGBytes(
+            this.sb.append(Base64.getEncoder().encodeToString(getPNGBytes(
                     img)));
             this.sb.append("\" ");
             this.sb.append(getClipPathRef()).append(" ");
@@ -2592,13 +2604,17 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the rendered image.
+     * Draws the rendered image.  If {@code img} is {@code null} this method
+     * does nothing.
      * 
-     * @param img  the image.
+     * @param img  the image ({@code null} permitted).
      * @param xform  the transform.
      */
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
+        if (img == null) {
+            return;
+        }
         BufferedImage bi = GraphicsUtils.convertRenderedImage(img);
         drawImage(bi, xform, null);
     }
@@ -3024,10 +3040,10 @@ public final class SVGGraphics2D extends Graphics2D {
             int arcAngle) {
         if (this.arc == null) {
             this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.OPEN);
+                    arcAngle, Arc2D.PIE);
         } else {
             this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.OPEN);
+                    Arc2D.PIE);
         }        
     }
     
