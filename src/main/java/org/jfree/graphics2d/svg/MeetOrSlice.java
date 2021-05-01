@@ -39,8 +39,10 @@ package org.jfree.graphics2d.svg;
  */
 public enum MeetOrSlice {
     
+    /** Value 'meet'. */
     MEET("meet"), 
     
+    /** Value 'slice'. */
     SLICE("slice");
 
     private final String label;
