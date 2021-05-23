@@ -54,7 +54,25 @@ public class Args {
             throw new IllegalArgumentException("Null '" + ref + "' argument.");
         }
     }
-    
+
+    /**
+     * Checks that the value falls within the specified range and, if it does
+     * not, throws an {@code IllegalArgumentException}.
+     * 
+     * @param value  the value.
+     * @param name  the parameter name.
+     * @param lowerBound  the lower bound of the permitted range.
+     * @param upperBound  the upper bound fo the permitted range.
+     */
+    public static void requireInRange(int value, String name, int lowerBound, 
+            int upperBound) {
+        if (value < lowerBound || value > upperBound) {
+            throw new IllegalArgumentException("Require '" + name + "' (" 
+                    + value + ") to be in the range " + lowerBound + " to " 
+                    + upperBound);
+        }
+    }
+
     /** 
      * Checks that an argument is a finite positive value and throws an 
      * {@code IllegalArgumentException} otherwise.

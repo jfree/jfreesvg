@@ -76,6 +76,8 @@ Change History
 Version 5.0 (not yet released)
 - change width and height attributes from int to double ([#37](https://github.com/jfree/jfreesvg/issues/37));
 - fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
+- replaced `geometryDP` and `transformDP` attributes with function references ([#35](https://github.com/jfree/jfreesvg/issues/35));
+- updated JUnit test dependency to version 5.7.2.
 
 
 Version 4.2 (10 January 2021)

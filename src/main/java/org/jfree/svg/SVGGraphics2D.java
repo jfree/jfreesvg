@@ -72,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.DoubleFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -80,8 +81,6 @@ import org.jfree.svg.util.GradientPaintKey;
 import org.jfree.svg.util.GraphicsUtils;
 import org.jfree.svg.util.LinearGradientPaintKey;
 import org.jfree.svg.util.RadialGradientPaintKey;
-
-import static org.jfree.svg.util.RyuDouble.doubleToString;
 
 /**
  * <p>
@@ -182,7 +181,7 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /** Rendering hints (see SVGHints). */
     private final RenderingHints hints;
-    
+
     /** 
      * A flag that controls whether or not the KEY_STROKE_CONTROL hint is
      * checked.
@@ -190,17 +189,17 @@ public final class SVGGraphics2D extends Graphics2D {
     private boolean checkStrokeControlHint = true;
 
     /** 
-     * The number of decimal places to use when writing the matrix values
-     * for transformations. 
+     * The function used to convert double values to strings when writing 
+     * matrix values for transforms in the SVG output.
      */
-    private int transformDP = 6;
-    
-    /**
-     * The number of decimal places to use when writing coordinates for
-     * geometrical shapes.
-     */
-    private int geometryDP = 4;
+    private DoubleFunction<String> transformDoubleConverter;
 
+    /** 
+     * The function used to convert double values to strings for the geometry
+     * coordinates in the SVG output. 
+     */
+    private DoubleFunction<String> geomDoubleConverter;
+    
     /** The buffer that accumulates the SVG output. */
     private final StringBuilder sb;
 
@@ -382,7 +381,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Creates a new instance with the specified width and height that will
-     * populate the supplied StringBuilder instance.
+     * populate the supplied {@code StringBuilder} instance.
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
@@ -393,12 +392,14 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public SVGGraphics2D(double width, double height, SVGUnits units, 
             StringBuilder sb) {
-        Args.nullNotPermitted(sb, "sb");
         Args.requireFinitePositive(width, "width");
         Args.requireFinitePositive(height, "height");
+        Args.nullNotPermitted(sb, "sb");
         this.width = width;
         this.height = height;
         this.units = units;
+        this.geomDoubleConverter = SVGUtils.createDoubleConverter(4);
+        this.transformDoubleConverter = SVGUtils.createDoubleConverter(6);
         this.imageElements = new ArrayList<>();
         this.fontMapper = new StandardFontMapper();
         this.zeroStrokeWidth = 0.1;
@@ -420,8 +421,8 @@ public final class SVGGraphics2D extends Graphics2D {
         this.fontMapper = parent.fontMapper;
         getRenderingHints().add(parent.hints);
         this.checkStrokeControlHint = parent.checkStrokeControlHint;
-        setTransformDP(parent.transformDP);
-        setGeometryDP(parent.geometryDP);
+        this.transformDoubleConverter = parent.transformDoubleConverter;
+        this.geomDoubleConverter = parent.geomDoubleConverter;
         this.defsKeyPrefix = parent.defsKeyPrefix;
         this.gradientPaints = parent.gradientPaints;
         this.linearGradientPaints = parent.linearGradientPaints;
@@ -582,71 +583,69 @@ public final class SVGGraphics2D extends Graphics2D {
         Args.nullNotPermitted(prefix, "prefix");
         this.defsKeyPrefix = prefix;
     }
-    
+
     /**
-     * Returns the number of decimal places used to write the transformation
-     * matrices in the SVG output.  The default value is 6.
-     * <p>
-     * Note that there is a separate attribute to control the number of decimal
-     * places for geometrical elements in the output (see 
-     * {@link #getGeometryDP()}).
+     * Returns the double-to-string function that is used when writing 
+     * coordinates for geometrical shapes in the SVG output.  The default
+     * function uses the Ryu algorithm for speed (see class description for
+     * more details).
      * 
-     * @return The number of decimal places.
+     * @return The double-to-string function (never {@code null}).
      * 
-     * @see #setTransformDP(int) 
+     * @since 5.0
      */
-    public int getTransformDP() {
-        return this.transformDP;    
+    public DoubleFunction<String> getGeomDoubleConverter() {
+        return this.geomDoubleConverter;
+    }
+
+    /**
+     * Sets the double-to-string function that is used when writing coordinates
+     * for geometrical shapes in the SVG output.  The default converter 
+     * optimises for speed when generating the SVG and should cover normal 
+     * usage. However this method provides the ability to substitute 
+     * an alternative function (for example, one that favours output size
+     * over speed of generation).
+     * 
+     * @param converter  the convertor function ({@code null} not permitted).
+     * 
+     * @see #setTransformDoubleConverter(java.util.function.DoubleFunction)
+     * 
+     * @since 5.0
+     */
+    public void setGeomDoubleConverter(DoubleFunction<String> converter) {
+        Args.nullNotPermitted(converter, "converter");
+        this.geomDoubleConverter = converter;
     }
     
     /**
-     * Sets the number of decimal places used to write the transformation
-     * matrices in the SVG output.  Values in the range 1 to 10 will be used
-     * to configure a formatter to that number of decimal places, for all other
-     * values we revert to the normal {@code String} conversion of 
-     * {@code double} primitives (approximately 16 decimals places).
-     * <p>
-     * Note that there is a separate attribute to control the number of decimal
-     * places for geometrical elements in the output (see 
-     * {@link #setGeometryDP(int)}).
+     * Returns the double-to-string function that is used when writing 
+     * values for matrix transformations in the SVG output.
      * 
-     * @param dp  the number of decimal places (normally 1 to 10).
+     * @return The double-to-string function (never {@code null}).
      * 
-     * @see #getTransformDP() 
+     * @since 5.0
      */
-    public void setTransformDP(final int dp) {
-        this.transformDP = dp;
+    public DoubleFunction<String> getTransformDoubleConverter() {
+        return this.transformDoubleConverter;
     }
-    
+
     /**
-     * Returns the number of decimal places used to write the coordinates
-     * of geometrical shapes.  The default value is 2.
-     * <p>
-     * Note that there is a separate attribute to control the number of decimal
-     * places for transform matrices in the output (see 
-     * {@link #getTransformDP()}).
+     * Sets the double-to-string function that is used when writing coordinates
+     * for matrix transformations in the SVG output.  The default converter 
+     * optimises for speed when generating the SVG and should cover normal 
+     * usage. However this method provides the ability to substitute 
+     * an alternative function (for example, one that favours output size
+     * over speed of generation).
      * 
-     * @return The number of decimal places.
-     */
-    public int getGeometryDP() {
-        return this.geometryDP;    
-    }
-    
-    /**
-     * Sets the number of decimal places used to write the coordinates of
-     * geometrical shapes in the SVG output.  Values in the range 1 to 10 will 
-     * be used to configure a formatter to that number of decimal places, for 
-     * all other values we revert to the normal String conversion of double 
-     * primitives (approximately 16 decimals places).
-     * <p>
-     * Note that there is a separate attribute to control the number of decimal
-     * places for transform matrices in the output (see 
-     * {@link #setTransformDP(int)}).
+     * @param converter  the convertor function ({@code null} not permitted).
      * 
-     * @param dp  the number of decimal places (normally 1 to 10). 
+     * @see #setGeomDoubleConverter(java.util.function.DoubleFunction)
+     * 
+     * @since 5.0
      */
-    public void setGeometryDP(final int dp) {
-        this.geometryDP = dp;
+    public void setTransformDoubleConverter(DoubleFunction<String> converter) {
+        Args.nullNotPermitted(converter, "converter");
+        this.transformDoubleConverter = converter;
     }
     
     /**
@@ -1983,28 +1982,26 @@ public final class SVGGraphics2D extends Graphics2D {
     
     /**
      * Returns a string representation of the specified number for use in the
-     * SVG output.  The conversion will, on a "best efforts" basis, limit the
-     * output to {@link #getTransformDP()} decimal places.
+     * SVG output.
      * 
      * @param d  the number.
      * 
      * @return A string representation of the number. 
      */
     private String transformDP(final double d) {
-        return doubleToString(d, transformDP);
+        return this.transformDoubleConverter.apply(d);
     }
     
     /**
      * Returns a string representation of the specified number for use in the
-     * SVG output.  The conversion will, on a "best efforts" basis, limit the
-     * output to {@link #getGeometryDP()} decimal places.
+     * SVG output.
      * 
      * @param d  the number.
      * 
      * @return A string representation of the number. 
      */
     private String geomDP(final double d) {
-        return doubleToString(d, geometryDP);
+        return this.geomDoubleConverter.apply(d);
     }
     
     private String getSVGTransform(AffineTransform t) {
@@ -2023,13 +2020,14 @@ public final class SVGGraphics2D extends Graphics2D {
      * specified shape. 
      * 
      * According to the Oracle API specification, this method will accept a 
-     * {@code null} argument, but there is an open bug report (since 2004) 
-     * that suggests this is wrong:
+     * {@code null} argument, however there is a bug report (opened in 2004
+     * and fixed in 2021) that describes the passing of {@code null} as 
+     * "not recommended":
      * <p>
-     * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189">
+     * <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6206189">
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189</a>
      * 
-     * @param s  the clip shape ({@code null} not permitted). 
+     * @param s  the clip shape ({@code null} not recommended). 
      */
     @Override
     public void clip(Shape s) {

@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2020, by Object Refinery Limited.  All rights reserved.
+ * (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -38,10 +38,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.function.DoubleFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 import org.jfree.svg.util.Args;
+import org.jfree.svg.util.DoubleConverter;
+import org.jfree.svg.util.RyuDouble;
 
 /**
  * Utility methods related to the {@link SVGGraphics2D} implementation.
@@ -190,6 +193,35 @@ public class SVGUtils {
                         null, ex);
             }
         } 
+    }
+
+    /**
+     * Returns a string representing the specified double value.  Internally
+     * this method is using the code from: https://github.com/ulfjack/ryu which
+     * is optimised for speed.
+     * 
+     * @param d  the value.
+     * 
+     * @return A string representation of the double.
+     * 
+     * @since 5.0
+     */
+    public static String doubleToString(double d) {
+        return RyuDouble.doubleToString(d);
+    }
+    
+    /**
+     * Returns a double-to-string function that limits the output to a 
+     * specific number of decimal places (in the range 1 to 10).
+     * 
+     * @param dp  the decimal places (required in the range 1 to 10).
+     * 
+     * @return  The converter.
+     * 
+     * @since 5.0
+     */
+    public static DoubleFunction<String> createDoubleConverter(int dp) {
+        return new DoubleConverter(dp);
     }
     
 }

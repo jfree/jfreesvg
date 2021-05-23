@@ -1,28 +1,27 @@
-/*
- * Copyright 2018 Ulf Adams
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2018 Ulf Adams
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package org.jfree.svg.util;
 
 import java.math.BigInteger;
-
-import static java.lang.Math.*;
 
 /**
  * An implementation of Ryu for double.
  */
 public final class RyuDouble {
+  private static boolean DEBUG = false;
+
   private static final int DOUBLE_MANTISSA_BITS = 52;
   private static final long DOUBLE_MANTISSA_MASK = (1L << DOUBLE_MANTISSA_BITS) - 1;
 
@@ -32,6 +31,10 @@ public final class RyuDouble {
 
   private static final int POS_TABLE_SIZE = 326;
   private static final int NEG_TABLE_SIZE = 291;
+
+  // Only for debugging.
+  private static final BigInteger[] POW5 = new BigInteger[POS_TABLE_SIZE];
+  private static final BigInteger[] POW5_INV = new BigInteger[NEG_TABLE_SIZE];
 
   private static final int POW5_BITCOUNT = 121; // max 3*31 = 124
   private static final int POW5_QUARTER_BITCOUNT = 31;
@@ -44,25 +47,30 @@ public final class RyuDouble {
   static {
     BigInteger mask = BigInteger.valueOf(1).shiftLeft(POW5_QUARTER_BITCOUNT).subtract(BigInteger.ONE);
     BigInteger invMask = BigInteger.valueOf(1).shiftLeft(POW5_INV_QUARTER_BITCOUNT).subtract(BigInteger.ONE);
-    for ( int i = 0; i < POS_TABLE_SIZE; i++) {
+    for (int i = 0; i < Math.max(POW5.length, POW5_INV.length); i++) {
       BigInteger pow = BigInteger.valueOf(5).pow(i);
       int pow5len = pow.bitLength();
       int expectedPow5Bits = pow5bits(i);
       if (expectedPow5Bits != pow5len) {
         throw new IllegalStateException(pow5len + " != " + expectedPow5Bits);
       }
-
-      for (int j = 0; j < 4; j++) {
-        POW5_SPLIT[i][j] = pow
-            .shiftRight(pow5len - POW5_BITCOUNT + (3 - j) * POW5_QUARTER_BITCOUNT)
-            .and(mask)
-            .intValueExact();
+      if (i < POW5.length) {
+        POW5[i] = pow;
+      }
+      if (i < POW5_SPLIT.length) {
+        for (int j = 0; j < 4; j++) {
+          POW5_SPLIT[i][j] = pow
+              .shiftRight(pow5len - POW5_BITCOUNT + (3 - j) * POW5_QUARTER_BITCOUNT)
+              .and(mask)
+              .intValueExact();
+        }
       }
 
       if (i < POW5_INV_SPLIT.length) {
         // We want floor(log_2 5^q) here, which is pow5len - 1.
         int j = pow5len - 1 + POW5_INV_BITCOUNT;
         BigInteger inv = BigInteger.ONE.shiftLeft(j).divide(pow).add(BigInteger.ONE);
+        POW5_INV[i] = inv;
         for (int k = 0; k < 4; k++) {
           if (k == 0) {
             POW5_INV_SPLIT[i][k] = inv.shiftRight((3 - k) * POW5_INV_QUARTER_BITCOUNT).intValueExact();
@@ -74,7 +82,11 @@ public final class RyuDouble {
     }
   }
 
-  public static String doubleToString(final double value, final int decimals) {
+  public static String doubleToString(double value) {
+    return doubleToString(value, RoundingMode.ROUND_EVEN);
+  }
+
+  public static String doubleToString(double value, RoundingMode roundingMode) {
     // Step 1: Decode the floating point number, and unify normalized and subnormal cases.
     // First, handle all the trivial cases.
     if (Double.isNaN(value)) return "NaN";
@@ -100,6 +112,10 @@ public final class RyuDouble {
     }
 
     boolean sign = bits < 0;
+    if (DEBUG) {
+      System.out.println("IN=" + Long.toBinaryString(bits));
+      System.out.println("   S=" + (sign ? "-" : "+") + " E=" + e2 + " M=" + m2);
+    }
 
     // Step 2: Determine the interval of legal decimal representations.
     boolean even = (m2 & 1) == 0;
@@ -109,13 +125,38 @@ public final class RyuDouble {
     final long mm = 4 * m2 - 1 - mmShift;
     e2 -= 2;
 
+    if (DEBUG) {
+      String sv, sp, sm;
+      int e10;
+      if (e2 >= 0) {
+        sv = BigInteger.valueOf(mv).shiftLeft(e2).toString();
+        sp = BigInteger.valueOf(mp).shiftLeft(e2).toString();
+        sm = BigInteger.valueOf(mm).shiftLeft(e2).toString();
+        e10 = 0;
+      } else {
+        BigInteger factor = BigInteger.valueOf(5).pow(-e2);
+        sv = BigInteger.valueOf(mv).multiply(factor).toString();
+        sp = BigInteger.valueOf(mp).multiply(factor).toString();
+        sm = BigInteger.valueOf(mm).multiply(factor).toString();
+        e10 = e2;
+      }
+
+      e10 += sp.length() - 1;
+
+      System.out.println("E =" + e10);
+      System.out.println("d+=" + sp);
+      System.out.println("d =" + sv);
+      System.out.println("d-=" + sm);
+      System.out.println("e2=" + e2);
+    }
+
     // Step 3: Convert to a decimal power base using 128-bit arithmetic.
     // -1077 = 1 - 1023 - 53 - 2 <= e_2 - 2 <= 2046 - 1023 - 53 - 2 = 968
     long dv, dp, dm;
     final int e10;
     boolean dmIsTrailingZeros = false, dvIsTrailingZeros = false;
     if (e2 >= 0) {
-      final int q = max(0, ((e2 * 78913) >>> 18) - 1);
+      final int q = Math.max(0, ((e2 * 78913) >>> 18) - 1);
       // k = constant + floor(log_2(5^q))
       final int k = POW5_INV_BITCOUNT + pow5bits(q) - 1;
       final int i = -e2 + q + k;
@@ -123,18 +164,33 @@ public final class RyuDouble {
       dp = mulPow5InvDivPow2(mp, q, i);
       dm = mulPow5InvDivPow2(mm, q, i);
       e10 = q;
+      if (DEBUG) {
+        System.out.println(mv + " * 2^" + e2);
+        System.out.println("V+=" + dp);
+        System.out.println("V =" + dv);
+        System.out.println("V-=" + dm);
+      }
+      if (DEBUG) {
+        long exact = POW5_INV[q]
+            .multiply(BigInteger.valueOf(mv))
+            .shiftRight(-e2 + q + k).longValueExact();
+        System.out.println(exact + " " + POW5_INV[q].bitCount());
+        if (dv != exact) {
+          throw new IllegalStateException();
+        }
+      }
 
       if (q <= 21) {
         if (mv % 5 == 0) {
           dvIsTrailingZeros = multipleOfPowerOf5(mv, q);
-        } else if (even) {
+        } else if (roundingMode.acceptUpperBound(even)) {
           dmIsTrailingZeros = multipleOfPowerOf5(mm, q);
         } else if (multipleOfPowerOf5(mp, q)) {
           dp--;
         }
       }
     } else {
-      final int q = max(0, ((-e2 * 732923) >>> 20) - 1);
+      final int q = Math.max(0, ((-e2 * 732923) >>> 20) - 1);
       final int i = -e2 - q;
       final int k = pow5bits(i) - POW5_BITCOUNT;
       final int j = q - k;
@@ -142,10 +198,12 @@ public final class RyuDouble {
       dp = mulPow5divPow2(mp, i, j);
       dm = mulPow5divPow2(mm, i, j);
       e10 = q + e2;
-
+      if (DEBUG) {
+        System.out.println(mv + " * 5^" + (-e2) + " / 10^" + q);
+      }
       if (q <= 1) {
         dvIsTrailingZeros = true;
-        if (even) {
+        if (roundingMode.acceptUpperBound(even)) {
           dmIsTrailingZeros = mmShift == 1;
         } else {
           dp--;
@@ -153,6 +211,16 @@ public final class RyuDouble {
       } else if (q < 63) {
         dvIsTrailingZeros = (mv & ((1L << (q - 1)) - 1)) == 0;
       }
+    }
+    if (DEBUG) {
+      System.out.println("d+=" + dp);
+      System.out.println("d =" + dv);
+      System.out.println("d-=" + dm);
+      System.out.println("e10=" + e10);
+      System.out.println("d-10=" + dmIsTrailingZeros);
+      System.out.println("d   =" + dvIsTrailingZeros);
+      System.out.println("Accept upper=" + roundingMode.acceptUpperBound(even));
+      System.out.println("Accept lower=" + roundingMode.acceptLowerBound(even));
     }
 
     // Step 4: Find the shortest decimal representation in the interval of legal representations.
@@ -187,7 +255,7 @@ public final class RyuDouble {
         dm /= 10;
         removed++;
       }
-      if (dmIsTrailingZeros && even) {
+      if (dmIsTrailingZeros && roundingMode.acceptLowerBound(even)) {
         while (dm % 10 == 0) {
           if ((dp < 100) && scientificNotation) {
             // Double.toString semantics requires printing at least two digits.
@@ -206,7 +274,7 @@ public final class RyuDouble {
         lastRemovedDigit = 4;
       }
       output = dv +
-          ((dv == dm && !(dmIsTrailingZeros && even)) || (lastRemovedDigit >= 5) ? 1 : 0);
+          ((dv == dm && !(dmIsTrailingZeros && roundingMode.acceptLowerBound(even))) || (lastRemovedDigit >= 5) ? 1 : 0);
     } else {
       while (dp / 10 > dm / 10) {
         if ((dp < 100) && scientificNotation) {
@@ -222,6 +290,16 @@ public final class RyuDouble {
       output = dv + ((dv == dm || (lastRemovedDigit >= 5)) ? 1 : 0);
     }
     int olength = vplength - removed;
+
+    if (DEBUG) {
+      System.out.println("LAST_REMOVED_DIGIT=" + lastRemovedDigit);
+      System.out.println("VP=" + dp);
+      System.out.println("VR=" + dv);
+      System.out.println("VM=" + dm);
+      System.out.println("O=" + output);
+      System.out.println("OLEN=" + olength);
+      System.out.println("EXP=" + exp);
+    }
 
     // Step 5: Print the decimal representation.
     // We follow Double.toString semantics here.
@@ -259,6 +337,7 @@ public final class RyuDouble {
         result[index++] = (char) ('0' + exp / 10);
       }
       result[index++] = (char) ('0' + exp % 10);
+      return new String(result, 0, index);
     } else {
       // Otherwise follow the Java spec for values in the interval [1E-3, 1E7).
       if (exp < 0) {
@@ -299,10 +378,8 @@ public final class RyuDouble {
         }
         index += olength + 1;
       }
+      return new String(result, 0, index);
     }
-    index = min( index,
-                 abs( index - (olength - (vplength + e10)) + decimals ) );
-    return new String( result, 0, index );
   }
 
   private static int pow5bits(int e) {
@@ -376,9 +453,9 @@ public final class RyuDouble {
     }
     return ((((((
         ((bits00 >>> 31) + bits01 + bits10) >>> 31)
-        + bits02 + bits11) >>> 31)
-        + bits03 + bits12) >>> 21)
-        + (bits13 << 10)) >>> actualShift;
+                         + bits02 + bits11) >>> 31)
+                         + bits03 + bits12) >>> 21)
+                         + (bits13 << 10)) >>> actualShift;
   }
 
   /**
@@ -404,8 +481,8 @@ public final class RyuDouble {
     }
     return ((((((
         ((bits00 >>> 31) + bits01 + bits10) >>> 31)
-        + bits02 + bits11) >>> 31)
-        + bits03 + bits12) >>> 21)
-        + (bits13 << 10)) >>> actualShift;
+                         + bits02 + bits11) >>> 31)
+                         + bits03 + bits12) >>> 21)
+                         + (bits13 << 10)) >>> actualShift;
   }
 }
