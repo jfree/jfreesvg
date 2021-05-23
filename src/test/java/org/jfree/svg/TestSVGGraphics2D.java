@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -114,7 +115,7 @@ public class TestSVGGraphics2D {
         // in spite of the docs saying that null is accepted this gives
         // a NullPointerException with SunGraphics2D.
         //g2.setTransform(null);
-        //Assert.assertEquals(new AffineTransform(), g2.getTransform());
+        //assertEquals(new AffineTransform(), g2.getTransform());
     }
     
     /**
@@ -265,7 +266,7 @@ public class TestSVGGraphics2D {
     }
     
     /**
-     * The default user clip should be <code>null</code>.
+     * The default user clip should be {@code null}.
      */
     @Test
     public void checkDefaultClip() {
@@ -389,6 +390,27 @@ public class TestSVGGraphics2D {
         //assertEquals(new Rectangle2D.Double(1.0, 2.0, 2.0, 2.0), 
         //        this.g2.getClip().getBounds2D());
         //assertTrue(this.g2.getClip().getBounds2D().isEmpty());        
+    }
+    
+    /**
+     * Clipping with a null argument is "not recommended" according to the 
+     * latest API docs (https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6206189).
+     */
+    @Test
+    public void checkClipWithNullArgument() {
+        
+        // when there is a current clip set, a null pointer exception is expected
+        this.g2.setClip(new Rectangle2D.Double(1.0, 2.0, 3.0, 4.0));
+        Exception exception = assertThrows(NullPointerException.class, () -> {
+            this.g2.clip(null);
+        });
+        
+        this.g2.setClip(null);
+        try {
+            this.g2.clip(null);
+        } catch (Exception e) {
+            fail("No exception expected.");             
+        }
     }
     
     /**
@@ -700,7 +722,7 @@ public class TestSVGGraphics2D {
     }
     
     /**
-     * Check that a null GlyphVector throws a <code>NullPointerException</code>.
+     * Check that a null GlyphVector throws a {@code NullPointerException}.
      */
     @Test
     public void drawGlyphVectorNull() {
