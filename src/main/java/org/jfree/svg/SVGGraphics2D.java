@@ -740,7 +740,7 @@ public final class SVGGraphics2D extends Graphics2D {
     public GraphicsConfiguration getDeviceConfiguration() {
         if (this.deviceConfiguration == null) {
             this.deviceConfiguration = new SVGGraphicsConfiguration(
-                    (int) this.width, (int) this.height);
+                    (int) Math.ceil(this.width), (int) Math.ceil(this.height));
         }
         return this.deviceConfiguration;
     }
