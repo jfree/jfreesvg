@@ -319,7 +319,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * An instance that is lazily instantiated in fillRect and then 
      * subsequently reused to avoid creating a lot of garbage.
      */
-    Rectangle2D rect;
+    private Rectangle2D rect;
 
     /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
