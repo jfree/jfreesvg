@@ -53,7 +53,18 @@ import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
@@ -269,6 +280,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The current transform. */
     private AffineTransform transform = new AffineTransform();
 
+    /** The paint used to draw or fill shapes and text. */
     private Paint paint = Color.BLACK;
     
     private Color color = Color.BLACK;
