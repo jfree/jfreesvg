@@ -379,16 +379,15 @@ public class TestSVGGraphics2D {
      * Clipping with a line makes no sense, but the API allows it so we should
      * not fail.  In fact, running with a JDK Graphics2D (from a BufferedImage)
      * it seems that the bounding rectangle of the line is used for clipping...
-     * does that make sense?  Switching off the test for now.
+     * does that make sense?  Matching the behaviour for now.
      */
     @Test
-    @Disabled
     public void checkClipWithLine2D() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Line2D.Double(1.0, 2.0, 3.0, 4.0));
-        //assertEquals(new Rectangle2D.Double(1.0, 2.0, 2.0, 2.0), 
-        //        this.g2.getClip().getBounds2D());
+        assertEquals(new Rectangle2D.Double(1.0, 2.0, 2.0, 2.0), 
+                this.g2.getClip().getBounds2D());
         //assertTrue(this.g2.getClip().getBounds2D().isEmpty());        
     }
     
