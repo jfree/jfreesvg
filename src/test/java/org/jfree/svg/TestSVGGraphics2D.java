@@ -56,7 +56,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 
 /**
  * Some tests for a Graphics2D implementation.  All tests should pass with the
@@ -65,17 +64,26 @@ import org.junit.jupiter.api.Disabled;
  */
 public class TestSVGGraphics2D {
     
+    /** 
+     * Change this to true to test against a reference Graphics2D 
+     * implementation from the JDK.  This is useful to verify that the tests
+     * are correct.
+     */
+    private static final boolean TEST_REFERENCE_IMPLEMENTATION = false;
+    
     private Graphics2D g2;
     
     @BeforeEach
     public void setUp() {
-        // to test a reference implementation, use this Graphics2D from a
-        // BufferedImage in the JDK
-        //BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
-        //this.g2 = img.createGraphics();
-        
-        // Test SVGGraphics2D...
-        this.g2 = new SVGGraphics2D(10, 20);
+        if (TEST_REFERENCE_IMPLEMENTATION) {
+            // to test a reference implementation, use this Graphics2D from a
+            // BufferedImage in the JDK
+            BufferedImage img = new BufferedImage(10, 20, BufferedImage.TYPE_INT_ARGB);
+            this.g2 = img.createGraphics();
+        } else {
+            // Test SVGGraphics2D...
+            this.g2 = new SVGGraphics2D(10.0, 20.0);
+        }
     }
     
     /**
@@ -528,6 +536,26 @@ public class TestSVGGraphics2D {
         assertEquals(existingBackground, this.g2.getBackground());
     }
     
+    /**
+     * If setPaint() is called with an argument that is not an instance of
+     * Color, then the existing color remains unchanged.
+     */
+    @Test
+    public void checkSetPaintDoesNotUpdateColor() {
+        GradientPaint gp = new GradientPaint(1.0f, 2.0f, Color.RED, 
+                3.0f, 4.0f, Color.BLUE);
+        this.g2.setColor(Color.MAGENTA);
+        this.g2.setPaint(gp);
+        assertEquals(gp, this.g2.getPaint());
+        assertEquals(Color.MAGENTA, this.g2.getColor());
+    }    
+    
+    /**
+     * Verifies that setting the old AWT color attribute also updates the
+     * Java2D paint attribute.
+     * 
+     * @see #checkSetPaintAlsoUpdatesColorButNotBackground() 
+     */
     @Test
     public void checkSetColorAlsoUpdatesPaint() {
         this.g2.setColor(Color.MAGENTA);
@@ -823,4 +851,5 @@ public class TestSVGGraphics2D {
         g2.drawRenderedImage(null, AffineTransform.getTranslateInstance(0, 0));
         assertTrue(true); // won't get here if there's an exception above                
     }
+
 }
