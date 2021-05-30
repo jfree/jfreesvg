@@ -1152,7 +1152,7 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("' ");
             this.sb.append("style='").append(strokeStyle()).append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append(";transform='").append(getSVGTransform(
+            	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append("'");
             }
             String clip = getClipPathRef();
@@ -1172,7 +1172,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("style='").append(strokeStyle())
                     .append(";fill:none").append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append(";transform='").append(getSVGTransform(
+            	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
             String clip = getClipPathRef();
@@ -1192,7 +1192,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("style='").append(strokeStyle())
                     .append(";fill:none").append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
+            	this.sb.append(" transform=\"").append(getSVGTransform(
             		this.transform)).append("\" ");
             }
             this.sb.append(getClipPathRef());

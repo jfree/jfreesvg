@@ -92,7 +92,7 @@ public class TestGeneral {
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(line);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
+"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }    
 
     @Test
@@ -107,7 +107,7 @@ public class TestGeneral {
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<defs><clipPath id=\"PREclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
 "</defs>\n" +
-"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
+"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
     }    
 
     @Test
@@ -128,7 +128,7 @@ public class TestGeneral {
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(rect);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
+"<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
     @Test
