@@ -2737,37 +2737,52 @@ public final class SVGGraphics2D extends Graphics2D {
         svg.append("text-rendering=\"").append(this.textRendering)
            .append("\" shape-rendering=\"").append(this.shapeRendering)
            .append("\">\n");
-        StringBuilder defs = new StringBuilder("<defs>");
-        for (GradientPaintKey key : this.gradientPaints.keySet()) {
-            defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
-                    key.getPaint()));
-            defs.append("\n");
+        
+        // only need to write DEFS if there is something to include
+        if (isDefsOutputRequired()) {
+            StringBuilder defs = new StringBuilder("<defs>");
+            for (GradientPaintKey key : this.gradientPaints.keySet()) {
+                defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
+                        key.getPaint()));
+                defs.append("\n");
+            }
+            for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
+                defs.append(getLinearGradientElement(
+                        this.linearGradientPaints.get(key), key.getPaint()));
+                defs.append("\n");            
+            }
+            for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
+                defs.append(getRadialGradientElement(
+                        this.radialGradientPaints.get(key), key.getPaint()));
+                defs.append("\n");
+            }
+            for (int i = 0; i < this.clipPaths.size(); i++) {
+                StringBuilder b = new StringBuilder("<clipPath id=\"")
+                        .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
+                        .append("\">");
+                b.append("<path ").append(this.clipPaths.get(i)).append("/>");
+                b.append("</clipPath>").append("\n");
+                defs.append(b.toString());
+            }
+            defs.append("</defs>\n");
+            svg.append(defs);
         }
-        for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
-            defs.append(getLinearGradientElement(
-                    this.linearGradientPaints.get(key), key.getPaint()));
-            defs.append("\n");            
-        }
-        for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
-            defs.append(getRadialGradientElement(
-                    this.radialGradientPaints.get(key), key.getPaint()));
-            defs.append("\n");
-        }
-        for (int i = 0; i < this.clipPaths.size(); i++) {
-            StringBuilder b = new StringBuilder("<clipPath id=\"")
-                    .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
-                    .append("\">");
-            b.append("<path ").append(this.clipPaths.get(i)).append("/>");
-            b.append("</clipPath>").append("\n");
-            defs.append(b.toString());
-        }
-        defs.append("</defs>\n");
-        svg.append(defs);
         svg.append(this.sb);
         svg.append("</svg>");        
         return svg.toString();
     }
-    
+
+    /**
+     * Returns {@code true} if there are items that need to be written to the
+     * DEFS element, and {@code false} otherwise.
+     * 
+     * @return A boolean. 
+     */
+    private boolean isDefsOutputRequired() {
+        return !(this.gradientPaints.isEmpty() && this.linearGradientPaints.isEmpty() 
+                && this.radialGradientPaints.isEmpty() && this.clipPaths.isEmpty());
+    }
+
     /**
      * Returns an SVG document (this contains the content returned by the
      * {@link #getSVGElement()} method, prepended with the required document 
