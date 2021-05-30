@@ -35,24 +35,27 @@ package org.jfree.svg;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.jfree.svg.util.Args;
 
 /**
- * A default implementation of the {@link FontMapper} interface.  This 
- * implementation will map the Java logical fonts to equivalent SVG generic
- * fonts.  You can add your own mappings if you need to.
+ * The standard function used in JFreeSVG to create font references for the
+ * SVG output.  This implementation will substitute SVG generic font names
+ * for the Java logical fonts.  Methods are provided for adding more font
+ * substitutions if you require them.  This function will also surround the
+ * font name with single-quotes, which addresses issue #27.
  * 
- * @since 1.5
+ * @since 5.0
  */
-public class StandardFontMapper implements FontMapper {
+public class StandardFontFunction implements Function<String, String> {
     
-    /** Storage for the alternates. */
+    /** A map of substitute font family names. */
     private final Map<String, String> alternates;
     
     /**
      * Creates a new instance with mappings for the Java logical fonts.
      */
-    public StandardFontMapper() {
+    public StandardFontFunction() {
         this.alternates = new HashMap<>();
         this.alternates.put(Font.DIALOG, "sans-serif");
         this.alternates.put(Font.DIALOG_INPUT, "monospace");
@@ -62,11 +65,12 @@ public class StandardFontMapper implements FontMapper {
     }
 
     /**
-     * Returns the mapped (alternate) font family name.
+     * Returns the (substitute) SVG font family name for the specified Java font
+     * family name, or {@code null} if there is no substitute.
      * 
-     * @param family  the font family ({@code null} not permitted).
+     * @param family  the Java font family name ({@code null} not permitted).
      * 
-     * @return The alternate font family name (possibly {@code null}). 
+     * @return The substitute SVG font family name, or {@code null}. 
      */
     public String get(String family) {
         Args.nullNotPermitted(family, "family");
@@ -74,33 +78,37 @@ public class StandardFontMapper implements FontMapper {
     }
     
     /**
-     * Adds a font family mapping (if the specified alternate is 
-     * {@code null} it has the effect of clearing any existing mapping).
+     * Adds a substitute font family name (to be used in the SVG output) for 
+     * the given Java font family name.  If the specified alternate is 
+     * {@code null} it has the effect of clearing any existing substitution.
      * 
-     * @param family  the font family name ({@code null} not permitted).
-     * @param alternate  the alternate ({@code null} permitted).
+     * @param family  the Java font family name ({@code null} not permitted).
+     * @param substitute  the font family name to substitute in the SVG 
+     *     output ({@code null} permitted).
      */
-    public void put(String family, String alternate) {
+    public void put(String family, String substitute) {
         Args.nullNotPermitted(family, "family");
-        this.alternates.put(family, alternate);
+        this.alternates.put(family, substitute);
     }
     
     /**
-     * Maps the specified font family name to an alternative, or else returns
-     * the same family name.
+     * Returns the SVG font reference for the supplied (Java) font family 
+     * name.  This implementation provides substitute names for the Java
+     * logical fonts.  Other Java font family names are not changed, but all
+     * font family names are surrounded in single quotes for the SVG output.
      * 
      * @param family  the font family name ({@code null} not permitted).
      * 
-     * @return The same font family name or an alternative (never {@code null}).
+     * @return The SVG font reference (never {@code null}).
      */
     @Override
-    public String mapFont(String family) {
+    public String apply(String family) {
         Args.nullNotPermitted(family, "family");
         String alternate = this.alternates.get(family);
-        if (alternate != null) {
-            return alternate;
+        if (alternate == null) {
+            alternate = family;
         }
-        return family;
+        return "'" + alternate + "'";
     }
 
 }

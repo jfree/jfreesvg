@@ -84,6 +84,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.DoubleFunction;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -310,15 +311,23 @@ public final class SVGGraphics2D extends Graphics2D {
     private final FontRenderContext fontRenderContext = new FontRenderContext(
             null, false, true);
 
-    /** Maps font family names to alternates (or leaves them unchanged). */
-    private FontMapper fontMapper;
+    /** 
+     * Generates the SVG font from the Java font family name (this function
+     * provides a hook for custom output formatting (for example putting quotes
+     * around the font family name - see issue #27) and font substitutions. 
+     */
+    private Function<String, String> fontFunction;
         
     /** The background color, used by clearRect(). */
     private Color background = Color.BLACK;
 
-    /** A hidden image used for font metrics. */
+    /** An internal image used for font metrics. */
     private BufferedImage fmImage;
-    
+
+    /** 
+     * The graphics target for the internal image that is used for font 
+     * metrics. 
+     */
     private Graphics2D fmImageG2D;
 
     /**
@@ -413,7 +422,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.geomDoubleConverter = SVGUtils.createDoubleConverter(4);
         this.transformDoubleConverter = SVGUtils.createDoubleConverter(6);
         this.imageElements = new ArrayList<>();
-        this.fontMapper = new StandardFontMapper();
+        this.fontFunction = new StandardFontFunction();
         this.zeroStrokeWidth = 0.1;
         this.sb = sb;
         this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
@@ -430,7 +439,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this(parent.width, parent.height, parent.units, parent.sb);
         this.shapeRendering = parent.shapeRendering;
         this.textRendering = parent.textRendering;
-        this.fontMapper = parent.fontMapper;
+        this.fontFunction = parent.fontFunction;
         getRenderingHints().add(parent.hints);
         this.checkStrokeControlHint = parent.checkStrokeControlHint;
         this.transformDoubleConverter = parent.transformDoubleConverter;
@@ -761,8 +770,8 @@ public final class SVGGraphics2D extends Graphics2D {
      * Creates a new graphics object that is a copy of this graphics object
      * (except that it has not accumulated the drawing operations).  Not sure
      * yet when or why this would be useful when creating SVG output.  Note
-     * that the {@code fontMapper} object ({@link #getFontMapper()}) is shared 
-     * between the existing instance and the new one.
+     * that the {@code fontFunction} object ({@link #getFontFunction()}) is 
+     * shared between the existing instance and the new one.
      * 
      * @return A new graphics object.
      */
@@ -1525,30 +1534,31 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Returns the font mapper (an object that optionally maps font family
-     * names to alternates).  The default mapper will convert Java logical 
-     * font names to the equivalent SVG generic font name, and leave all other
-     * font names unchanged.
+     * Returns the function that generates SVG font references from a supplied 
+     * Java font family name.  The default function will convert Java logical 
+     * font names to the equivalent SVG generic font name, pass-through all 
+     * other font names unchanged, and surround the result in single quotes.
      * 
      * @return The font mapper (never {@code null}).
      * 
-     * @see #setFontMapper(org.jfree.svg.FontMapper) 
-     * @since 1.5
+     * @see #setFontFunction(java.util.function.Function) 
+     * @since 5.0
      */
-    public FontMapper getFontMapper() {
-        return this.fontMapper;
+    public Function<String, String> getFontFunction() {
+        return this.fontFunction;
     }
     
     /**
-     * Sets the font mapper.
+     * Sets the font function that is used to generate SVG font references from
+     * Java font family names.
      * 
-     * @param mapper  the font mapper ({@code null} not permitted).
+     * @param fontFunction  the font mapper ({@code null} not permitted).
      * 
-     * @since 1.5
+     * @since 5.0
      */
-    public void setFontMapper(FontMapper mapper) {
-        Args.nullNotPermitted(mapper, "mapper");
-        this.fontMapper = mapper;
+    public void setFontFunction(Function<String, String> fontFunction) {
+        Args.nullNotPermitted(fontFunction, "fontFunction");
+        this.fontFunction = fontFunction;
     }
     
     /** 
@@ -1586,7 +1596,7 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append("fill: ").append(svgColorStr()).append("; ");
         b.append("fill-opacity: ").append(getColorAlpha() * getAlpha())
                 .append("; ");
-        String fontFamily = this.fontMapper.mapFont(this.font.getFamily());
+        String fontFamily = this.fontFunction.apply(this.font.getFamily());
         b.append("font-family: ").append(fontFamily).append("; ");
         b.append("font-size: ").append(this.font.getSize()).append(this.fontSizeUnits).append(";");
         if (this.font.isBold()) {
