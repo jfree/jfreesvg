@@ -32,10 +32,17 @@
 
 package org.jfree.svg;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -54,4 +61,84 @@ public class TestGeneral {
         g2.fill(new Rectangle(10, 20, 30, 40));
         assertFalse(g2.getSVGElement().contains("<defs>"));
     }
+    
+    @Test
+    public void checkStyleOnPath2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.draw(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+    
+    @Test
+    public void checkDrawLine2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(line);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0'/></svg>", g2.getSVGElement());
+    }
+    
+    @Test
+    public void checkDrawLine2DWithTransform() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
+        Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(line);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
+    }    
+
+    @Test
+    public void checkDrawLine2DWithTransformAndClip() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("PRE");
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
+        g2.clip(new Rectangle(10, 11, 12, 13));
+        Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(line);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<defs><clipPath id=\"PREclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
+"</defs>\n" +
+"<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
+    }    
+
+    @Test
+    public void checkDrawRectangle2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkDrawRectangle2DWithTransform() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none';transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkDrawEllipse2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.draw(ellipse);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
+    }
+
 }
