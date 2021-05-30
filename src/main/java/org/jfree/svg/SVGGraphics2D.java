@@ -1288,48 +1288,43 @@ public final class SVGGraphics2D extends Graphics2D {
         if (path.getWindingRule() == Path2D.WIND_EVEN_ODD) {
             b.append("fill-rule=\"evenodd\" ");
         }
-        b.append("d=\"");
+        b.append("d='");
         float[] coords = new float[6];
-        boolean first = true;
         PathIterator iterator = path.getPathIterator(null);
         while (!iterator.isDone()) {
             int type = iterator.currentSegment(coords);
-            if (!first) {
-                b.append(" ");
-            }
-            first = false;
             switch (type) {
             case (PathIterator.SEG_MOVETO):
-                b.append("M ").append(geomDP(coords[0])).append(" ")
+                b.append('M').append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_LINETO):
-                b.append("L ").append(geomDP(coords[0])).append(" ")
+                b.append('L').append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append("Q ").append(geomDP(coords[0]))
-                        .append(" ").append(geomDP(coords[1]))
-                        .append(" ").append(geomDP(coords[2]))
-                        .append(" ").append(geomDP(coords[3]));
+                b.append('Q').append(geomDP(coords[0]))
+                        .append(',').append(geomDP(coords[1]))
+                        .append(',').append(geomDP(coords[2]))
+                        .append(',').append(geomDP(coords[3]));
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append("C ").append(geomDP(coords[0])).append(" ")
-                        .append(geomDP(coords[1])).append(" ")
-                        .append(geomDP(coords[2])).append(" ")
-                        .append(geomDP(coords[3])).append(" ")
-                        .append(geomDP(coords[4])).append(" ")
+                b.append('C').append(geomDP(coords[0])).append(',')
+                        .append(geomDP(coords[1])).append(',')
+                        .append(geomDP(coords[2])).append(',')
+                        .append(geomDP(coords[3])).append(',')
+                        .append(geomDP(coords[4])).append(',')
                         .append(geomDP(coords[5]));
                 break;
             case (PathIterator.SEG_CLOSE):
-                b.append("Z ");
+                b.append('Z');
                 break;
             default:
                 break;
             }
             iterator.next();
         }  
-        return b.append("\"").toString();
+        return b.append('\'').toString();
     }
 
     /**
