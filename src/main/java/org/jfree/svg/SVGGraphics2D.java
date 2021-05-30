@@ -419,8 +419,8 @@ public final class SVGGraphics2D extends Graphics2D {
         this.width = width;
         this.height = height;
         this.units = units;
-        this.geomDoubleConverter = SVGUtils.createDoubleConverter(4);
-        this.transformDoubleConverter = SVGUtils.createDoubleConverter(6);
+        this.geomDoubleConverter = SVGUtils::doubleToString;
+        this.transformDoubleConverter = SVGUtils::doubleToString;
         this.imageElements = new ArrayList<>();
         this.fontFunction = new StandardFontFunction();
         this.zeroStrokeWidth = 0.1;
