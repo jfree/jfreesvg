@@ -1192,10 +1192,13 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("style='").append(strokeStyle())
                     .append(";fill:none").append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append(" transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(clip);
+            }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
@@ -1204,10 +1207,13 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("style='").append(strokeStyle())
                     .append(";fill:none").append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append(" transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(clip);
+            }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
