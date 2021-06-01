@@ -1246,12 +1246,15 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("\" width=\"").append(geomDP(r.getWidth()))
                     .append("\" height=\"").append(geomDP(r.getHeight()))
                     .append("\" ");
-            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append("style='").append(getSVGFillStyle()).append("'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clipStr = getClipPathRef();
+            if (!clipStr.isEmpty()) {
+                this.sb.append(' ').append(clipStr);
+            }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
             Ellipse2D e = (Ellipse2D) s;
@@ -1510,8 +1513,11 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill:").append(svgColorStr()).append(';');
-        b.append("fill-opacity:").append(getColorAlpha() * getAlpha());
+        b.append("fill:").append(svgColorStr());
+        double opacity = getColorAlpha() * getAlpha();
+        if (opacity < 1.0) {
+            b.append(';').append("fill-opacity:").append(opacity);
+        }
         return b.toString();
     }
 

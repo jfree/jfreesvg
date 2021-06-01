@@ -115,7 +115,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.fill(path);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<g style='fill:rgb(0,0,255);fill-opacity:1.0;stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+"<g style='fill:rgb(0,0,255);stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.fill(path);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<g style='fill:rgb(255,0,0);fill-opacity:1.0;stroke:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+"<g style='fill:rgb(255,0,0);stroke:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class TestGeneral {
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
 "</defs>\n" +
-"<g style='fill:rgb(255,0,0);fill-opacity:1.0;stroke:none' clip-path='url(#DEFclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+"<g style='fill:rgb(255,0,0);stroke:none' clip-path='url(#DEFclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
     @Test
@@ -260,7 +260,7 @@ public class TestGeneral {
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style=\"fill:rgb(0,255,0);fill-opacity:1.0\" /></svg>", g2.getSVGElement());
+"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
     }
 
 }
