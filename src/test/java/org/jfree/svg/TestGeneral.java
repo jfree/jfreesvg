@@ -107,6 +107,47 @@ public class TestGeneral {
     }
 
     @Test
+    public void checkFillPath2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.BLUE);
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.fill(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g style='fill:rgb(0,0,255);fill-opacity:1.0;stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkFillPath2DWithTransform() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.RED);
+        g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.fill(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g style='fill:rgb(255,0,0);fill-opacity:1.0;stroke:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkFillPath2DWithClip() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("DEF");
+        g2.setPaint(Color.RED);
+        g2.clip(new Rectangle(10, 11, 12, 13));
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.fill(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
+"</defs>\n" +
+"<g style='fill:rgb(255,0,0);fill-opacity:1.0;stroke:none' clip-path='url(#DEFclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    @Test
     public void checkDrawLine2D() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
@@ -210,6 +251,16 @@ public class TestGeneral {
 "<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
+    }
+    
+    @Test
+    public void checkFillRectangle2D() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.GREEN);
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style=\"fill:rgb(0,255,0);fill-opacity:1.0\" /></svg>", g2.getSVGElement());
     }
 
 }

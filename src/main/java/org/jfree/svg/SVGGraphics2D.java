@@ -1273,14 +1273,17 @@ public final class SVGGraphics2D extends Graphics2D {
             Path2D path = (Path2D) s;
             this.sb.append("<g ");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("style=\"").append(getSVGFillStyle());
-            this.sb.append("; stroke: none").append("\" ");
+            this.sb.append("style='").append(getSVGFillStyle());
+            this.sb.append(";stroke:none").append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
-            this.sb.append(">");
+            String clipStr = getClipPathRef();
+            if (!clipStr.isEmpty()) {
+                this.sb.append(' ').append(clipStr);
+            }
+            this.sb.append('>');
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
         }  else {
@@ -1507,8 +1510,8 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill: ").append(svgColorStr()).append("; ");
-        b.append("fill-opacity: ").append(getColorAlpha() * getAlpha());
+        b.append("fill:").append(svgColorStr()).append(';');
+        b.append("fill-opacity:").append(getColorAlpha() * getAlpha());
         return b.toString();
     }
 
