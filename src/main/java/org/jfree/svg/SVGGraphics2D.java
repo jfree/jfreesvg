@@ -1241,12 +1241,12 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             this.sb.append("<rect ");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x=\"").append(geomDP(r.getX()))
-                    .append("\" y=\"").append(geomDP(r.getY()))
-                    .append("\" width=\"").append(geomDP(r.getWidth()))
-                    .append("\" height=\"").append(geomDP(r.getHeight()))
-                    .append("\" ");
-            this.sb.append("style='").append(getSVGFillStyle()).append("'");
+            this.sb.append("x='").append(geomDP(r.getX()))
+                    .append("' y='").append(geomDP(r.getY()))
+                    .append("' width='").append(geomDP(r.getWidth()))
+                    .append("' height='").append(geomDP(r.getHeight()))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFillStyle()).append('\'');
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
