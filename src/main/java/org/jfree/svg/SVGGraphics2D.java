@@ -1699,17 +1699,20 @@ public final class SVGGraphics2D extends Graphics2D {
                     this.transform)).append("\"");
             }
             this.sb.append(">");
-            this.sb.append("<text x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\"");
-            this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
+            this.sb.append("<text x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFontStyle()).append('\'');
             Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
             if (hintValue != null) {
                 String textRenderValue = hintValue.toString();
-                this.sb.append(" text-rendering=\"").append(textRenderValue)
-                        .append("\"");
+                this.sb.append(" text-rendering='").append(textRenderValue)
+                        .append('\'');
             }
-            this.sb.append(" ").append(getClipPathRef());
+            String clipStr = getClipPathRef();
+            if (!clipStr.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());    
+            }
             this.sb.append(">");
             this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
             this.sb.append("</g>");

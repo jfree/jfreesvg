@@ -309,4 +309,16 @@ public class TestGeneral {
 "<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0)' transform='matrix(-1.0,0.0,-0.0,-1.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
+    /** 
+     * Check the output for drawing a string.
+     */
+    @Test
+    public void checkDrawString() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.GREEN);
+        g2.drawString("ABC", 10, 20);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g ><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: 'sans-serif'; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
+    }    
+
 }
