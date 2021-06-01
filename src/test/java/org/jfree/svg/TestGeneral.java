@@ -32,6 +32,7 @@
 
 package org.jfree.svg;
 
+import java.awt.AlphaComposite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -261,6 +262,51 @@ public class TestGeneral {
         g2.fill(rect);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
+    }
+
+    /**
+     * Check the fill rectangle output with a non-default alpha value.
+     */
+    @Test
+    public void checkFillRectangle2DWithAlpha() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.GREEN);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0);fill-opacity:0.5'/></svg>", g2.getSVGElement());
+    }
+
+    /**
+     * Check the fill rectangle output with a clip setting.
+     */
+    @Test
+    public void checkFillRectangle2DWithClip() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("DEF");
+        g2.setPaint(Color.GREEN);
+        g2.clip(new Rectangle(10, 11, 12, 13));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
+"</defs>\n" +
+"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0)' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
+    }
+
+    /**
+     * Check the fill rectangle output with a transform.
+     */
+    @Test
+    public void checkFillRectangle2DWithTransform() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setTransform(AffineTransform.getRotateInstance(Math.PI));
+        g2.setPaint(Color.GREEN);
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect x=\"10.0\" y=\"20.0\" width=\"30.0\" height=\"40.0\" style='fill:rgb(0,255,0)' transform='matrix(-1.0,0.0,-0.0,-1.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
 }
