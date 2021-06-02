@@ -35,6 +35,7 @@ package org.jfree.svg;
 import java.awt.AlphaComposite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -73,6 +74,19 @@ public class TestGeneral {
         g2.draw(path);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+    
+    @Test
+    public void checkDrawPath2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.draw(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g id='UNIQUE_ELEMENT_ID_1' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
     
     @Test
@@ -192,6 +206,18 @@ public class TestGeneral {
         g2.draw(rect);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkDrawRectangle2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.draw(rect);
+        assertNull(g2.getRenderingHint(SVGHints.KEY_ELEMENT_ID)); // should be cleared after call
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect id='UNIQUE_ELEMENT_ID_1' x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
     }
 
     @Test
@@ -318,7 +344,20 @@ public class TestGeneral {
         g2.setPaint(Color.GREEN);
         g2.drawString("ABC", 10, 20);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
-"<g ><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: 'sans-serif'; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
+"<g><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: 'sans-serif'; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
+    }    
+
+    /** 
+     * Check the output for drawing a string.
+     */
+    @Test
+    public void checkDrawStringWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.GREEN);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.drawString("ABC", 10, 20);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g id='UNIQUE_ELEMENT_ID_1'><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: 'sans-serif'; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
     }    
 
 }

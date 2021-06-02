@@ -1118,7 +1118,7 @@ public final class SVGGraphics2D extends Graphics2D {
             } else {
                 this.elementIDs.add(elementID);
             }
-            builder.append("id=\"").append(elementID).append("\" ");
+            builder.append(" id='").append(elementID).append("'");
         }
     }
     
@@ -1143,9 +1143,9 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
-            this.sb.append("<line ");
+            this.sb.append("<line");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x1='").append(geomDP(l.getX1()))
+            this.sb.append(" x1='").append(geomDP(l.getX1()))
                     .append("' y1='").append(geomDP(l.getY1()))
                     .append("' x2='").append(geomDP(l.getX2()))
                     .append("' y2='").append(geomDP(l.getY2()))
@@ -1162,9 +1162,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect ");
+            this.sb.append("<rect");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x='").append(geomDP(r.getX()))
+            this.sb.append(" x='").append(geomDP(r.getX()))
                     .append("' y='").append(geomDP(r.getY()))
                     .append("' width='").append(geomDP(r.getWidth()))
                     .append("' height='").append(geomDP(r.getHeight()))
@@ -1182,9 +1182,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
             Ellipse2D e = (Ellipse2D) s;
-            this.sb.append("<ellipse ");
+            this.sb.append("<ellipse");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("cx='").append(geomDP(e.getCenterX()))
+            this.sb.append(" cx='").append(geomDP(e.getCenterX()))
                     .append("' cy='").append(geomDP(e.getCenterY()))
                     .append("' rx='").append(geomDP(e.getWidth() / 2.0))
                     .append("' ry='").append(geomDP(e.getHeight() / 2.0))
@@ -1202,9 +1202,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("style='").append(strokeStyle())
+            this.sb.append(" style='").append(strokeStyle())
                     .append(";fill:none").append("'");
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
@@ -1239,9 +1239,9 @@ public final class SVGGraphics2D extends Graphics2D {
             if (r.isEmpty()) {
                 return;
             }
-            this.sb.append("<rect ");
+            this.sb.append("<rect");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x='").append(geomDP(r.getX()))
+            this.sb.append(" x='").append(geomDP(r.getX()))
                     .append("' y='").append(geomDP(r.getY()))
                     .append("' width='").append(geomDP(r.getWidth()))
                     .append("' height='").append(geomDP(r.getHeight()))
@@ -1258,9 +1258,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
             Ellipse2D e = (Ellipse2D) s;
-            this.sb.append("<ellipse ");
+            this.sb.append("<ellipse");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("cx=\"").append(geomDP(e.getCenterX()))
+            this.sb.append(" cx=\"").append(geomDP(e.getCenterX()))
                     .append("\" cy=\"").append(geomDP(e.getCenterY()))
                     .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
                     .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
@@ -1274,9 +1274,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("style='").append(getSVGFillStyle());
+            this.sb.append(" style='").append(getSVGFillStyle());
             this.sb.append(";stroke:none").append('\'');
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
@@ -1692,10 +1692,10 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         if (!SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR.equals(
                 this.hints.get(SVGHints.KEY_DRAW_STRING_TYPE))) {
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
+            	this.sb.append(" transform=\"").append(getSVGTransform(
                     this.transform)).append("\"");
             }
             this.sb.append(">");
