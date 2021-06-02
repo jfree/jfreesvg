@@ -134,6 +134,19 @@ public class TestGeneral {
     }
 
     @Test
+    public void checkFillPath2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.BLUE);
+        Path2D path = new Path2D.Double();
+        path.moveTo(10.0, 20.0);
+        path.lineTo(30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.fill(path);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<g style='fill:rgb(0,0,255);stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    @Test
     public void checkFillPath2DWithTransform() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setPaint(Color.RED);
@@ -170,6 +183,17 @@ public class TestGeneral {
         g2.draw(line);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0'/></svg>", g2.getSVGElement());
+    }
+    
+    @Test
+    public void checkDrawLine2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.draw(line);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<line id='UNIQUE_ELEMENT_ID_1' x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0'/></svg>", g2.getSVGElement());
     }
     
     @Test
@@ -256,6 +280,17 @@ public class TestGeneral {
     }
 
     @Test
+    public void checkDrawEllipse2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
+        Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.draw(ellipse);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<ellipse id='UNIQUE_ELEMENT_ID_1' cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
     public void checkDrawEllipse2DWithTransform() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
@@ -288,6 +323,17 @@ public class TestGeneral {
         g2.fill(rect);
         assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkFillRectangle2DWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.GREEN);
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.fill(rect);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0\" height=\"100.0\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+"<rect id='UNIQUE_ELEMENT_ID_1' x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
     }
 
     /**
