@@ -79,6 +79,7 @@ Version 5.0 (not yet released)
 - fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
 - replaced `geometryDP` and `transformDP` attributes with function references ([#35](https://github.com/jfree/jfreesvg/issues/35));
 - fix font family name issue ([#27](https://github.com/jfree/jfreesvg/issues/27));
+- added more JUnit tests;
 - updated JUnit test dependency to version 5.7.2.
 
 
