@@ -108,7 +108,7 @@ public class StandardFontFunction implements Function<String, String> {
         if (alternate == null) {
             alternate = family;
         }
-        return "'" + alternate + "'";
+        return "\"" + alternate + "\"";
     }
 
 }
