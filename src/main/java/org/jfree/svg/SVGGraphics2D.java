@@ -130,24 +130,28 @@ import org.jfree.svg.util.RadialGradientPaintKey;
  * <b>Other Notes</b><br>
  * Some additional notes:
  * <ul>
- * <li>Images are supported, but for methods with an {@code ImageObserver}
- * parameter note that the observer is ignored completely.  In any case, using 
- * images that are not fully loaded already would not be a good idea in the 
- * context of generating SVG data/files;</li>
- * 
- * <li>the {@link #getFontMetrics(java.awt.Font)} and 
+ * <li>by default, JFreeSVG uses a fast conversion of numerical values to
+ * strings for the SVG output (the 'RyuDouble' implementation).  If you
+ * prefer a different approach (for example, controlling the number of
+ * decimal places in the output to reduce the file size) you can set your
+ * own functions for converting numerical values - see the
+ * {@link #setGeomDoubleConverter(DoubleFunction)} and
+ * {@link #setTransformDoubleConverter(DoubleFunction)} methods.</li>
+ *
+ * <li>the {@link #getFontMetrics(java.awt.Font)} and
  * {@link #getFontRenderContext()} methods return values that come from an 
- * internal {@code BufferedImage}, this is a short-cut and we don't know 
- * if there are any negative consequences (if you know of any, please let us 
+ * internal {@code BufferedImage}, this is a short-cut and we don't know
+ * if there are any negative consequences (if you know of any, please let us
  * know and we'll add the info here or find a way to fix it);</li>
- * 
- * <li>there are settings to control the number of decimal places used to
- * write the coordinates for geometrical elements (default 2dp) and transform
- * matrices (default 6dp).  These defaults may change in a future release.</li>
- * 
+ *
+ * <li>Images are supported, but for methods with an {@code ImageObserver}
+ * parameter note that the observer is ignored completely.  In any case, using
+ * images that are not fully loaded already would not be a good idea in the
+ * context of generating SVG data/files;</li>
+ *
  * <li>when an HTML page contains multiple SVG elements, the items within
  * the DEFS element for each SVG element must have IDs that are unique across 
- * <em>all</em> SVG elements in the page.  We auto-populate the 
+ * <em>all</em> SVG elements in the page.  JFreeSVG auto-populates the
  * {@code defsKeyPrefix} attribute to help ensure that unique IDs are 
  * generated.</li>
  * </ul>
