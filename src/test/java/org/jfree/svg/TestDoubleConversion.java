@@ -44,16 +44,16 @@ import java.util.function.DoubleFunction;
 public class TestDoubleConversion {
     
     /** Default conversion in Java standard library. */
-    private DoubleFunction<String> d2s = Double::toString;
+    private final DoubleFunction<String> d2s = Double::toString;
     
     /** Fast 'Ryu' algorithm. */
-    private DoubleFunction<String> ryu = SVGUtils::doubleToString;
+    private final DoubleFunction<String> ryu = SVGUtils::doubleToString;
     
     /** Uses DecimalFormat to limit output to max 2dp. */
-    private DoubleFunction<String> dp2 = SVGUtils.createDoubleConverter(2);
+    private final DoubleFunction<String> dp2 = SVGUtils.createDoubleConverter(2);
 
     /** Uses DecimalFormat to limit output to max 6dp. */
-    private DoubleFunction<String> dp6 = SVGUtils.createDoubleConverter(6);
+    private final DoubleFunction<String> dp6 = SVGUtils.createDoubleConverter(6);
     
     @Test
     public void testGeneral() {

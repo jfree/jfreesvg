@@ -42,7 +42,7 @@ import java.util.function.DoubleFunction;
  */
 public class DoubleConverter implements DoubleFunction<String> {
 
-    private DecimalFormat formatter;
+    private final DecimalFormat formatter;
     
     /**
      * Creates a new function that converts double values to strings with
