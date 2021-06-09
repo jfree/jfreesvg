@@ -170,7 +170,8 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Units for the width and height of the SVG, if null then no
-     * unit information is written in the SVG output.
+     * unit information is written in the SVG output.  This is set via
+     * the class constructors.
      */
     private final SVGUnits units;
     
@@ -2732,11 +2733,11 @@ public final class SVGGraphics2D extends Graphics2D {
         if (id != null) {
             svg.append(" id='").append(id).append("'");
         }
-        String unitStr = this.units != null ? this.units.toString() : "";
         svg.append(" xmlns=\"http://www.w3.org/2000/svg\"")
            .append(" xmlns:xlink=\"http://www.w3.org/1999/xlink\"")
            .append(" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
         if (includeDimensions) {
+            String unitStr = this.units != null ? this.units.toString() : "";
             svg.append(" width=\"").append(geomDP(this.width)).append(unitStr)
                .append("\" height=\"").append(geomDP(this.height)).append(unitStr)
                .append("\"");

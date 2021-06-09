@@ -67,6 +67,18 @@ public class TestGeneral {
     }
 
     /**
+     * Check that the width and height are written correctly whether or not units are specified.
+     */
+    @Test
+    public void checkGetSVGElementWithSVGUnits() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100, SVGUnits.PX);
+        g2.setPaint(Color.BLUE);
+        g2.fill(new Rectangle(10, 20, 30, 40));
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width=\"200.0px\" height=\"100.0px\" text-rendering=\"auto\" shape-rendering=\"auto\">\n" +
+                "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null));
+    }
+
+    /**
      * Check that a simple SVG document does not include a DEFS element if 
      * there is no gradient paint and no user clipping.
      */
