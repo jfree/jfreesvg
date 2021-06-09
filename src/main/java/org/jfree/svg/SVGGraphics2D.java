@@ -179,20 +179,6 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private final SVGUnits units;
     
-    /** 
-     * The shape rendering property to set for the SVG element.  Permitted
-     * values are "auto", "crispEdges", "geometricPrecision" and
-     * "optimizeSpeed".
-     */
-    private String shapeRendering = "auto";
-    
-    /**
-     * The text rendering property for the SVG element.  Permitted values 
-     * are "auto", "optimizeSpeed", "optimizeLegibility" and 
-     * "geometricPrecision".
-     */
-    private String textRendering = "auto";
-    
     /** The font size units. */
     private SVGUnits fontSizeUnits = SVGUnits.PX;
     
@@ -442,8 +428,6 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private SVGGraphics2D(final SVGGraphics2D parent) {
         this(parent.width, parent.height, parent.units, parent.sb);
-        this.shapeRendering = parent.shapeRendering;
-        this.textRendering = parent.textRendering;
         this.fontFunction = parent.fontFunction;
         getRenderingHints().add(parent.hints);
         this.checkStrokeControlHint = parent.checkStrokeControlHint;
@@ -493,66 +477,6 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public SVGUnits getUnits() {
         return this.units;
-    }
-
-    /**
-     * Returns the value of the 'shape-rendering' property that will be 
-     * written to the SVG element.  The default value is "auto".
-     * 
-     * @return The shape rendering property.
-     * 
-     * @since 2.0
-     */
-    public String getShapeRendering() {
-        return this.shapeRendering;
-    }
-    
-    /**
-     * Sets the value of the 'shape-rendering' property that will be written to
-     * the SVG element.  Permitted values are "auto", "crispEdges", 
-     * "geometricPrecision", "inherit" and "optimizeSpeed".
-     * 
-     * @param value  the new value.
-     * 
-     * @since 2.0
-     */
-    public void setShapeRendering(String value) {
-        if (!value.equals("auto") && !value.equals("crispEdges") 
-                && !value.equals("geometricPrecision") 
-                && !value.equals("optimizeSpeed")) {
-            throw new IllegalArgumentException("Unrecognised value: " + value);
-        }
-        this.shapeRendering = value;
-    }
-    
-    /**
-     * Returns the value of the 'text-rendering' property that will be 
-     * written to the SVG element.  The default value is "auto".
-     * 
-     * @return The text rendering property.
-     * 
-     * @since 2.0
-     */
-    public String getTextRendering() {
-        return this.textRendering;
-    }
-    
-    /**
-     * Sets the value of the 'text-rendering' property that will be written to
-     * the SVG element.  Permitted values are "auto", "optimizeSpeed", 
-     * "optimizeLegibility" and "geometricPrecision".
-     * 
-     * @param value  the new value.
-     * 
-     * @since 2.0
-     */
-    public void setTextRendering(String value) {
-        if (!value.equals("auto") && !value.equals("optimizeSpeed") 
-                && !value.equals("optimizeLegibility") 
-                && !value.equals("geometricPrecision")) {
-            throw new IllegalArgumentException("Unrecognised value: " + value);
-        }
-        this.textRendering = value;
     }
     
     /**
@@ -1484,12 +1408,10 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         if (this.checkStrokeControlHint) {
             Object hint = getRenderingHint(RenderingHints.KEY_STROKE_CONTROL);
-            if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint) 
-                    && !this.shapeRendering.equals("crispEdges")) {
+            if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint)) {
                 b.append(";shape-rendering:crispEdges");
             }
-            if (RenderingHints.VALUE_STROKE_PURE.equals(hint) 
-                    && !this.shapeRendering.equals("geometricPrecision")) {
+            if (RenderingHints.VALUE_STROKE_PURE.equals(hint)) {
                 b.append(";shape-rendering:geometricPrecision");
             }
         }
@@ -2757,9 +2679,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 svg.append("\"");
             }
         }
-        svg.append(" text-rendering=\"").append(this.textRendering)
-           .append("\" shape-rendering=\"").append(this.shapeRendering)
-           .append("\">\n");
+        svg.append('>');
         
         // only need to write DEFS if there is something to include
         if (isDefsOutputRequired()) {
