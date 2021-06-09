@@ -2728,31 +2728,31 @@ public final class SVGGraphics2D extends Graphics2D {
     public String getSVGElement(String id, boolean includeDimensions, 
             ViewBox viewBox, PreserveAspectRatio preserveAspectRatio,
             MeetOrSlice meetOrSlice) {
-        StringBuilder svg = new StringBuilder("<svg ");
+        StringBuilder svg = new StringBuilder("<svg");
         if (id != null) {
-            svg.append("id=\"").append(id).append("\" ");
+            svg.append(" id='").append(id).append("'");
         }
         String unitStr = this.units != null ? this.units.toString() : "";
-        svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
-           .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
-           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ");
+        svg.append(" xmlns=\"http://www.w3.org/2000/svg\"")
+           .append(" xmlns:xlink=\"http://www.w3.org/1999/xlink\"")
+           .append(" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
         if (includeDimensions) {
-            svg.append("width=\"").append(geomDP(this.width)).append(unitStr)
+            svg.append(" width=\"").append(geomDP(this.width)).append(unitStr)
                .append("\" height=\"").append(geomDP(this.height)).append(unitStr)
-               .append("\" ");
+               .append("\"");
         }
         if (viewBox != null) {
-            svg.append("viewBox=\"").append(viewBox.valueStr()).append("\" ");
+            svg.append(" viewBox=\"").append(viewBox.valueStr()).append("\"");
             if (preserveAspectRatio != null) {
-                svg.append("preserveAspectRatio=\"")
+                svg.append(" preserveAspectRatio=\"")
                         .append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
                     svg.append(" ").append(meetOrSlice.toString());
                 }
-                svg.append("\" ");                    
+                svg.append("\"");
             }
         }
-        svg.append("text-rendering=\"").append(this.textRendering)
+        svg.append(" text-rendering=\"").append(this.textRendering)
            .append("\" shape-rendering=\"").append(this.shapeRendering)
            .append("\">\n");
         
