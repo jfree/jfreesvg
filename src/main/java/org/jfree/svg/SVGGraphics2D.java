@@ -2738,9 +2738,9 @@ public final class SVGGraphics2D extends Graphics2D {
            .append(" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
         if (includeDimensions) {
             String unitStr = this.units != null ? this.units.toString() : "";
-            svg.append(" width=\"").append(geomDP(this.width)).append(unitStr)
-               .append("\" height=\"").append(geomDP(this.height)).append(unitStr)
-               .append("\"");
+            svg.append(" width='").append(geomDP(this.width)).append(unitStr)
+               .append("' height='").append(geomDP(this.height)).append(unitStr)
+               .append('\'');
         }
         if (viewBox != null) {
             svg.append(" viewBox=\"").append(viewBox.valueStr()).append("\"");
