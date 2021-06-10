@@ -181,8 +181,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.draw(path);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"PREclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='PREclip-0'><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath></defs>" +
 "<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#PREclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -235,8 +234,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.fill(path);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='DEFclip-0'><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath></defs>" +
 "<g style='fill:rgb(255,0,0);stroke:none' clip-path='url(#DEFclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -282,8 +280,7 @@ public class TestGeneral {
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(line);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"PREclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='PREclip-0'><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath></defs>" +
 "<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
     }    
 
@@ -329,8 +326,7 @@ public class TestGeneral {
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(rect);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"PREclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='PREclip-0'><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath></defs>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
     }
 
@@ -375,8 +371,7 @@ public class TestGeneral {
         Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(ellipse);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='DEFclip-0'><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath></defs>" +
 "<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
     }
     
@@ -427,8 +422,7 @@ public class TestGeneral {
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
-"</defs>\n" +
+"<defs><clipPath id='DEFclip-0'><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath></defs>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
     }
 

@@ -2700,14 +2700,14 @@ public final class SVGGraphics2D extends Graphics2D {
                 defs.append("\n");
             }
             for (int i = 0; i < this.clipPaths.size(); i++) {
-                StringBuilder b = new StringBuilder("<clipPath id=\"")
+                StringBuilder b = new StringBuilder("<clipPath id='")
                         .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
-                        .append("\">");
+                        .append("'>");
                 b.append("<path ").append(this.clipPaths.get(i)).append("/>");
-                b.append("</clipPath>").append("\n");
+                b.append("</clipPath>");
                 defs.append(b.toString());
             }
-            defs.append("</defs>\n");
+            defs.append("</defs>");
             svg.append(defs);
         }
         svg.append(this.sb);
