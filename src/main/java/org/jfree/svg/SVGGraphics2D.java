@@ -985,7 +985,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             this.sb.append(">");
         } else if (SVGHints.isEndGroupKey(hintKey)) {
-            this.sb.append("</g>\n");
+            this.sb.append("</g>");
         } else if (SVGHints.isElementTitleKey(hintKey) && (hintValue != null)) {
             this.sb.append("<title>");
             this.sb.append(SVGUtils.escapeForXML(String.valueOf(hintValue)));
@@ -1622,8 +1622,8 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
             if (!this.transform.isIdentity()) {
-            	this.sb.append(" transform=\"").append(getSVGTransform(
-                    this.transform)).append("\"");
+            	this.sb.append(" transform='").append(getSVGTransform(
+                    this.transform)).append('\'');
             }
             this.sb.append(">");
             this.sb.append("<text x='").append(geomDP(x))
@@ -2687,17 +2687,14 @@ public final class SVGGraphics2D extends Graphics2D {
             for (GradientPaintKey key : this.gradientPaints.keySet()) {
                 defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
                         key.getPaint()));
-                defs.append("\n");
             }
             for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
                 defs.append(getLinearGradientElement(
                         this.linearGradientPaints.get(key), key.getPaint()));
-                defs.append("\n");            
             }
             for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
                 defs.append(getRadialGradientElement(
                         this.radialGradientPaints.get(key), key.getPaint()));
-                defs.append("\n");
             }
             for (int i = 0; i < this.clipPaths.size(); i++) {
                 StringBuilder b = new StringBuilder("<clipPath id='")
@@ -2777,31 +2774,31 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element.
      */
     private String getLinearGradientElement(String id, GradientPaint paint) {
-        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
-                .append("\" ");
+        StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
+                .append('\'');
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
-        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
-        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
-        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
-        b.append("gradientUnits=\"userSpaceOnUse\">");
+        b.append(" x1='").append(geomDP(p1.getX())).append('\'');
+        b.append(" y1='").append(geomDP(p1.getY())).append('\'');
+        b.append(" x2='").append(geomDP(p2.getX())).append('\'');
+        b.append(" y2='").append(geomDP(p2.getY())).append('\'');
+        b.append(" gradientUnits='userSpaceOnUse'>");
         Color c1 = paint.getColor1();
-        b.append("<stop offset=\"0%\" stop-color=\"").append(rgbColorStr(c1))
-                .append("\"");
+        b.append("<stop offset='0%' stop-color='").append(rgbColorStr(c1))
+                .append('\'');
         if (c1.getAlpha() < 255) {
             double alphaPercent = c1.getAlpha() / 255.0;
-            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                    .append("\"");
+            b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                    .append('\'');
         }
         b.append("/>");
         Color c2 = paint.getColor2();
-        b.append("<stop offset=\"100%\" stop-color=\"").append(rgbColorStr(c2))
-                .append("\"");
+        b.append("<stop offset='100%' stop-color='").append(rgbColorStr(c2))
+                .append('\'');
         if (c2.getAlpha() < 255) {
             double alphaPercent = c2.getAlpha() / 255.0;
-            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                    .append("\"");
+            b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                    .append('\'');
         }
         b.append("/>");
         return b.append("</linearGradient>").toString();
@@ -2818,30 +2815,30 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getLinearGradientElement(String id, 
             LinearGradientPaint paint) {
-        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
-                .append("\" ");
+        StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
+                .append('\'');
         Point2D p1 = paint.getStartPoint();
         Point2D p2 = paint.getEndPoint();
-        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
-        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
-        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
-        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
+        b.append(" x1='").append(geomDP(p1.getX())).append('\'');
+        b.append(" y1='").append(geomDP(p1.getY())).append('\'');
+        b.append(" x2='").append(geomDP(p2.getX())).append('\'');
+        b.append(" y2='").append(geomDP(p2.getY())).append('\'');
         if (!paint.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
             String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT) 
                     ? "reflect" : "repeat";
-            b.append("spreadMethod=\"").append(sm).append("\" ");
+            b.append(" spreadMethod='").append(sm).append('\'');
         }
-        b.append("gradientUnits=\"userSpaceOnUse\">");
+        b.append(" gradientUnits='userSpaceOnUse'>");
         for (int i = 0; i < paint.getFractions().length; i++) {
             Color c = paint.getColors()[i];
             float fraction = paint.getFractions()[i];
-            b.append("<stop offset=\"").append(geomDP(fraction * 100))
-                    .append("%\" stop-color=\"")
-                    .append(rgbColorStr(c)).append("\"");
+            b.append("<stop offset='").append(geomDP(fraction * 100))
+                    .append("%' stop-color='")
+                    .append(rgbColorStr(c)).append('\'');
             if (c.getAlpha() < 255) {
                 double alphaPercent = c.getAlpha() / 255.0;
-                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                        .append("\"");                
+                b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                        .append('\'');
             }
             b.append("/>");
         }
@@ -2858,28 +2855,28 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element. 
      */
     private String getRadialGradientElement(String id, RadialGradientPaint rgp) {
-        StringBuilder b = new StringBuilder("<radialGradient id=\"").append(id)
-                .append("\" gradientUnits=\"userSpaceOnUse\" ");
+        StringBuilder b = new StringBuilder("<radialGradient id='").append(id)
+                .append("' gradientUnits='userSpaceOnUse'");
         Point2D center = rgp.getCenterPoint();
         Point2D focus = rgp.getFocusPoint();
         float radius = rgp.getRadius();
-        b.append("cx=\"").append(geomDP(center.getX())).append("\" ");
-        b.append("cy=\"").append(geomDP(center.getY())).append("\" ");
-        b.append("r=\"").append(geomDP(radius)).append("\" ");
-        b.append("fx=\"").append(geomDP(focus.getX())).append("\" ");
-        b.append("fy=\"").append(geomDP(focus.getY())).append("\">");
+        b.append(" cx='").append(geomDP(center.getX())).append('\'');
+        b.append(" cy='").append(geomDP(center.getY())).append('\'');
+        b.append(" r='").append(geomDP(radius)).append('\'');
+        b.append(" fx='").append(geomDP(focus.getX())).append('\'');
+        b.append(" fy='").append(geomDP(focus.getY())).append("'>");
         
         Color[] colors = rgp.getColors();
         float[] fractions = rgp.getFractions();
         for (int i = 0; i < colors.length; i++) {
             Color c = colors[i];
             float f = fractions[i];
-            b.append("<stop offset=\"").append(geomDP(f * 100)).append("%\" ");
-            b.append("stop-color=\"").append(rgbColorStr(c)).append("\"");
+            b.append("<stop offset='").append(geomDP(f * 100)).append("%' ");
+            b.append("stop-color='").append(rgbColorStr(c)).append('\'');
             if (c.getAlpha() < 255) {
                 double alphaPercent = c.getAlpha() / 255.0;
-                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                        .append("\"");                
+                b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                        .append('\'');
             }            
             b.append("/>");
         }

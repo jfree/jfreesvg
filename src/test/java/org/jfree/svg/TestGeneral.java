@@ -32,19 +32,14 @@
 
 package org.jfree.svg;
 
-import java.awt.AlphaComposite;
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -440,7 +435,45 @@ public class TestGeneral {
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)' transform='matrix(-1.0,0.0,-0.0,-1.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
-    /** 
+    @Test
+    public void checkFillRectangle2DWithGradientPaint() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("DEFS_PREFIX");
+        g2.setPaint(new GradientPaint(1.0f, 2.0f, Color.RED, 3.0f, 4.0f, Color.GREEN));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><defs><linearGradient id='DEFS_PREFIXgp0' x1='1.0' y1='2.0' x2='3.0' y2='4.0' gradientUnits='userSpaceOnUse'><stop offset='0%' stop-color='rgb(255,0,0)'/><stop offset='100%' stop-color='rgb(0,255,0)'/></linearGradient></defs><rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:url(#DEFS_PREFIXgp0)'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkFillRectangle2DWithLinearGradientPaint() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("DEFS_PREFIX");
+        Point2D start = new Point2D.Float(0, 0);
+        Point2D end = new Point2D.Float(50, 50);
+        float[] dist = {0.0f, 0.2f, 1.0f};
+        Color[] colors = {Color.RED, Color.WHITE, Color.BLUE};
+        g2.setPaint(new LinearGradientPaint(start, end, dist, colors));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><defs><linearGradient id='DEFS_PREFIXlgp0' x1='0.0' y1='0.0' x2='50.0' y2='50.0' gradientUnits='userSpaceOnUse'><stop offset='0.0%' stop-color='rgb(255,0,0)'/><stop offset='20.0%' stop-color='rgb(255,255,255)'/><stop offset='100.0%' stop-color='rgb(0,0,255)'/></linearGradient></defs><rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:url(#DEFS_PREFIXlgp0)'/></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkFillRectangle2DWithRadialGradientPaint() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("DEFS_PREFIX");
+        Point2D center = new Point2D.Float(50, 50);
+        float radius = 25;
+        float[] dist = {0.0f, 0.2f, 1.0f};
+        Color[] colors = {Color.RED, Color.WHITE, Color.BLUE};
+        g2.setPaint(new RadialGradientPaint(center, radius, dist, colors));
+        Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
+        g2.fill(rect);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><defs><radialGradient id='DEFS_PREFIXrgp0' gradientUnits='userSpaceOnUse' cx='50.0' cy='50.0' r='25.0' fx='50.0' fy='50.0'><stop offset='0.0%' stop-color='rgb(255,0,0)'/><stop offset='20.0%' stop-color='rgb(255,255,255)'/><stop offset='100.0%' stop-color='rgb(0,0,255)'/></radialGradient></defs><rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:url(#DEFS_PREFIXrgp0)'/></svg>", g2.getSVGElement());
+    }
+
+    /**
      * Check the output for drawing a string.
      */
     @Test
