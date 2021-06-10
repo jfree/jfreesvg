@@ -53,6 +53,19 @@ import org.junit.jupiter.api.Test;
 public class TestGeneral {
 
     /**
+     * Check that the SVG document generates as expected.
+     */
+    @Test
+    public void checkGetSVGDocument() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.BLUE);
+        g2.fill(new Rectangle(10, 20, 30, 40));
+        assertEquals("<?xml version=\"1.0\"?>\n" +
+                "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n" +
+                "<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>\n", g2.getSVGDocument());
+    }
+
+    /**
      * Check that the optional ID is written correctly whether it is null or non-null.
      */
     @Test
@@ -60,9 +73,9 @@ public class TestGeneral {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setPaint(Color.BLUE);
         g2.fill(new Rectangle(10, 20, 30, 40));
-        assertEquals("<svg id='ID1' xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg id='ID1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
                 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement("ID1"));
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
                 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null));
     }
 
@@ -74,7 +87,7 @@ public class TestGeneral {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100, SVGUnits.PX);
         g2.setPaint(Color.BLUE);
         g2.fill(new Rectangle(10, 20, 30, 40));
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0px' height='100.0px'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0px' height='100.0px'>" +
                 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null));
     }
 
@@ -87,7 +100,7 @@ public class TestGeneral {
         g2.setPaint(Color.BLUE);
         g2.fill(new Rectangle(10, 20, 30, 40));
         ViewBox viewBox = new ViewBox(30, 50, 100, 125);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0' viewBox='30.0 50.0 100.0 125.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0' viewBox='30.0 50.0 100.0 125.0'>" +
                 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null, true, viewBox, null, null));
     }
 
@@ -100,7 +113,7 @@ public class TestGeneral {
         g2.setPaint(Color.BLUE);
         g2.fill(new Rectangle(10, 20, 30, 40));
         ViewBox viewBox = new ViewBox(30, 50, 100, 125);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0' viewBox='30.0 50.0 100.0 125.0' preserveAspectRatio='xMaxYMax'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0' viewBox='30.0 50.0 100.0 125.0' preserveAspectRatio='xMaxYMax'>" +
                 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null, true, viewBox, PreserveAspectRatio.XMAX_YMAX, null));
     }
 
@@ -124,7 +137,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.draw(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
     
@@ -137,7 +150,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.draw(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g id='UNIQUE_ELEMENT_ID_1' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
     
@@ -150,7 +163,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.draw(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' transform='matrix(1.0,0.0,0.0,1.0,2.0,3.0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -167,7 +180,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.draw(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"PREclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<g style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#PREclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
@@ -181,7 +194,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.fill(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g style='fill:rgb(0,0,255);stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -194,7 +207,7 @@ public class TestGeneral {
         path.lineTo(30.0, 40.0);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.fill(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g id='UNIQUE_ELEMENT_ID_1' style='fill:rgb(0,0,255);stroke:none'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -207,7 +220,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.fill(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g style='fill:rgb(255,0,0);stroke:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
     }
 
@@ -221,7 +234,7 @@ public class TestGeneral {
         path.moveTo(10.0, 20.0);
         path.lineTo(30.0, 40.0);
         g2.fill(path);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<g style='fill:rgb(255,0,0);stroke:none' clip-path='url(#DEFclip-0)'><path d='M10.0,20.0L30.0,40.0'/></g></svg>", g2.getSVGElement());
@@ -233,7 +246,7 @@ public class TestGeneral {
         g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(line);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0'/></svg>", g2.getSVGElement());
     }
     
@@ -244,7 +257,7 @@ public class TestGeneral {
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.draw(line);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<line id='UNIQUE_ELEMENT_ID_1' x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0'/></svg>", g2.getSVGElement());
     }
     
@@ -255,7 +268,7 @@ public class TestGeneral {
         g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(line);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }    
 
@@ -268,7 +281,7 @@ public class TestGeneral {
         g2.clip(new Rectangle(10, 11, 12, 13));
         Line2D line = new Line2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(line);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"PREclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<line x1='10.0' y1='20.0' x2='30.0' y2='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
@@ -280,7 +293,7 @@ public class TestGeneral {
         g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
     }
 
@@ -292,7 +305,7 @@ public class TestGeneral {
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.draw(rect);
         assertNull(g2.getRenderingHint(SVGHints.KEY_ELEMENT_ID)); // should be cleared after call
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect id='UNIQUE_ELEMENT_ID_1' x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
     }
 
@@ -303,7 +316,7 @@ public class TestGeneral {
         g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
@@ -315,7 +328,7 @@ public class TestGeneral {
         g2.clip(new Rectangle(10, 15, 20, 25));
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"PREclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#PREclip-0)'/></svg>", g2.getSVGElement());
@@ -327,7 +340,7 @@ public class TestGeneral {
         g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 3.0f));
         Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(ellipse);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
     }
 
@@ -338,7 +351,7 @@ public class TestGeneral {
         Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.draw(ellipse);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<ellipse id='UNIQUE_ELEMENT_ID_1' cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none'/></svg>", g2.getSVGElement());
     }
 
@@ -349,7 +362,7 @@ public class TestGeneral {
         g2.setTransform(AffineTransform.getScaleInstance(2.0, 3.0));
         Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(ellipse);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' transform='matrix(2.0,0.0,0.0,3.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
@@ -361,7 +374,7 @@ public class TestGeneral {
         g2.clip(new Rectangle(10, 15, 20, 25));        
         Ellipse2D ellipse = new Ellipse2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.draw(ellipse);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,15.0L30.0,15.0L30.0,40.0L10.0,40.0L10.0,15.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<ellipse cx='25.0' cy='40.0' rx='15.0' ry='20.0' style='stroke-width:2.0;stroke:rgb(0,0,0);stroke-opacity:1.0;stroke-linejoin:bevel;stroke-miterlimit:3.0;fill:none' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
@@ -373,7 +386,7 @@ public class TestGeneral {
         g2.setPaint(Color.GREEN);
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
     }
 
@@ -384,7 +397,7 @@ public class TestGeneral {
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.fill(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect id='UNIQUE_ELEMENT_ID_1' x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)'/></svg>", g2.getSVGElement());
     }
 
@@ -398,7 +411,7 @@ public class TestGeneral {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0);fill-opacity:0.5'/></svg>", g2.getSVGElement());
     }
 
@@ -413,7 +426,7 @@ public class TestGeneral {
         g2.clip(new Rectangle(10, 11, 12, 13));
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<defs><clipPath id=\"DEFclip-0\"><path d='M10.0,11.0L22.0,11.0L22.0,24.0L10.0,24.0L10.0,11.0Z'/></clipPath>\n" +
 "</defs>\n" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)' clip-path='url(#DEFclip-0)'/></svg>", g2.getSVGElement());
@@ -429,7 +442,7 @@ public class TestGeneral {
         g2.setPaint(Color.GREEN);
         Rectangle2D rect = new Rectangle2D.Double(10.0, 20.0, 30.0, 40.0);
         g2.fill(rect);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,255,0)' transform='matrix(-1.0,0.0,-0.0,-1.0,0.0,0.0)'/></svg>", g2.getSVGElement());
     }
 
@@ -441,7 +454,7 @@ public class TestGeneral {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setPaint(Color.GREEN);
         g2.drawString("ABC", 10, 20);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: \"sans-serif\"; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
     }    
 
@@ -454,7 +467,7 @@ public class TestGeneral {
         g2.setPaint(Color.GREEN);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.drawString("ABC", 10, 20);
-        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0'>" +
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g id='UNIQUE_ELEMENT_ID_1'><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: \"sans-serif\"; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
     }    
 

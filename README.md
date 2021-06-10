@@ -74,7 +74,8 @@ Change History
 --------------
 
 Version 5.0 (not yet released)
-- change width and height attributes from int to double ([#37](https://github.com/jfree/jfreesvg/issues/37));
+- change SVG `width` and `height` attributes from `int` to `double` ([#37](https://github.com/jfree/jfreesvg/issues/37));
+- change `ViewBox` dimension attributes from `int` to `double`;
 - update `draw(Shape)` and `fill(Shape)` methods for more compact output;
 - fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
 - replaced `geometryDP` and `transformDP` attributes with function references ([#35](https://github.com/jfree/jfreesvg/issues/35));

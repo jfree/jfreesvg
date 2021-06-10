@@ -2659,9 +2659,9 @@ public final class SVGGraphics2D extends Graphics2D {
         if (id != null) {
             svg.append(" id='").append(id).append("'");
         }
-        svg.append(" xmlns=\"http://www.w3.org/2000/svg\"")
-           .append(" xmlns:xlink=\"http://www.w3.org/1999/xlink\"")
-           .append(" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\"");
+        svg.append(" xmlns='http://www.w3.org/2000/svg'")
+           .append(" xmlns:xlink='http://www.w3.org/1999/xlink'")
+           .append(" xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg'");
         if (includeDimensions) {
             String unitStr = this.units != null ? this.units.toString() : "";
             svg.append(" width='").append(geomDP(this.width)).append(unitStr)
