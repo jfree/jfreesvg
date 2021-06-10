@@ -2669,14 +2669,14 @@ public final class SVGGraphics2D extends Graphics2D {
                .append('\'');
         }
         if (viewBox != null) {
-            svg.append(" viewBox=\"").append(viewBox.valueStr()).append("\"");
+            svg.append(" viewBox='").append(viewBox.valueStr(this.geomDoubleConverter)).append('\'');
             if (preserveAspectRatio != null) {
-                svg.append(" preserveAspectRatio=\"")
+                svg.append(" preserveAspectRatio='")
                         .append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
-                    svg.append(" ").append(meetOrSlice.toString());
+                    svg.append(' ').append(meetOrSlice.toString());
                 }
-                svg.append("\"");
+                svg.append('\'');
             }
         }
         svg.append('>');

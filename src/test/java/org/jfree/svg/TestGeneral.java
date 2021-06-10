@@ -79,6 +79,19 @@ public class TestGeneral {
     }
 
     /**
+     * Check that a ViewBox is written correctly in the output.
+     */
+    @Test
+    public void checkGetSVGElementWithViewBox() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setPaint(Color.BLUE);
+        g2.fill(new Rectangle(10, 20, 30, 40));
+        ViewBox viewBox = new ViewBox(30, 50, 100, 125);
+        assertEquals("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" width='200.0' height='100.0' viewBox='30.0 50.0 100.0 125.0'>" +
+                "<rect x='10.0' y='20.0' width='30.0' height='40.0' style='fill:rgb(0,0,255)'/></svg>", g2.getSVGElement(null, true, viewBox, null, null));
+    }
+
+    /**
      * Check that a simple SVG document does not include a DEFS element if 
      * there is no gradient paint and no user clipping.
      */

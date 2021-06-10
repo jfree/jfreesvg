@@ -32,6 +32,8 @@
 
 package org.jfree.svg;
 
+import java.util.function.DoubleFunction;
+
 /**
  * Represents a view box in SVG.
  * 
@@ -39,13 +41,13 @@ package org.jfree.svg;
  */
 public class ViewBox {
 
-    private final int minX;
+    private final double minX;
     
-    private final int minY;
+    private final double minY;
     
-    private final int width;
+    private final double width;
     
-    private final int height;
+    private final double height;
     
     /**
      * Creates a new instance with the specified dimensions.
@@ -55,7 +57,7 @@ public class ViewBox {
      * @param width  the width.
      * @param height  the height.
      */
-    public ViewBox(int minX, int minY, int width, int height) {
+    public ViewBox(double minX, double minY, double width, double height) {
         this.minX = minX;
         this.minY = minY;
         this.width = width;
@@ -64,13 +66,16 @@ public class ViewBox {
 
     /**
      * Returns a string containing the view box coordinates and dimensions.
-     * 
+     *
+     * @param df  the converter function ({@code null} not permitted).
+     *
      * @return A string containing the view box coordinates and dimensions. 
      */
-    public String valueStr() {
-        return new StringBuilder().append(this.minX).append(" ")
-                .append(this.minY).append(" ").append(this.width).append(" ")
-                .append(this.height).toString();
+    public String valueStr(DoubleFunction<String> df) {
+        return new StringBuilder().append(df.apply(this.minX)).append(' ')
+                .append(df.apply(this.minY)).append(' ')
+                .append(df.apply(this.width)).append(' ')
+                .append(df.apply(this.height)).toString();
     }
             
 }
