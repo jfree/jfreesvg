@@ -1189,17 +1189,20 @@ public final class SVGGraphics2D extends Graphics2D {
             Ellipse2D e = (Ellipse2D) s;
             this.sb.append("<ellipse");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append(" cx=\"").append(geomDP(e.getCenterX()))
-                    .append("\" cy=\"").append(geomDP(e.getCenterY()))
-                    .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
-                    .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
-                    .append("\" ");
-            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append(" cx='").append(geomDP(e.getCenterX()))
+                    .append("' cy='").append(geomDP(e.getCenterY()))
+                    .append("' rx='").append(geomDP(e.getWidth() / 2.0))
+                    .append("' ry='").append(geomDP(e.getHeight() / 2.0))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFillStyle()).append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append("transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clipStr = getClipPathRef();
+            if (!clipStr.isEmpty()) {
+                this.sb.append(' ').append(clipStr);
+            }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
