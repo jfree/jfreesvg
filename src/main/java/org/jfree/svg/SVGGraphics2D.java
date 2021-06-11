@@ -968,19 +968,19 @@ public final class SVGGraphics2D extends Graphics2D {
                     throw new IllegalArgumentException("The group id (" 
                             + groupId + ") is not unique.");
                 } else {
-                    this.sb.append(" id=\"").append(groupId).append("\"");
+                    this.sb.append(" id='").append(groupId).append('\'');
                     this.elementIDs.add(groupId);
                 }
             }
             if (ref != null) {
-                this.sb.append(" jfreesvg:ref=\"");
-                this.sb.append(SVGUtils.escapeForXML(ref)).append("\"");
+                this.sb.append(" jfreesvg:ref='");
+                this.sb.append(SVGUtils.escapeForXML(ref)).append('\'');
             }
             if (otherKeysAndValues != null) {
                for (final Entry e: otherKeysAndValues) {
-                    this.sb.append(" ").append(e.getKey()).append("=\"");
+                    this.sb.append(" ").append(e.getKey()).append("='");
                     this.sb.append(SVGUtils.escapeForXML(String.valueOf(
-                            e.getValue()))).append("\"");
+                            e.getValue()))).append('\'');
                }
             }
             this.sb.append(">");
@@ -1236,7 +1236,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getSVGPathData(Path2D path) {
         StringBuilder b = new StringBuilder();
         if (path.getWindingRule() == Path2D.WIND_EVEN_ODD) {
-            b.append("fill-rule=\"evenodd\" ");
+            b.append("fill-rule='evenodd' ");
         }
         b.append("d='");
         float[] coords = new float[6];
