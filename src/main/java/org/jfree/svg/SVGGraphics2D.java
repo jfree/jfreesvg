@@ -2344,35 +2344,39 @@ public final class SVGGraphics2D extends Graphics2D {
         if (img == null) {
             return true; 
         }
-        // the rendering hints control whether the image is embedded or
-        // referenced...
+        // the rendering hints control whether the image is embedded
+        // (the default) or referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_REFERENCE.equals(hint)) {
+            // non-default case, hint was set by caller
             int count = this.imageElements.size();
             String href = (String) this.hints.get(SVGHints.KEY_IMAGE_HREF);
             if (href == null) {
                 href = this.filePrefix + count + this.fileSuffix;
             } else {
-                // KEY_IMAGE_HREF value is for a single use...
+                // KEY_IMAGE_HREF value is for a single use, so clear it...
                 this.hints.put(SVGHints.KEY_IMAGE_HREF, null);
             }
             ImageElement imageElement = new ImageElement(href, img);
             this.imageElements.add(imageElement);
             // write an SVG element for the img
-            this.sb.append("<image ");
+            this.sb.append("<image");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("xlink:href=\"");
-            this.sb.append(href).append("\" ");
-            this.sb.append(getClipPathRef()).append(" ");
-            if (!this.transform.isIdentity()) {
-                this.sb.append("transform=\"").append(getSVGTransform(
-                        this.transform)).append("\" ");
+            this.sb.append(" xlink:href='");
+            this.sb.append(href).append('\'');
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
             }
-            this.sb.append("x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\" ");
-            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
-                    .append(geomDP(h)).append("\"/>\n");
+            if (!this.transform.isIdentity()) {
+                this.sb.append(" transform='").append(getSVGTransform(
+                        this.transform)).append('\'');
+            }
+            this.sb.append(" x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y))
+                    .append('\'');
+            this.sb.append(" width='").append(geomDP(w)).append("' height='")
+                    .append(geomDP(h)).append("'/>");
             return true;
         } else { // default to SVGHints.VALUE_IMAGE_HANDLING_EMBED
             this.sb.append("<image");

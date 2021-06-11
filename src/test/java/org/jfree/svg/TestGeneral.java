@@ -536,4 +536,28 @@ public class TestGeneral {
         g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><defs><clipPath id='PREclip-0'><path d='M10.0,20.0L40.0,20.0L40.0,60.0L10.0,60.0L10.0,20.0Z'/></clipPath></defs><g><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)' clip-path='url(#PREclip-0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' clip-path='url(#PREclip-0)' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
     }
+
+    /**
+     * Check the output for drawing an image with a transform applied.
+     */
+    @Test
+    public void checkDrawImageWithTransform() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setTransform(AffineTransform.getTranslateInstance(11.1, 22.2));
+        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><g><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)' transform='matrix(1.0,0.0,0.0,1.0,11.1,22.2)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' transform='matrix(1.0,0.0,0.0,1.0,11.1,22.2)' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    /**
+     * Check the output for drawing an image.
+     */
+    @Test
+    public void checkDrawImageWithReferenceHint() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setRenderingHint(SVGHints.KEY_IMAGE_HANDLING, SVGHints.VALUE_IMAGE_HANDLING_REFERENCE);
+        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><g><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)'/><image xlink:href='image-0.png' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
+
+    }
+
 }
