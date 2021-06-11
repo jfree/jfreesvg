@@ -514,7 +514,7 @@ public class TestGeneral {
     public void checkDrawImage() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
-        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10.0' y='20.0' width='3.0' height='5.0'/></svg>", g2.getSVGElement());
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><g><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
     }
 
     /**

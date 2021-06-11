@@ -416,7 +416,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.fontFunction = new StandardFontFunction();
         this.zeroStrokeWidth = 0.1;
         this.sb = sb;
-        this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
+        this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING,
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
         this.elementIDs = new HashSet<>();
     }
@@ -2347,7 +2347,34 @@ public final class SVGGraphics2D extends Graphics2D {
         // the rendering hints control whether the image is embedded or
         // referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
-        if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
+        if (SVGHints.VALUE_IMAGE_HANDLING_REFERENCE.equals(hint)) {
+            int count = this.imageElements.size();
+            String href = (String) this.hints.get(SVGHints.KEY_IMAGE_HREF);
+            if (href == null) {
+                href = this.filePrefix + count + this.fileSuffix;
+            } else {
+                // KEY_IMAGE_HREF value is for a single use...
+                this.hints.put(SVGHints.KEY_IMAGE_HREF, null);
+            }
+            ImageElement imageElement = new ImageElement(href, img);
+            this.imageElements.add(imageElement);
+            // write an SVG element for the img
+            this.sb.append("<image ");
+            appendOptionalElementIDFromHint(this.sb);
+            this.sb.append("xlink:href=\"");
+            this.sb.append(href).append("\" ");
+            this.sb.append(getClipPathRef()).append(" ");
+            if (!this.transform.isIdentity()) {
+                this.sb.append("transform=\"").append(getSVGTransform(
+                        this.transform)).append("\" ");
+            }
+            this.sb.append("x=\"").append(geomDP(x))
+                    .append("\" y=\"").append(geomDP(y))
+                    .append("\" ");
+            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
+                    .append(geomDP(h)).append("\"/>\n");
+            return true;
+        } else { // default to SVGHints.VALUE_IMAGE_HANDLING_EMBED
             this.sb.append("<image");
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append(" preserveAspectRatio='none'");
@@ -2367,33 +2394,6 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("' y='").append(geomDP(y)).append('\'');
             this.sb.append(" width='").append(geomDP(w)).append("' height='")
                     .append(geomDP(h)).append("'/>");
-            return true;
-        } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
-            int count = this.imageElements.size();
-            String href = (String) this.hints.get(SVGHints.KEY_IMAGE_HREF);
-            if (href == null) {
-                href = this.filePrefix + count + this.fileSuffix;
-            } else {
-                // KEY_IMAGE_HREF value is for a single use...
-                this.hints.put(SVGHints.KEY_IMAGE_HREF, null);
-            }
-            ImageElement imageElement = new ImageElement(href, img);
-            this.imageElements.add(imageElement);
-            // write an SVG element for the img
-            this.sb.append("<image ");
-            appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("xlink:href=\"");
-            this.sb.append(href).append("\" ");
-            this.sb.append(getClipPathRef()).append(" ");
-            if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\" ");
-            }
-            this.sb.append("x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\" ");
-            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
-                    .append(geomDP(h)).append("\"/>\n");
             return true;
         }
     }
