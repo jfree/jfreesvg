@@ -2348,23 +2348,25 @@ public final class SVGGraphics2D extends Graphics2D {
         // referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
-            this.sb.append("<image ");
+            this.sb.append("<image");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("preserveAspectRatio=\"none\" ");
-            this.sb.append("xlink:href=\"data:image/png;base64,");
+            this.sb.append(" preserveAspectRatio='none'");
+            this.sb.append(" xlink:href='data:image/png;base64,");
             this.sb.append(Base64.getEncoder().encodeToString(getPNGBytes(
                     img)));
-            this.sb.append("\" ");
-            this.sb.append(getClipPathRef()).append(" ");
-            if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\" "); 
+            this.sb.append('\'');
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
             }
-            this.sb.append("x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\" ");
-            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
-                    .append(geomDP(h)).append("\"/>\n");
+            if (!this.transform.isIdentity()) {
+            	this.sb.append(" transform='").append(getSVGTransform(
+                    this.transform)).append('\'');
+            }
+            this.sb.append(" x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y)).append('\'');
+            this.sb.append(" width='").append(geomDP(w)).append("' height='")
+                    .append(geomDP(h)).append("'/>");
             return true;
         } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
             int count = this.imageElements.size();
@@ -2443,11 +2445,16 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             Color bgcolor, ImageObserver observer) {
+        this.sb.append("<g");
+        appendOptionalElementIDFromHint(this.sb);
+        this.sb.append('>');
         Paint saved = getPaint();
         setPaint(bgcolor);
         fillRect(x, y, w, h);
         setPaint(saved);
-        return drawImage(img, x, y, w, h, observer);
+        boolean result = drawImage(img, x, y, w, h, observer);
+        this.sb.append("</g>");
+        return result;
     }
 
     /**

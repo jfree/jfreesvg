@@ -39,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 
 import org.junit.jupiter.api.Test;
 
@@ -496,6 +497,43 @@ public class TestGeneral {
         g2.drawString("ABC", 10, 20);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
 "<g id='UNIQUE_ELEMENT_ID_1'><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: \"sans-serif\"; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
-    }    
+    }
 
+    private static Image createImage() {
+        BufferedImage image = new BufferedImage(3, 5, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = image.createGraphics();
+        g2.setColor(Color.RED);
+        g2.fillRect(0, 0, 3, 5);
+        return image;
+    }
+
+    /**
+     * Check the output for drawing an image.
+     */
+    @Test
+    public void checkDrawImage() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10.0' y='20.0' width='3.0' height='5.0'/></svg>", g2.getSVGElement());
+    }
+
+    /**
+     * Check the output for drawing an image.
+     */
+    @Test
+    public void checkDrawImageWithElementID() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
+        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><g id='UNIQUE_ELEMENT_ID_1'><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
+    }
+
+    @Test
+    public void checkDrawImageWithClip() {
+        SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
+        g2.setDefsKeyPrefix("PRE");
+        g2.clipRect(10, 20, 30, 40);
+        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'><defs><clipPath id='PREclip-0'><path d='M10.0,20.0L40.0,20.0L40.0,60.0L10.0,60.0L10.0,20.0Z'/></clipPath></defs><g><rect x='10.0' y='20.0' width='3.0' height='5.0' style='fill:rgb(255,255,0)' clip-path='url(#PREclip-0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' clip-path='url(#PREclip-0)' x='10.0' y='20.0' width='3.0' height='5.0'/></g></svg>", g2.getSVGElement());
+    }
 }
