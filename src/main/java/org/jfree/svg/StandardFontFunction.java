@@ -106,9 +106,9 @@ public class StandardFontFunction implements Function<String, String> {
         Args.nullNotPermitted(family, "family");
         String alternate = this.alternates.get(family);
         if (alternate == null) {
-            alternate = family;
+            alternate = "\"" + family + "\"";
         }
-        return "\"" + alternate + "\"";
+        return alternate;
     }
 
 }

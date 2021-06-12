@@ -512,7 +512,7 @@ public class TestGeneral {
         g2.setPaint(Color.GREEN);
         g2.drawString("ABC", 10, 20);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<g><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: \"sans-serif\"; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
+"<g><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
     }    
 
     /** 
@@ -525,7 +525,7 @@ public class TestGeneral {
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
         g2.drawString("ABC", 10, 20);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200.0' height='100.0'>" +
-"<g id='UNIQUE_ELEMENT_ID_1'><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: \"sans-serif\"; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
+"<g id='UNIQUE_ELEMENT_ID_1'><text x='10.0' y='20.0' style='fill: rgb(0,255,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;'>ABC</text></g></svg>", g2.getSVGElement());
     }
 
     private static Image createImage() {
