@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 4.2, by David Gilbert, 10 January 2021.
+Version 5.0, by David Gilbert, 12 June 2021.
 
 (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
 
@@ -12,7 +12,7 @@ Overview
 --------
 **JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (11 or later).  
 
-![Sample from JFreeChart](http://www.jfree.org/jfreesvg/javadoc/resources/SVGTimeSeriesChartDemo1.svg)
+![Sample from JFreeChart](https://raw.githubusercontent.com/jfree/jfreesvg/master/src/main/javadoc/doc-files/FlowPlotDemo2.svg)
 
 The home page for the project is:
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>4.2</version>
+        <version>5.0</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -47,7 +47,7 @@ To use JFreeSVG with Java 8, you can use the following (note the different artif
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4</version>
+        <version>3.4.1</version>
     </dependency>
 
 
@@ -73,19 +73,20 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 5.0 (not yet released)
-- change SVG `width` and `height` attributes from `int` to `double` ([#37](https://github.com/jfree/jfreesvg/issues/37));
-- change `ViewBox` dimension attributes from `int` to `double`;
-- update `draw(Shape)` and `fill(Shape)` methods for more compact output;
-- fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
+Version 5.0 (12 June 2021)
 - replaced `geometryDP` and `transformDP` attributes with function references ([#35](https://github.com/jfree/jfreesvg/issues/35));
-- fix font family name issue ([#27](https://github.com/jfree/jfreesvg/issues/27));
+- fixed issue with `RyuDouble` ([#39](https://github.com/jfree/jfreesvg/issues/39));
+- changed SVG `width` and `height` attributes from `int` to `double` ([#37](https://github.com/jfree/jfreesvg/issues/37));
+- changed `ViewBox` dimension attributes from `int` to `double`;
+- updated `draw(Shape)` and `fill(Shape)` methods for more compact output;
+- fixed miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
+- fixed font family name issue ([#27](https://github.com/jfree/jfreesvg/issues/27));
 - added more JUnit tests;
 - updated JUnit test dependency to version 5.7.2.
 
 
 Version 4.2 (10 January 2021)
-- replace NumberFormat with Ryu algorithm for performance gains ([#30](https://github.com/jfree/jfreesvg/pull/30));
+- replace `NumberFormat` with Ryu algorithm for performance gains ([#30](https://github.com/jfree/jfreesvg/pull/30));
 - add winding rule to path data if required ([#25](https://github.com/jfree/jfreesvg/issues/25));
 - migrated to JUnit 5.
 
