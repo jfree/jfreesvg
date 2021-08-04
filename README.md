@@ -1,12 +1,11 @@
 JFreeSVG
 ========
 
-Version 5.0, by David Gilbert, 12 June 2021.
+Version 5.0.1, by David Gilbert, 4 August 2021.
 
 (C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
-
 
 Overview
 --------
@@ -14,18 +13,13 @@ Overview
 
 ![Sample from JFreeChart](https://raw.githubusercontent.com/jfree/jfreesvg/master/src/main/javadoc/doc-files/FlowPlotDemo2.svg)
 
-The home page for the project is:
-
-http://www.jfree.org/jfreesvg/
-
-
 Getting Started
 ---------------
 The Javadocs for the `SVGGraphics2D` class gives examples for typical usage, and if you are already familiar with the Java2D APIs, then all you need to do is add the JFreeSVG dependency and start coding.
 
 Oracle provides tutorials for Java2D here:
 
-http://docs.oracle.com/javase/tutorial/2d/
+- http://docs.oracle.com/javase/tutorial/2d/
 
 There are some demonstration applications in the [JFree-Demos](https://github.com/jfree/jfree-demos) project at GitHub.
 
@@ -37,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0</version>
+        <version>5.0.1</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -50,8 +44,7 @@ To use JFreeSVG with Java 8, you can use the following (note the different artif
         <version>3.4.1</version>
     </dependency>
 
-
-Maven
+Build
 -----
 You can build `JFreeSVG` from sources using Maven:
 
@@ -60,6 +53,15 @@ You can build `JFreeSVG` from sources using Maven:
 To generate the Javadocs:
 
     mvn clean compile javadoc:javadoc
+
+Testing
+-------
+`JFreeSVG` is being tested using [Graphics2D Tester](https://github.com/jfree/graphics2d-tester) and produces the output shown below.  There are several areas that still need work:
+
+- the compositing rules in `AlphaComposite` are not implemented
+- font metrics are approximated
+
+![JFreeSVG test output](jfreesvg.svg)
 
 License
 -------
@@ -73,7 +75,7 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 5.0.1 (not yet released)
+Version 5.0.1 (4 August 2021)
 - handle cycle methods for `GradientPaint` and `RadialGradientPaint`;
 - fix output for filled `Ellipse2D`.
 
@@ -224,12 +226,3 @@ Version 1.1 (4 September 2013)
 
 Version 1.0 (31 July 2013)
 - Initial public release.
-
-
-Contact / Questions
--------------------
-If you have any questions or feedback about JFreeSVG, please post in the forum:
-
-http://www.jfree.org/forum/viewforum.php?f=32
-
-...or send an e-mail to david.gilbert@object-refinery.com.
