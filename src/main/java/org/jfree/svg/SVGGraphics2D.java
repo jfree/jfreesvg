@@ -1196,7 +1196,7 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append('\'');
             this.sb.append(" style='").append(getSVGFillStyle()).append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform='").append(getSVGTransform(
+            	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
             String clipStr = getClipPathRef();
@@ -2796,7 +2796,11 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append(" y1='").append(geomDP(p1.getY())).append('\'');
         b.append(" x2='").append(geomDP(p2.getX())).append('\'');
         b.append(" y2='").append(geomDP(p2.getY())).append('\'');
-        b.append(" gradientUnits='userSpaceOnUse'>");
+        b.append(" gradientUnits='userSpaceOnUse'");
+        if (paint.isCyclic()) {
+            b.append(" spreadMethod='reflect'");
+        }
+        b.append('>');
         Color c1 = paint.getColor1();
         b.append("<stop offset='0%' stop-color='").append(rgbColorStr(c1))
                 .append('\'');
@@ -2878,8 +2882,13 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append(" cy='").append(geomDP(center.getY())).append('\'');
         b.append(" r='").append(geomDP(radius)).append('\'');
         b.append(" fx='").append(geomDP(focus.getX())).append('\'');
-        b.append(" fy='").append(geomDP(focus.getY())).append("'>");
-        
+        b.append(" fy='").append(geomDP(focus.getY())).append('\'');
+        if (!rgp.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
+            String sm = rgp.getCycleMethod().equals(CycleMethod.REFLECT)
+                    ? "reflect" : "repeat";
+            b.append(" spreadMethod='").append(sm).append('\'');
+        }
+        b.append('>');
         Color[] colors = rgp.getColors();
         float[] fractions = rgp.getFractions();
         for (int i = 0; i < colors.length; i++) {

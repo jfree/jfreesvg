@@ -73,6 +73,10 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
+Version 5.0.1 (not yet released)
+- handle cycle methods for `GradientPaint` and `RadialGradientPaint`;
+- fix output for filled `Ellipse2D`.
+
 Version 5.0 (12 June 2021)
 - replaced `geometryDP` and `transformDP` attributes with function references ([#35](https://github.com/jfree/jfreesvg/issues/35));
 - fixed issue with `RyuDouble` ([#39](https://github.com/jfree/jfreesvg/issues/39));
