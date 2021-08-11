@@ -75,6 +75,9 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
+Version 5.0.2 (not yet released)
+- clarified Javadocs for `SVGHints.KEY_BEGIN_GROUP`.
+
 Version 5.0.1 (4 August 2021)
 - handle cycle methods for `GradientPaint` and `RadialGradientPaint`;
 - fix output for filled `Ellipse2D`.

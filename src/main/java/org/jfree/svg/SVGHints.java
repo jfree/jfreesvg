@@ -49,9 +49,10 @@ import java.util.List;
  * <li>{@link #KEY_ELEMENT_ID} that allows the caller to specify the element
  * ID for the next element;</li>
  * <li>{@link #KEY_BEGIN_GROUP} tells the {@code SVGGraphics2D} instance 
- * to start a new group element with an id equal to the hint value (which must 
- * be an instance of String).  Any other {@code Graphics2D} implementation 
- * will ignore this hint;</li>
+ * to start a new group element with attributes controlled by the hint value
+ * (which may be a {@code String} for the group ID or, more generally, a
+ * {@code Map} containing arbitrary attribute values).  Any other
+ * {@code Graphics2D} implementation will ignore this hint;</li>
  * <li>{@link #KEY_END_GROUP} tells the {@code SVGGraphics2D} instance 
  * to end a group element.  The hint value is ignored.  The caller assumes 
  * responsibility for balancing the number of {@code KEY_BEGIN_GROUP} and 
@@ -151,9 +152,16 @@ public final class SVGHints {
 
     /**
      * Hint key that informs the {@code SVGGraphics2D} that the caller 
-     * would like to begin a new group element.  The hint value is the id for 
-     * the new group.  After opening the new group the hint is cleared and it 
-     * is the caller's responsibility to close the group later using 
+     * would like to begin a new group element.  The hint value is either:
+     *
+     * <ul>
+     *     <li>a {@code String} that will be used as the value of the
+     *     {@code id} attribute for the group; or</li>
+     *     <li>a {@code Map} instance containing arbitrary attribute values for the
+     *     group (usually including an {@code id}).</li>
+     * </ul>
+     * After opening the new group the hint is cleared and it is the caller's
+     * responsibility to close the group later using
      * {@link SVGHints#KEY_END_GROUP}.  Groups can be nested.
      * 
      * @since 1.7
