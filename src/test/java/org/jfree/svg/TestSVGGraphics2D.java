@@ -314,7 +314,11 @@ public class TestSVGGraphics2D {
         assertEquals(new Rectangle2D.Double(1.0, 1.0, 1.0, 1.0), 
                 this.g2.getClip().getBounds2D());
     }
-    
+
+    /**
+     * Check that if the user clip is non-intersecting with the existing clip, then
+     * the clip is empty.
+     */
     @Test
     public void checkNonIntersectingClip() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
@@ -447,7 +451,7 @@ public class TestSVGGraphics2D {
         this.g2.clipRect(2, 1, 4, -2);
         assertTrue(this.g2.getClip().getBounds2D().isEmpty());    
     }
-    
+
     @Test
     public void checkDrawStringWithNullString() {
         try {
@@ -818,7 +822,54 @@ public class TestSVGGraphics2D {
         assertTrue(g2.drawImage(img, 1, 2, 10, -10, null)); 
     }
 
-    /** 
+    /**
+     * Check that the color is not changed by setting a clip.  In some
+     * implementations the clip is saved/restored as part of the overall
+     * graphics state so clipping can impact other attributes.
+     */
+    @Test
+    public void checkColorAfterSetClip() {
+        this.g2.setColor(Color.RED);
+        assertEquals(Color.RED, this.g2.getColor());
+        this.g2.setClip(0, 0, 10, 10);
+        assertEquals(Color.RED, this.g2.getColor());
+        this.g2.setColor(Color.BLUE);
+        assertEquals(Color.BLUE, this.g2.getColor());
+        this.g2.setClip(0, 0, 20, 20);
+        assertEquals(Color.BLUE, this.g2.getColor());
+    }
+
+    /**
+     * See https://github.com/jfree/fxgraphics2d/issues/6
+     */
+    @Test
+    public void checkFontAfterSetClip() {
+        this.g2.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+        assertEquals(new Font(Font.DIALOG, Font.BOLD, 12), this.g2.getFont());
+        this.g2.setClip(0, 0, 10, 10);
+        assertEquals(new Font(Font.DIALOG, Font.BOLD, 12), this.g2.getFont());
+        this.g2.setFont(new Font(Font.DIALOG, Font.BOLD, 24));
+        assertEquals(new Font(Font.DIALOG, Font.BOLD, 24), this.g2.getFont());
+        this.g2.setClip(0, 0, 20, 20);
+        assertEquals(new Font(Font.DIALOG, Font.BOLD, 24), this.g2.getFont());
+    }
+
+    /**
+     * See https://github.com/jfree/fxgraphics2d/issues/6
+     */
+    @Test
+    public void checkStrokeAfterSetClip() {
+        this.g2.setStroke(new BasicStroke(1.0f));
+        assertEquals(new BasicStroke(1.0f), this.g2.getStroke());
+        this.g2.setClip(0, 0, 10, 10);
+        assertEquals(new BasicStroke(1.0f), this.g2.getStroke());
+        this.g2.setStroke(new BasicStroke(2.0f));
+        assertEquals(new BasicStroke(2.0f), this.g2.getStroke());
+        this.g2.setClip(0, 0, 20, 20);
+        assertEquals(new BasicStroke(2.0f), this.g2.getStroke());
+    }
+
+    /**
      * A test to check whether setting a transform on the Graphics2D affects
      * the results of text measurements performed via getFontMetrics().
      */
@@ -850,6 +901,44 @@ public class TestSVGGraphics2D {
     public void drawRenderedImageWithNullImage() {
         g2.drawRenderedImage(null, AffineTransform.getTranslateInstance(0, 0));
         assertTrue(true); // won't get here if there's an exception above                
+    }
+
+    /**
+     * Filling and/or stroking a Rectangle2D with a negative width will not display anything but
+     * should not throw an exception.
+     */
+    @Test
+    public void fillOrStrokeRectangleWithNegativeWidthMustNotFail() {
+        g2.draw(new Rectangle2D.Double(0, 0, 0, 10));
+        g2.draw(new Rectangle2D.Double(0, 0, -10, 10));
+        g2.fill(new Rectangle2D.Double(0, 0, 0, 10));
+        g2.fill(new Rectangle2D.Double(0, 0, -10, 10));
+        assertTrue(true); // won't get here if there's an exception above
+    }
+
+    /**
+     * Filling and/or stroking a Rectangle2D with a negative height will not display anything but
+     * should not throw an exception.
+     */
+    @Test
+    public void fillOrStrokeRectangleWithNegativeHeightMustNotFail() {
+        g2.draw(new Rectangle2D.Double(0, 0, 0, 10));
+        g2.draw(new Rectangle2D.Double(0, 0, -10, 10));
+        g2.fill(new Rectangle2D.Double(0, 0, 0, 10));
+        g2.fill(new Rectangle2D.Double(0, 0, -10, 10));
+        assertTrue(true); // won't get here if there's an exception above
+    }
+
+    @Test
+    public void checkClipAfterCreate() {
+        this.g2.setClip(10, 20, 30, 40);
+        assertEquals(new Rectangle(10, 20, 30, 40), g2.getClip().getBounds2D());
+
+        Graphics2D g2copy = (Graphics2D) this.g2.create();
+        g2copy.clipRect(11, 21, 10, 10);
+        assertEquals(new Rectangle(11, 21, 10, 10), g2copy.getClip().getBounds2D());
+        g2copy.dispose();
+        assertEquals(new Rectangle(10, 20, 30, 40), g2.getClip().getBounds2D());
     }
 
 }
