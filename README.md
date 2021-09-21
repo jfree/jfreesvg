@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 3.4.1, by David Gilbert, 1 May 2021.
+Version 3.4.1, 1 May 2021.
 
-(C)opyright 2013-2021, by Object Refinery Limited.  All rights reserved.
+(C)opyright 2013-2021, by David Gilbert.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
@@ -57,7 +57,7 @@ You can build `JFreeSVG` from sources using Maven:
 
 License
 -------
-JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license from Object Refinery Limited (please e-mail info@object-refinery.com for details, or check the JFreeSVG home page).
+JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license (please e-mail dave@jfree.org for details, or check the JFreeSVG home page).
 
     Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even 
     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
