@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.4.1, 1 May 2021.
+Version 3.4.2, 7 November 2021.
 
 (C)opyright 2013-2021, by David Gilbert.  All rights reserved.
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2</version>
     </dependency>
 
 This is a maintenance version of the library for developers that still require Java 8 support.  If you are using Java 11 or later, then you should use the modular version of JFreeSVG (which has a different artifact ID and version number):
@@ -45,7 +45,7 @@ This is a maintenance version of the library for developers that still require J
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>4.2</version>
+        <version>5.0.2</version>
     </dependency>
 
 Build
@@ -66,6 +66,9 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 
 Change History
 --------------
+
+Version 3.4.2 (7 Nov 2021)
+- add support for `TextAttribute.TRACKING`
 
 Version 3.4.1 (1 May 2021)
 - fix miter limit ([#36](https://github.com/jfree/jfreesvg/issues/36) and [#38](https://github.com/jfree/jfreesvg/issues/38));
