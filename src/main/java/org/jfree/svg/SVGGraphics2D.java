@@ -52,6 +52,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
@@ -1550,6 +1551,14 @@ public final class SVGGraphics2D extends Graphics2D {
         if (this.font.isItalic()) {
             b.append(" font-style: italic;");
         }
+        Object tracking = this.font.getAttributes().get(TextAttribute.TRACKING);
+        if (tracking instanceof Number) {
+            double spacing = ((Number) tracking).doubleValue() * this.font.getSize();
+            if (Math.abs(spacing) > 0.000001) { // not zero
+                b.append(" letter-spacing: ").append(geomDP(spacing)).append(';');
+            }
+        }
+
         return b.toString();
     }
 

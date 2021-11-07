@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 5.0.1, by David Gilbert, 4 August 2021.
+Version 5.0.2, by David Gilbert, 7 November 2021.
 
 (C)opyright 2013-2021, by David Gilbert.  All rights reserved.
 
@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.1</version>
+        <version>5.0.2</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -41,7 +41,7 @@ To use JFreeSVG with Java 8, you can use the following (note the different artif
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4.1</version>
+        <version>3.4.2</version>
     </dependency>
 
 Build
@@ -75,7 +75,8 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 Change History
 --------------
 
-Version 5.0.2 (not yet released)
+Version 5.0.2 (7 November 2021)
+- add support for `TextAttribute.TRACKING`;
 - clarified Javadocs for `SVGHints.KEY_BEGIN_GROUP`.
 
 Version 5.0.1 (4 August 2021)
