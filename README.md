@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 3.4.2, 7 November 2021.
+Version 3.4.3, not yet released.
 
-(C)opyright 2013-2021, by David Gilbert.  All rights reserved.
+(C)opyright 2013-2022, by David Gilbert.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
 
@@ -66,6 +66,9 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 
 Change History
 --------------
+
+Version 3.4.3 (not yet released)
+- fix double semi-colon ([#52](https://github.com/jfree/jfreesvg/issues/52))
 
 Version 3.4.2 (7 Nov 2021)
 - add support for `TextAttribute.TRACKING`
