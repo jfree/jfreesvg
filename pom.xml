@@ -5,7 +5,7 @@
  
     <groupId>org.jfree</groupId>
     <artifactId>jfreesvg</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3-snapshot</version>
     <packaging>jar</packaging>
 
     <name>JFreeSVG</name>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
