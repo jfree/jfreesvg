@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2021, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -72,7 +72,6 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
@@ -154,10 +153,6 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * generated.</li>
  * </ul>
  *
- * <p>
- * For some demos showing how to use this class, look in the
- * {@code org.jfree.graphics2d.demo} package in the {@code src} directory.
- * </p>
  */
 public final class SVGGraphics2D extends Graphics2D {
 
@@ -226,7 +221,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private DecimalFormat geometryFormat;
     
     /** The buffer that accumulates the SVG output. */
-    private StringBuilder sb;
+    private final StringBuilder sb;
 
     /** 
      * A prefix for the keys used in the DEFS element.  This can be used to 
@@ -1088,7 +1083,7 @@ public final class SVGGraphics2D extends Graphics2D {
                     throw new IllegalArgumentException("The group id (" 
                             + groupId + ") is not unique.");
                 } else {
-                    this.sb.append(" id=\"").append(groupId).append("\"");
+                    this.sb.append(" id='").append(groupId).append('\'');
                     this.elementIDs.add(groupId);
                 }
             }
@@ -1167,7 +1162,7 @@ public final class SVGGraphics2D extends Graphics2D {
             } else {
                 this.elementIDs.add(elementID);
             }
-            sb.append("id=\"").append(elementID).append("\" ");
+            sb.append(" id='").append(elementID).append('\'');
         }
     }
     
@@ -1192,65 +1187,77 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         if (s instanceof Line2D) {
             Line2D l = (Line2D) s;
-            this.sb.append("<line ");
+            this.sb.append("<line");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x1=\"").append(geomDP(l.getX1()))
-                    .append("\" y1=\"").append(geomDP(l.getY1()))
-                    .append("\" x2=\"").append(geomDP(l.getX2()))
-                    .append("\" y2=\"").append(geomDP(l.getY2()))
-                    .append("\" ");
-            this.sb.append("style=\"").append(strokeStyle()).append("\" ");
+            this.sb.append(" x1='").append(geomDP(l.getX1()))
+                    .append("' y1='").append(geomDP(l.getY1()))
+                    .append("' x2='").append(geomDP(l.getX2()))
+                    .append("' y2='").append(geomDP(l.getY2()))
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle()).append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
             Rectangle2D r = (Rectangle2D) s;
-            this.sb.append("<rect ");
+            this.sb.append("<rect");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x=\"").append(geomDP(r.getX()))
-                    .append("\" y=\"").append(geomDP(r.getY()))
-                    .append("\" width=\"").append(geomDP(r.getWidth()))
-                    .append("\" height=\"").append(geomDP(r.getHeight()))
-                    .append("\" ");
-            this.sb.append("style=\"").append(strokeStyle())
-                    .append("; fill: none").append("\" ");
+            this.sb.append(" x='").append(geomDP(r.getX()))
+                    .append("' y='").append(geomDP(r.getY()))
+                    .append("' width='").append(geomDP(r.getWidth()))
+                    .append("' height='").append(geomDP(r.getHeight()))
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle())
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
             Ellipse2D e = (Ellipse2D) s;
-            this.sb.append("<ellipse ");
+            this.sb.append("<ellipse");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("cx=\"").append(geomDP(e.getCenterX()))
-                    .append("\" cy=\"").append(geomDP(e.getCenterY()))
-                    .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
-                    .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
-                    .append("\" ");
-            this.sb.append("style=\"").append(strokeStyle())
-                    .append("; fill: none").append("\" ");
+            this.sb.append(" cx='").append(geomDP(e.getCenterX()))
+                    .append("' cy='").append(geomDP(e.getCenterY()))
+                    .append("' rx='").append(geomDP(e.getWidth() / 2.0))
+                    .append("' ry='").append(geomDP(e.getHeight() / 2.0))
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle())
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("style=\"").append(strokeStyle())
-                    .append("; fill: none").append("\" ");
+            this.sb.append(" style='").append(strokeStyle())
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
@@ -1276,47 +1283,56 @@ public final class SVGGraphics2D extends Graphics2D {
             if (r.isEmpty()) {
                 return;
             }
-            this.sb.append("<rect ");
+            this.sb.append("<rect");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("x=\"").append(geomDP(r.getX()))
-                    .append("\" y=\"").append(geomDP(r.getY()))
-                    .append("\" width=\"").append(geomDP(r.getWidth()))
-                    .append("\" height=\"").append(geomDP(r.getHeight()))
-                    .append("\" ");
-            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append(" x='").append(geomDP(r.getX()))
+                    .append("' y='").append(geomDP(r.getY()))
+                    .append("' width='").append(geomDP(r.getWidth()))
+                    .append("' height='").append(geomDP(r.getHeight()))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFillStyle()).append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
             Ellipse2D e = (Ellipse2D) s;
-            this.sb.append("<ellipse ");
+            this.sb.append("<ellipse");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("cx=\"").append(geomDP(e.getCenterX()))
-                    .append("\" cy=\"").append(geomDP(e.getCenterY()))
-                    .append("\" rx=\"").append(geomDP(e.getWidth() / 2.0))
-                    .append("\" ry=\"").append(geomDP(e.getHeight() / 2.0))
-                    .append("\" ");
-            this.sb.append("style=\"").append(getSVGFillStyle()).append("\" ");
+            this.sb.append(" cx='").append(geomDP(e.getCenterX()))
+                    .append("' cy='").append(geomDP(e.getCenterY()))
+                    .append("' rx='").append(geomDP(e.getWidth() / 2.0))
+                    .append("' ry='").append(geomDP(e.getHeight() / 2.0))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFillStyle()).append('\'');
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("style=\"").append(getSVGFillStyle());
-            this.sb.append("; stroke: none").append("\" ");
+            this.sb.append(" style='").append(getSVGFillStyle());
+            this.sb.append(";stroke:none'");
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-            		this.transform)).append("\" ");
+            	this.sb.append(" transform='").append(getSVGTransform(
+            		this.transform)).append('\'');
             }
-            this.sb.append(getClipPathRef());
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
@@ -1335,50 +1351,45 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getSVGPathData(Path2D path) {
         StringBuilder b = new StringBuilder();
         if (path.getWindingRule() == Path2D.WIND_EVEN_ODD) {
-            b.append("fill-rule=\"evenodd\" ");
+            b.append("fill-rule='evenodd' ");
         }
-        b.append("d=\"");
+        b.append("d='");
         float[] coords = new float[6];
-        boolean first = true;
         PathIterator iterator = path.getPathIterator(null);
         while (!iterator.isDone()) {
             int type = iterator.currentSegment(coords);
-            if (!first) {
-                b.append(" ");
-            }
-            first = false;
             switch (type) {
             case (PathIterator.SEG_MOVETO):
-                b.append("M ").append(geomDP(coords[0])).append(" ")
+                b.append("M").append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_LINETO):
-                b.append("L ").append(geomDP(coords[0])).append(" ")
+                b.append("L").append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_QUADTO):
                 b.append("Q ").append(geomDP(coords[0]))
-                        .append(" ").append(geomDP(coords[1]))
-                        .append(" ").append(geomDP(coords[2]))
-                        .append(" ").append(geomDP(coords[3]));
+                        .append(',').append(geomDP(coords[1]))
+                        .append(',').append(geomDP(coords[2]))
+                        .append(',').append(geomDP(coords[3]));
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append("C ").append(geomDP(coords[0])).append(" ")
-                        .append(geomDP(coords[1])).append(" ")
-                        .append(geomDP(coords[2])).append(" ")
-                        .append(geomDP(coords[3])).append(" ")
-                        .append(geomDP(coords[4])).append(" ")
+                b.append("C").append(geomDP(coords[0])).append(',')
+                        .append(geomDP(coords[1])).append(',')
+                        .append(geomDP(coords[2])).append(',')
+                        .append(geomDP(coords[3])).append(',')
+                        .append(geomDP(coords[4])).append(',')
                         .append(geomDP(coords[5]));
                 break;
             case (PathIterator.SEG_CLOSE):
-                b.append("Z ");
+                b.append("Z");
                 break;
             default:
                 break;
             }
             iterator.next();
         }  
-        return b.append("\"").toString();
+        return b.append('\'').toString();
     }
 
     /**
@@ -1493,36 +1504,34 @@ public final class SVGGraphics2D extends Graphics2D {
             dashArray = bs.getDashArray();
         }
         StringBuilder b = new StringBuilder();
-        b.append("stroke-width: ").append(strokeWidth).append(";");
-        b.append("stroke: ").append(svgColorStr()).append(";");
-        b.append("stroke-opacity: ").append(getColorAlpha() * getAlpha())
-                .append(";");
+        b.append("stroke-width:").append(strokeWidth).append(";");
+        b.append("stroke:").append(svgColorStr()).append(";");
+        b.append("stroke-opacity:").append(getColorAlpha() * getAlpha());
         if (!strokeCap.equals(DEFAULT_STROKE_CAP)) {
-            b.append("stroke-linecap: ").append(strokeCap).append(";");        
+            b.append(";stroke-linecap:").append(strokeCap);
         }
         if (!strokeJoin.equals(DEFAULT_STROKE_JOIN)) {
-            b.append("stroke-linejoin: ").append(strokeJoin).append(";");        
+            b.append(";stroke-linejoin:").append(strokeJoin);
         }
         if (Math.abs(DEFAULT_MITER_LIMIT - miterLimit) > 0.001) {
-            b.append("stroke-miterlimit: ").append(geomDP(miterLimit)).append(";");
+            b.append(";stroke-miterlimit:").append(geomDP(miterLimit));
         }
         if (dashArray != null && dashArray.length != 0) {
-            b.append("stroke-dasharray: ");
+            b.append(";stroke-dasharray:");
             for (int i = 0; i < dashArray.length; i++) {
                 if (i != 0) b.append(", ");
                 b.append(dashArray[i]);
             }
-            b.append(";");
         }
         if (this.checkStrokeControlHint) {
             Object hint = getRenderingHint(RenderingHints.KEY_STROKE_CONTROL);
             if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint) 
                     && !this.shapeRendering.equals("crispEdges")) {
-                b.append("shape-rendering:crispEdges;");
+                b.append(";shape-rendering:crispEdges");
             }
             if (RenderingHints.VALUE_STROKE_PURE.equals(hint) 
                     && !this.shapeRendering.equals("geometricPrecision")) {
-                b.append("shape-rendering:geometricPrecision;");
+                b.append(";shape-rendering:geometricPrecision");
             }
         }
         return b.toString();
@@ -1550,8 +1559,11 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getSVGFillStyle() {
         StringBuilder b = new StringBuilder();
-        b.append("fill: ").append(svgColorStr()).append("; ");
-        b.append("fill-opacity: ").append(getColorAlpha() * getAlpha());
+        b.append("fill:").append(svgColorStr());
+        double opacity = getColorAlpha() * getAlpha();
+        if (opacity < 1.0) {
+            b.append(';').append("fill-opacity:").append(opacity);
+        }
         return b.toString();
     }
 
@@ -1732,24 +1744,27 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         if (!SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR.equals(
                 this.hints.get(SVGHints.KEY_DRAW_STRING_TYPE))) {
-            this.sb.append("<g ");
+            this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
             if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\"");
+            	this.sb.append(" transform='").append(getSVGTransform(
+                    this.transform)).append('\'');
             }
             this.sb.append(">");
-            this.sb.append("<text x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\"");
-            this.sb.append(" style=\"").append(getSVGFontStyle()).append("\"");
+            this.sb.append("<text x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y))
+                    .append('\'');
+            this.sb.append(" style='").append(getSVGFontStyle()).append('\'');
             Object hintValue = getRenderingHint(SVGHints.KEY_TEXT_RENDERING);
             if (hintValue != null) {
                 String textRenderValue = hintValue.toString();
-                this.sb.append(" text-rendering=\"").append(textRenderValue)
-                        .append("\"");
+                this.sb.append(" text-rendering='").append(textRenderValue)
+                        .append('\'');
             }
-            this.sb.append(" ").append(getClipPathRef());
+            String clipStr = getClipPathRef();
+            if (!clipStr.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
+            }
             this.sb.append(">");
             this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
             this.sb.append("</g>");
@@ -2449,23 +2464,26 @@ public final class SVGGraphics2D extends Graphics2D {
         // referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
-            this.sb.append("<image ");
+            this.sb.append("<image");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("preserveAspectRatio=\"none\" ");
-            this.sb.append("xlink:href=\"data:image/png;base64,");
+            this.sb.append(" preserveAspectRatio='none' ");
+            this.sb.append("xlink:href='data:image/png;base64,");
             this.sb.append(Base64.getEncoder().encodeToString(getPNGBytes(
                     img)));
-            this.sb.append("\" ");
-            this.sb.append(getClipPathRef()).append(" ");
-            if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\" "); 
+            this.sb.append('\'');
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
             }
-            this.sb.append("x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\" ");
-            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
-                    .append(geomDP(h)).append("\"/>\n");
+            if (!this.transform.isIdentity()) {
+            	this.sb.append(" transform='").append(getSVGTransform(
+                    this.transform)).append('\'');
+            }
+            this.sb.append(" x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y))
+                    .append("' ");
+            this.sb.append("width='").append(geomDP(w)).append("' height='")
+                    .append(geomDP(h)).append("'/>");
             return true;
         } else { // here for SVGHints.VALUE_IMAGE_HANDLING_REFERENCE
             int count = this.imageElements.size();
@@ -2479,20 +2497,23 @@ public final class SVGGraphics2D extends Graphics2D {
             ImageElement imageElement = new ImageElement(href, img);
             this.imageElements.add(imageElement);
             // write an SVG element for the img
-            this.sb.append("<image ");
+            this.sb.append("<image");
             appendOptionalElementIDFromHint(this.sb);
-            this.sb.append("xlink:href=\"");
-            this.sb.append(href).append("\" ");
-            this.sb.append(getClipPathRef()).append(" ");
-            if (!this.transform.isIdentity()) {
-            	this.sb.append("transform=\"").append(getSVGTransform(
-                    this.transform)).append("\" ");
+            this.sb.append(" xlink:href='");
+            this.sb.append(href).append('\'');
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(getClipPathRef());
             }
-            this.sb.append("x=\"").append(geomDP(x))
-                    .append("\" y=\"").append(geomDP(y))
-                    .append("\" ");
-            this.sb.append("width=\"").append(geomDP(w)).append("\" height=\"")
-                    .append(geomDP(h)).append("\"/>\n");
+            if (!this.transform.isIdentity()) {
+            	this.sb.append(" transform='").append(getSVGTransform(
+                    this.transform)).append('\'');
+            }
+            this.sb.append(" x='").append(geomDP(x))
+                    .append("' y='").append(geomDP(y))
+                    .append('\'');
+            this.sb.append(" width='").append(geomDP(w)).append("' height='")
+                    .append(geomDP(h)).append("'/>");
             return true;
         }
     }
@@ -2544,11 +2565,16 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public boolean drawImage(Image img, int x, int y, int w, int h, 
             Color bgcolor, ImageObserver observer) {
+        this.sb.append("<g");
+        appendOptionalElementIDFromHint(this.sb);
+        this.sb.append('>');
         Paint saved = getPaint();
         setPaint(bgcolor);
         fillRect(x, y, w, h);
         setPaint(saved);
-        return drawImage(img, x, y, w, h, observer);
+        boolean result = drawImage(img, x, y, w, h, observer);
+        this.sb.append("</g>");
+        return result;
     }
 
     /**
@@ -2756,64 +2782,74 @@ public final class SVGGraphics2D extends Graphics2D {
     public String getSVGElement(String id, boolean includeDimensions, 
             ViewBox viewBox, PreserveAspectRatio preserveAspectRatio,
             MeetOrSlice meetOrSlice) {
-        StringBuilder svg = new StringBuilder("<svg ");
+        StringBuilder svg = new StringBuilder("<svg");
         if (id != null) {
-            svg.append("id=\"").append(id).append("\" ");
+            svg.append(" id='").append(id).append('\'');
         }
         String unitStr = this.units != null ? this.units.toString() : "";
-        svg.append("xmlns=\"http://www.w3.org/2000/svg\" ")
-           .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" ")
-           .append("xmlns:jfreesvg=\"http://www.jfree.org/jfreesvg/svg\" ");
+        svg.append(" xmlns='http://www.w3.org/2000/svg'")
+           .append(" xmlns:xlink='http://www.w3.org/1999/xlink'")
+           .append(" xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg'");
         if (includeDimensions) {
-            svg.append("width=\"").append(this.width).append(unitStr)
-               .append("\" height=\"").append(this.height).append(unitStr)
-               .append("\" ");
+            svg.append(" width='").append(this.width).append(unitStr)
+               .append("' height='").append(this.height).append(unitStr)
+               .append('\'');
         }
         if (viewBox != null) {
-            svg.append("viewBox=\"").append(viewBox.valueStr()).append("\" ");
+            svg.append(" viewBox='").append(viewBox.valueStr()).append('\'');
             if (preserveAspectRatio != null) {
-                svg.append("preserveAspectRatio=\"")
+                svg.append(" preserveAspectRatio='")
                         .append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
                     svg.append(" ").append(meetOrSlice.toString());
                 }
-                svg.append("\" ");                    
+                svg.append('\'');
             }
         }
-        svg.append("text-rendering=\"").append(this.textRendering)
-           .append("\" shape-rendering=\"").append(this.shapeRendering)
-           .append("\">\n");
-        StringBuilder defs = new StringBuilder("<defs>");
-        for (GradientPaintKey key : this.gradientPaints.keySet()) {
-            defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
-                    key.getPaint()));
-            defs.append("\n");
+        svg.append(" text-rendering='").append(this.textRendering)
+           .append("' shape-rendering='").append(this.shapeRendering)
+           .append("'>");
+        if (isDefsOutputRequired()) {
+            StringBuilder defs = new StringBuilder("<defs>");
+            for (GradientPaintKey key : this.gradientPaints.keySet()) {
+                defs.append(getLinearGradientElement(this.gradientPaints.get(key),
+                        key.getPaint()));
+            }
+            for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
+                defs.append(getLinearGradientElement(
+                        this.linearGradientPaints.get(key), key.getPaint()));
+            }
+            for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
+                defs.append(getRadialGradientElement(
+                        this.radialGradientPaints.get(key), key.getPaint()));
+            }
+            for (int i = 0; i < this.clipPaths.size(); i++) {
+                StringBuilder b = new StringBuilder("<clipPath id='")
+                        .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
+                        .append("'>");
+                b.append("<path ").append(this.clipPaths.get(i)).append("/>");
+                b.append("</clipPath>");
+                defs.append(b.toString());
+            }
+            defs.append("</defs>");
+            svg.append(defs);
         }
-        for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
-            defs.append(getLinearGradientElement(
-                    this.linearGradientPaints.get(key), key.getPaint()));
-            defs.append("\n");            
-        }
-        for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
-            defs.append(getRadialGradientElement(
-                    this.radialGradientPaints.get(key), key.getPaint()));
-            defs.append("\n");
-        }
-        for (int i = 0; i < this.clipPaths.size(); i++) {
-            StringBuilder b = new StringBuilder("<clipPath id=\"")
-                    .append(this.defsKeyPrefix).append(CLIP_KEY_PREFIX).append(i)
-                    .append("\">");
-            b.append("<path ").append(this.clipPaths.get(i)).append("/>");
-            b.append("</clipPath>").append("\n");
-            defs.append(b.toString());
-        }
-        defs.append("</defs>\n");
-        svg.append(defs);
         svg.append(this.sb);
         svg.append("</svg>");        
         return svg.toString();
     }
-    
+
+    /**
+     * Returns {@code true} if there are items that need to be written to the
+     * DEFS element, and {@code false} otherwise.
+     *
+     * @return A boolean.
+     */
+    private boolean isDefsOutputRequired() {
+        return !(this.gradientPaints.isEmpty() && this.linearGradientPaints.isEmpty()
+                && this.radialGradientPaints.isEmpty() && this.clipPaths.isEmpty());
+    }
+
     /**
      * Returns an SVG document (this contains the content returned by the
      * {@link #getSVGElement()} method, prepended with the required document 
@@ -2865,31 +2901,31 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element.
      */
     private String getLinearGradientElement(String id, GradientPaint paint) {
-        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
-                .append("\" ");
+        StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
+                .append("' ");
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
-        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
-        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
-        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
-        b.append("gradientUnits=\"userSpaceOnUse\">");
+        b.append("x1='").append(geomDP(p1.getX())).append("' ");
+        b.append("y1='").append(geomDP(p1.getY())).append("' ");
+        b.append("x2='").append(geomDP(p2.getX())).append("' ");
+        b.append("y2='").append(geomDP(p2.getY())).append("' ");
+        b.append("gradientUnits='userSpaceOnUse'>");
         Color c1 = paint.getColor1();
-        b.append("<stop offset=\"0%\" stop-color=\"").append(rgbColorStr(c1))
-                .append("\"");
+        b.append("<stop offset='0%' stop-color='").append(rgbColorStr(c1))
+                .append('\'');
         if (c1.getAlpha() < 255) {
             double alphaPercent = c1.getAlpha() / 255.0;
-            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                    .append("\"");
+            b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                    .append('\'');
         }
         b.append("/>");
         Color c2 = paint.getColor2();
-        b.append("<stop offset=\"100%\" stop-color=\"").append(rgbColorStr(c2))
-                .append("\"");
+        b.append("<stop offset='100%' stop-color='").append(rgbColorStr(c2))
+                .append('\'');
         if (c2.getAlpha() < 255) {
             double alphaPercent = c2.getAlpha() / 255.0;
-            b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                    .append("\"");
+            b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                    .append('\'');
         }
         b.append("/>");
         return b.append("</linearGradient>").toString();
@@ -2906,30 +2942,30 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getLinearGradientElement(String id, 
             LinearGradientPaint paint) {
-        StringBuilder b = new StringBuilder("<linearGradient id=\"").append(id)
-                .append("\" ");
+        StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
+                .append("' ");
         Point2D p1 = paint.getStartPoint();
         Point2D p2 = paint.getEndPoint();
-        b.append("x1=\"").append(geomDP(p1.getX())).append("\" ");
-        b.append("y1=\"").append(geomDP(p1.getY())).append("\" ");
-        b.append("x2=\"").append(geomDP(p2.getX())).append("\" ");
-        b.append("y2=\"").append(geomDP(p2.getY())).append("\" ");
+        b.append("x1='").append(geomDP(p1.getX())).append("' ");
+        b.append("y1='").append(geomDP(p1.getY())).append("' ");
+        b.append("x2='").append(geomDP(p2.getX())).append("' ");
+        b.append("y2='").append(geomDP(p2.getY())).append("' ");
         if (!paint.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
             String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT) 
                     ? "reflect" : "repeat";
-            b.append("spreadMethod=\"").append(sm).append("\" ");
+            b.append("spreadMethod='").append(sm).append("' ");
         }
-        b.append("gradientUnits=\"userSpaceOnUse\">");
+        b.append("gradientUnits='userSpaceOnUse'>");
         for (int i = 0; i < paint.getFractions().length; i++) {
             Color c = paint.getColors()[i];
             float fraction = paint.getFractions()[i];
-            b.append("<stop offset=\"").append(geomDP(fraction * 100))
-                    .append("%\" stop-color=\"")
-                    .append(rgbColorStr(c)).append("\"");
+            b.append("<stop offset='").append(geomDP(fraction * 100))
+                    .append("%' stop-color='")
+                    .append(rgbColorStr(c)).append('\'');
             if (c.getAlpha() < 255) {
                 double alphaPercent = c.getAlpha() / 255.0;
-                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                        .append("\"");                
+                b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                        .append('\'');
             }
             b.append("/>");
         }
@@ -2946,28 +2982,28 @@ public final class SVGGraphics2D extends Graphics2D {
      * @return The SVG element. 
      */
     private String getRadialGradientElement(String id, RadialGradientPaint rgp) {
-        StringBuilder b = new StringBuilder("<radialGradient id=\"").append(id)
-                .append("\" gradientUnits=\"userSpaceOnUse\" ");
+        StringBuilder b = new StringBuilder("<radialGradient id='").append(id)
+                .append("' gradientUnits='userSpaceOnUse' ");
         Point2D center = rgp.getCenterPoint();
         Point2D focus = rgp.getFocusPoint();
         float radius = rgp.getRadius();
-        b.append("cx=\"").append(geomDP(center.getX())).append("\" ");
-        b.append("cy=\"").append(geomDP(center.getY())).append("\" ");
-        b.append("r=\"").append(geomDP(radius)).append("\" ");
-        b.append("fx=\"").append(geomDP(focus.getX())).append("\" ");
-        b.append("fy=\"").append(geomDP(focus.getY())).append("\">");
+        b.append("cx='").append(geomDP(center.getX())).append("' ");
+        b.append("cy='").append(geomDP(center.getY())).append("' ");
+        b.append("r='").append(geomDP(radius)).append("' ");
+        b.append("fx='").append(geomDP(focus.getX())).append("' ");
+        b.append("fy='").append(geomDP(focus.getY())).append("'>");
         
         Color[] colors = rgp.getColors();
         float[] fractions = rgp.getFractions();
         for (int i = 0; i < colors.length; i++) {
             Color c = colors[i];
             float f = fractions[i];
-            b.append("<stop offset=\"").append(geomDP(f * 100)).append("%\" ");
-            b.append("stop-color=\"").append(rgbColorStr(c)).append("\"");
+            b.append("<stop offset='").append(geomDP(f * 100)).append("%' ");
+            b.append("stop-color='").append(rgbColorStr(c)).append('\'');
             if (c.getAlpha() < 255) {
                 double alphaPercent = c.getAlpha() / 255.0;
-                b.append(" stop-opacity=\"").append(transformDP(alphaPercent))
-                        .append("\"");                
+                b.append(" stop-opacity='").append(transformDP(alphaPercent))
+                        .append('\'');
             }            
             b.append("/>");
         }
@@ -2988,7 +3024,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.clipRef = registerClip(getClip());
         }
         StringBuilder b = new StringBuilder();
-        b.append("clip-path=\"url(#").append(this.clipRef).append(")\"");
+        b.append("clip-path='url(#").append(this.clipRef).append(")'");
         return b.toString();
     }
     
