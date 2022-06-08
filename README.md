@@ -57,18 +57,24 @@ You can build `JFreeSVG` from sources using Maven:
 
 License
 -------
-JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license (please e-mail dave@jfree.org for details, or check the JFreeSVG home page).
+JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).
 
     Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even 
     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     Please refer to the license for details.
+
+If you prefer not to be bound by the terms of the GPLv3, you can obtain an alternative license by sponsoring the JFree project:
+
+- https://github.com/sponsors/jfree
 
 
 Change History
 --------------
 
 Version 3.4.3 (not yet released)
-- fix double semi-colon ([#52](https://github.com/jfree/jfreesvg/issues/52))
+- replace double-quotes in SVG output with single quotes
+- fix double semi-colon issue ([#52](https://github.com/jfree/jfreesvg/issues/52))
+- ensure image based tests run correctly on JDK 8 and JDK 17
 
 Version 3.4.2 (7 Nov 2021)
 - add support for `TextAttribute.TRACKING`
