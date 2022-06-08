@@ -65,12 +65,15 @@ Testing
 
 License
 -------
-JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt).  If you prefer not to be bound by the terms of the GPLv3, you can purchase an alternative license (please e-mail dave@jfree.org for details, or check the JFreeSVG home page).
+JFreeSVG is free software under the terms of the GNU General Public License version 3 (GPLv3) or later.  The license file is included in this distribution (gpl-3.0.txt). 
 
     Please note that JFreeSVG is distributed WITHOUT ANY WARRANTY; without even 
     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     Please refer to the license for details.
 
+If you prefer not to be bound by the terms of the GPLv3, you can obtain an alternative license by sponsoring the JFree project:
+
+- https://github.com/sponsors/jfree
 
 Change History
 --------------
