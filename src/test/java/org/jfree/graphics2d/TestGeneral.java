@@ -35,9 +35,16 @@ package org.jfree.graphics2d;
 import org.jfree.graphics2d.svg.*;
 import org.junit.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 
@@ -540,8 +547,10 @@ public class TestGeneral {
     @Test
     public void checkDrawImage() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
-        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
-        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
+        Image image = createImage();
+        String imageEncoding = Base64.getEncoder().encodeToString(getPNGBytes(image));
+        g2.drawImage(image, 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64," + imageEncoding +"' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
     }
 
     /**
@@ -551,8 +560,10 @@ public class TestGeneral {
     public void checkDrawImageWithElementID() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setRenderingHint(SVGHints.KEY_ELEMENT_ID, "UNIQUE_ELEMENT_ID_1");
-        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
-        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g id='UNIQUE_ELEMENT_ID_1'><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
+        Image image = createImage();
+        String imageEncoding = Base64.getEncoder().encodeToString(getPNGBytes(image));
+        g2.drawImage(image, 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g id='UNIQUE_ELEMENT_ID_1'><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64," + imageEncoding + "' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
     }
 
     @Test
@@ -560,8 +571,10 @@ public class TestGeneral {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setDefsKeyPrefix("PRE");
         g2.clipRect(10, 20, 30, 40);
-        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
-        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><defs><clipPath id='PREclip-0'><path d='M10,20L40,20L40,60L10,60L10,20Z'/></clipPath></defs><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)' clip-path='url(#PREclip-0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' clip-path='url(#PREclip-0)' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
+        Image image = createImage();
+        String imageEncoding = Base64.getEncoder().encodeToString(getPNGBytes(image));
+        g2.drawImage(image, 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><defs><clipPath id='PREclip-0'><path d='M10,20L40,20L40,60L10,60L10,20Z'/></clipPath></defs><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)' clip-path='url(#PREclip-0)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64," + imageEncoding + "' clip-path='url(#PREclip-0)' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
     }
 
     /**
@@ -571,8 +584,10 @@ public class TestGeneral {
     public void checkDrawImageWithTransform() {
         SVGGraphics2D g2 = new SVGGraphics2D(200, 100);
         g2.setTransform(AffineTransform.getTranslateInstance(11.1, 22.2));
-        g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
-        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)' transform='matrix(1,0,0,1,11.1,22.2)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAIAAAAPE8H1AAAAEUlEQVR4XmP4z8AAQVCKIAsAhLsO8npVRuUAAAAASUVORK5CYII=' transform='matrix(1,0,0,1,11.1,22.2)' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
+        Image image = createImage();
+        String imageEncoding = Base64.getEncoder().encodeToString(getPNGBytes(image));
+        g2.drawImage(image, 10, 20, Color.YELLOW, null);
+        assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)' transform='matrix(1,0,0,1,11.1,22.2)'/><image preserveAspectRatio='none' xlink:href='data:image/png;base64," + imageEncoding + "' transform='matrix(1,0,0,1,11.1,22.2)' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
     }
 
     /**
@@ -584,7 +599,35 @@ public class TestGeneral {
         g2.setRenderingHint(SVGHints.KEY_IMAGE_HANDLING, SVGHints.VALUE_IMAGE_HANDLING_REFERENCE);
         g2.drawImage(createImage(), 10, 20, Color.YELLOW, null);
         assertEquals("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg' width='200' height='100' text-rendering='auto' shape-rendering='auto'><g><rect x='10' y='20' width='3' height='5' style='fill:rgb(255,255,0)'/><image xlink:href='image-0.png' x='10' y='20' width='3' height='5'/></g></svg>", g2.getSVGElement());
+    }
 
+    /**
+     * Returns the bytes representing a PNG format image.
+     *
+     * @param img  the image to encode ({@code null} not permitted).
+     *
+     * @return The bytes representing a PNG format image.
+     */
+    private byte[] getPNGBytes(Image img) {
+        Args.nullNotPermitted(img, "img");
+        RenderedImage ri;
+        if (img instanceof RenderedImage) {
+            ri = (RenderedImage) img;
+        } else {
+            BufferedImage bi = new BufferedImage(img.getWidth(null),
+                    img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = bi.createGraphics();
+            g2.drawImage(img, 0, 0, null);
+            ri = bi;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(ri, "png", baos);
+        } catch (IOException ex) {
+            Logger.getLogger(SVGGraphics2D.class.getName()).log(Level.SEVERE,
+                    "IOException while writing PNG data.", ex);
+        }
+        return baos.toByteArray();
     }
 
 }
