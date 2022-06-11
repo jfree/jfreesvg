@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 3.4.3, not yet released.
+Version 3.4.3, 11 June 2022.
 
 (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
 
@@ -37,7 +37,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3</version>
     </dependency>
 
 This is a maintenance version of the library for developers that still require Java 8 support.  If you are using Java 11 or later, then you should use the modular version of JFreeSVG (which has a different artifact ID and version number):
@@ -71,7 +71,7 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
-Version 3.4.3 (not yet released)
+Version 3.4.3 (11 Jun 2022)
 - replace double-quotes in SVG output with single quotes
 - fix double semi-colon issue ([#52](https://github.com/jfree/jfreesvg/issues/52))
 - ensure image based tests run correctly on JDK 8 and JDK 17
