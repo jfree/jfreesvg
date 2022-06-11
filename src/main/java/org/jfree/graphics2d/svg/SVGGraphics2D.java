@@ -290,6 +290,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The current transform. */
     private AffineTransform transform = new AffineTransform();
 
+    /** The paint used to draw or fill shapes and text. */
     private Paint paint = Color.BLACK;
     
     private Color color = Color.BLACK;
@@ -325,9 +326,13 @@ public final class SVGGraphics2D extends Graphics2D {
     /** The background color, used by clearRect(). */
     private Color background = Color.BLACK;
 
-    /** A hidden image used for font metrics. */
+    /** An internal image used for font metrics. */
     private BufferedImage fmImage;
-    
+
+    /**
+     * The graphics target for the internal image that is used for font
+     * metrics.
+     */
     private Graphics2D fmImageG2D;
 
     /**
@@ -340,7 +345,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * An instance that is lazily instantiated in fillRect and then 
      * subsequently reused to avoid creating a lot of garbage.
      */
-    Rectangle2D rect;
+    private Rectangle2D rect;
 
     /**
      * An instance that is lazily instantiated in draw/fillRoundRect and then
@@ -399,12 +404,10 @@ public final class SVGGraphics2D extends Graphics2D {
     public SVGGraphics2D(int width, int height, SVGUnits units) {
         this(width, height, units, new StringBuilder());
     }
-    
+
     /**
      * Creates a new instance with the specified width and height that will
-     * populate the supplied StringBuilder instance.  This constructor is 
-     * used by the {@link #create()} method, but won't normally be called
-     * directly by user code.
+     * populate the supplied {@code StringBuilder} instance.
      * 
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
@@ -630,7 +633,7 @@ public final class SVGGraphics2D extends Graphics2D {
         Args.nullNotPermitted(prefix, "prefix");
         this.defsKeyPrefix = prefix;
     }
-    
+
     /**
      * Returns the number of decimal places used to write the transformation
      * matrices in the SVG output.  The default value is 6.
@@ -644,9 +647,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * @see #setTransformDP(int) 
      */
     public int getTransformDP() {
-        return this.transformDP;    
+        return this.transformDP;
     }
-    
+
     /**
      * Sets the number of decimal places used to write the transformation
      * matrices in the SVG output.  Values in the range 1 to 10 will be used
@@ -1088,19 +1091,19 @@ public final class SVGGraphics2D extends Graphics2D {
                 }
             }
             if (ref != null) {
-                this.sb.append(" jfreesvg:ref=\"");
-                this.sb.append(SVGUtils.escapeForXML(ref)).append("\"");
+                this.sb.append(" jfreesvg:ref='");
+                this.sb.append(SVGUtils.escapeForXML(ref)).append('\'');
             }
             if (otherKeysAndValues != null) {
                for (final Entry e: otherKeysAndValues) {
-                    this.sb.append(" ").append(e.getKey()).append("=\"");
+                    this.sb.append(" ").append(e.getKey()).append("='");
                     this.sb.append(SVGUtils.escapeForXML(String.valueOf(
-                            e.getValue()))).append("\"");
+                            e.getValue()))).append('\'');
                }
             }
             this.sb.append(">");
         } else if (SVGHints.isEndGroupKey(hintKey)) {
-            this.sb.append("</g>\n");
+            this.sb.append("</g>");
         } else if (SVGHints.isElementTitleKey(hintKey) && (hintValue != null)) {
             this.sb.append("<title>");
             this.sb.append(SVGUtils.escapeForXML(String.valueOf(hintValue)));
@@ -1221,7 +1224,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1241,7 +1244,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
@@ -1256,7 +1259,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -1297,7 +1300,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1316,7 +1319,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
@@ -1331,9 +1334,9 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clip);
             }
-            this.sb.append(">");
+            this.sb.append('>');
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
             this.sb.append("</g>");
         }  else {
@@ -1360,21 +1363,21 @@ public final class SVGGraphics2D extends Graphics2D {
             int type = iterator.currentSegment(coords);
             switch (type) {
             case (PathIterator.SEG_MOVETO):
-                b.append("M").append(geomDP(coords[0])).append(',')
+                b.append('M').append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_LINETO):
-                b.append("L").append(geomDP(coords[0])).append(',')
+                b.append('L').append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1]));
                 break;
             case (PathIterator.SEG_QUADTO):
-                b.append("Q ").append(geomDP(coords[0]))
+                b.append('Q').append(geomDP(coords[0]))
                         .append(',').append(geomDP(coords[1]))
                         .append(',').append(geomDP(coords[2]))
                         .append(',').append(geomDP(coords[3]));
                 break;
             case (PathIterator.SEG_CUBICTO):
-                b.append("C").append(geomDP(coords[0])).append(',')
+                b.append('C').append(geomDP(coords[0])).append(',')
                         .append(geomDP(coords[1])).append(',')
                         .append(geomDP(coords[2])).append(',')
                         .append(geomDP(coords[3])).append(',')
@@ -1382,7 +1385,7 @@ public final class SVGGraphics2D extends Graphics2D {
                         .append(geomDP(coords[5]));
                 break;
             case (PathIterator.SEG_CLOSE):
-                b.append("Z");
+                b.append('Z');
                 break;
             default:
                 break;
@@ -1476,7 +1479,7 @@ public final class SVGGraphics2D extends Graphics2D {
         float[] dashArray = new float[0];
         if (this.stroke instanceof BasicStroke) {
             BasicStroke bs = (BasicStroke) this.stroke;
-            strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth() 
+            strokeWidth = bs.getLineWidth() > 0.0 ? bs.getLineWidth()
                     : this.zeroStrokeWidth;
             switch (bs.getEndCap()) {
                 case BasicStroke.CAP_ROUND:
@@ -1519,17 +1522,17 @@ public final class SVGGraphics2D extends Graphics2D {
         if (dashArray != null && dashArray.length != 0) {
             b.append(";stroke-dasharray:");
             for (int i = 0; i < dashArray.length; i++) {
-                if (i != 0) b.append(", ");
+                if (i != 0) b.append(',');
                 b.append(dashArray[i]);
             }
         }
         if (this.checkStrokeControlHint) {
             Object hint = getRenderingHint(RenderingHints.KEY_STROKE_CONTROL);
-            if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint) 
+            if (RenderingHints.VALUE_STROKE_NORMALIZE.equals(hint)
                     && !this.shapeRendering.equals("crispEdges")) {
                 b.append(";shape-rendering:crispEdges");
             }
-            if (RenderingHints.VALUE_STROKE_PURE.equals(hint) 
+            if (RenderingHints.VALUE_STROKE_PURE.equals(hint)
                     && !this.shapeRendering.equals("geometricPrecision")) {
                 b.append(";shape-rendering:geometricPrecision");
             }
@@ -2071,7 +2074,15 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         return this.defsKeyPrefix + CLIP_KEY_PREFIX + index;
     }
-    
+
+    /**
+     * Returns a string representation of the specified number for use in the
+     * SVG output.
+     *
+     * @param d  the number.
+     *
+     * @return A string representation of the number.
+     */
     private String transformDP(double d) {
         if (this.transformFormat != null) {
             return transformFormat.format(d);            
@@ -2079,7 +2090,15 @@ public final class SVGGraphics2D extends Graphics2D {
             return String.valueOf(d);
         }
     }
-    
+
+    /**
+     * Returns a string representation of the specified number for use in the
+     * SVG output.
+     *
+     * @param d  the number.
+     *
+     * @return A string representation of the number.
+     */
     private String geomDP(double d) {
         if (this.geometryFormat != null) {
             return geometryFormat.format(d);            
@@ -2104,13 +2123,14 @@ public final class SVGGraphics2D extends Graphics2D {
      * specified shape. 
      * 
      * According to the Oracle API specification, this method will accept a 
-     * {@code null} argument, but there is an open bug report (since 2004) 
-     * that suggests this is wrong:
+     * {@code null} argument, however there is a bug report (opened in 2004
+     * and fixed in 2021) that describes the passing of {@code null} as
+     * "not recommended":
      * <p>
-     * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189">
+     * <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6206189">
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189</a>
      * 
-     * @param s  the clip shape ({@code null} not permitted). 
+     * @param s  the clip shape ({@code null} not recommended).
      */
     @Override
     public void clip(Shape s) {
@@ -2506,8 +2526,8 @@ public final class SVGGraphics2D extends Graphics2D {
                 this.sb.append(' ').append(getClipPathRef());
             }
             if (!this.transform.isIdentity()) {
-            	this.sb.append(" transform='").append(getSVGTransform(
-                    this.transform)).append('\'');
+                this.sb.append(" transform='").append(getSVGTransform(
+                        this.transform)).append('\'');
             }
             this.sb.append(" x='").append(geomDP(x))
                     .append("' y='").append(geomDP(y))
@@ -2801,7 +2821,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 svg.append(" preserveAspectRatio='")
                         .append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
-                    svg.append(" ").append(meetOrSlice.toString());
+                    svg.append(' ').append(meetOrSlice.toString());
                 }
                 svg.append('\'');
             }
@@ -2902,14 +2922,14 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getLinearGradientElement(String id, GradientPaint paint) {
         StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
-                .append("' ");
+                .append('\'');
         Point2D p1 = paint.getPoint1();
         Point2D p2 = paint.getPoint2();
-        b.append("x1='").append(geomDP(p1.getX())).append("' ");
-        b.append("y1='").append(geomDP(p1.getY())).append("' ");
-        b.append("x2='").append(geomDP(p2.getX())).append("' ");
-        b.append("y2='").append(geomDP(p2.getY())).append("' ");
-        b.append("gradientUnits='userSpaceOnUse'>");
+        b.append(" x1='").append(geomDP(p1.getX())).append('\'');
+        b.append(" y1='").append(geomDP(p1.getY())).append('\'');
+        b.append(" x2='").append(geomDP(p2.getX())).append('\'');
+        b.append(" y2='").append(geomDP(p2.getY())).append('\'');
+        b.append(" gradientUnits='userSpaceOnUse'>");
         Color c1 = paint.getColor1();
         b.append("<stop offset='0%' stop-color='").append(rgbColorStr(c1))
                 .append('\'');
@@ -2943,19 +2963,19 @@ public final class SVGGraphics2D extends Graphics2D {
     private String getLinearGradientElement(String id, 
             LinearGradientPaint paint) {
         StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
-                .append("' ");
+                .append('\'');
         Point2D p1 = paint.getStartPoint();
         Point2D p2 = paint.getEndPoint();
-        b.append("x1='").append(geomDP(p1.getX())).append("' ");
-        b.append("y1='").append(geomDP(p1.getY())).append("' ");
-        b.append("x2='").append(geomDP(p2.getX())).append("' ");
-        b.append("y2='").append(geomDP(p2.getY())).append("' ");
+        b.append(" x1='").append(geomDP(p1.getX())).append('\'');
+        b.append(" y1='").append(geomDP(p1.getY())).append('\'');
+        b.append(" x2='").append(geomDP(p2.getX())).append('\'');
+        b.append(" y2='").append(geomDP(p2.getY())).append('\'');
         if (!paint.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
             String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT) 
                     ? "reflect" : "repeat";
-            b.append("spreadMethod='").append(sm).append("' ");
+            b.append(" spreadMethod='").append(sm).append('\'');
         }
-        b.append("gradientUnits='userSpaceOnUse'>");
+        b.append(" gradientUnits='userSpaceOnUse'>");
         for (int i = 0; i < paint.getFractions().length; i++) {
             Color c = paint.getColors()[i];
             float fraction = paint.getFractions()[i];
@@ -2983,15 +3003,15 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String getRadialGradientElement(String id, RadialGradientPaint rgp) {
         StringBuilder b = new StringBuilder("<radialGradient id='").append(id)
-                .append("' gradientUnits='userSpaceOnUse' ");
+                .append("' gradientUnits='userSpaceOnUse'");
         Point2D center = rgp.getCenterPoint();
         Point2D focus = rgp.getFocusPoint();
         float radius = rgp.getRadius();
-        b.append("cx='").append(geomDP(center.getX())).append("' ");
-        b.append("cy='").append(geomDP(center.getY())).append("' ");
-        b.append("r='").append(geomDP(radius)).append("' ");
-        b.append("fx='").append(geomDP(focus.getX())).append("' ");
-        b.append("fy='").append(geomDP(focus.getY())).append("'>");
+        b.append(" cx='").append(geomDP(center.getX())).append('\'');
+        b.append(" cy='").append(geomDP(center.getY())).append('\'');
+        b.append(" r='").append(geomDP(radius)).append('\'');
+        b.append(" fx='").append(geomDP(focus.getX())).append('\'');
+        b.append(" fy='").append(geomDP(focus.getY())).append("'>");
         
         Color[] colors = rgp.getColors();
         float[] fractions = rgp.getFractions();
