@@ -2693,8 +2693,7 @@ public final class SVGGraphics2D extends Graphics2D {
         if (viewBox != null) {
             svg.append(" viewBox='").append(viewBox.valueStr(this.geomDoubleConverter)).append('\'');
             if (preserveAspectRatio != null) {
-                svg.append(" preserveAspectRatio='")
-                        .append(preserveAspectRatio.toString());
+                svg.append(" preserveAspectRatio='").append(preserveAspectRatio.toString());
                 if (meetOrSlice != null) {
                     svg.append(' ').append(meetOrSlice.toString());
                 }
@@ -2724,7 +2723,7 @@ public final class SVGGraphics2D extends Graphics2D {
                         .append("'>");
                 b.append("<path ").append(this.clipPaths.get(i)).append("/>");
                 b.append("</clipPath>");
-                defs.append(b.toString());
+                defs.append(b);
             }
             defs.append("</defs>");
             svg.append(defs);
