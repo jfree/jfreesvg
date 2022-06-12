@@ -78,6 +78,9 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
+Version 5.0.3 (not-yet-released)
+- remove duplicate calls to `getClipPathRef()`
+
 Version 5.0.2 (7 November 2021)
 - add support for `TextAttribute.TRACKING`;
 - clarified Javadocs for `SVGHints.KEY_BEGIN_GROUP`.

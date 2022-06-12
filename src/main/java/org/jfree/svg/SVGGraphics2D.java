@@ -1048,7 +1048,7 @@ public final class SVGGraphics2D extends Graphics2D {
             } else {
                 this.elementIDs.add(elementID);
             }
-            builder.append(" id='").append(elementID).append("'");
+            builder.append(" id='").append(elementID).append('\'');
         }
     }
     
@@ -1079,15 +1079,15 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("' y1='").append(geomDP(l.getY1()))
                     .append("' x2='").append(geomDP(l.getX2()))
                     .append("' y2='").append(geomDP(l.getY2()))
-                    .append("' ");
-            this.sb.append("style='").append(strokeStyle()).append("'");
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle()).append('\'');
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
-            		this.transform)).append("'");
+            		this.transform)).append('\'');
             }
             String clip = getClipPathRef();
             if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());    
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
@@ -1098,9 +1098,9 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("' y='").append(geomDP(r.getY()))
                     .append("' width='").append(geomDP(r.getWidth()))
                     .append("' height='").append(geomDP(r.getHeight()))
-                    .append("' ");
-            this.sb.append("style='").append(strokeStyle())
-                    .append(";fill:none").append("'");
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle())
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
@@ -1118,9 +1118,9 @@ public final class SVGGraphics2D extends Graphics2D {
                     .append("' cy='").append(geomDP(e.getCenterY()))
                     .append("' rx='").append(geomDP(e.getWidth() / 2.0))
                     .append("' ry='").append(geomDP(e.getHeight() / 2.0))
-                    .append("' ");
-            this.sb.append("style='").append(strokeStyle())
-                    .append(";fill:none").append("'");
+                    .append('\'');
+            this.sb.append(" style='").append(strokeStyle())
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
@@ -1135,7 +1135,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append(" style='").append(strokeStyle())
-                    .append(";fill:none").append("'");
+                    .append(";fill:none'");
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
@@ -1181,9 +1181,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clipStr = getClipPathRef();
-            if (!clipStr.isEmpty()) {
-                this.sb.append(' ').append(clipStr);
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1200,9 +1200,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clipStr = getClipPathRef();
-            if (!clipStr.isEmpty()) {
-                this.sb.append(' ').append(clipStr);
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(clip);
             }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
@@ -1210,14 +1210,14 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("<g");
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append(" style='").append(getSVGFillStyle());
-            this.sb.append(";stroke:none").append('\'');
+            this.sb.append(";stroke:none'");
             if (!this.transform.isIdentity()) {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clipStr = getClipPathRef();
-            if (!clipStr.isEmpty()) {
-                this.sb.append(' ').append(clipStr);
+            String clip = getClipPathRef();
+            if (!clip.isEmpty()) {
+                this.sb.append(' ').append(clip);
             }
             this.sb.append('>');
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -1558,7 +1558,6 @@ public final class SVGGraphics2D extends Graphics2D {
                 b.append(" letter-spacing: ").append(geomDP(spacing)).append(';');
             }
         }
-
         return b.toString();
     }
 
@@ -1650,7 +1649,7 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clipStr = getClipPathRef();
             if (!clipStr.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());    
+                this.sb.append(' ').append(clipStr);
             }
             this.sb.append(">");
             this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
@@ -2708,7 +2707,7 @@ public final class SVGGraphics2D extends Graphics2D {
         if (isDefsOutputRequired()) {
             StringBuilder defs = new StringBuilder("<defs>");
             for (GradientPaintKey key : this.gradientPaints.keySet()) {
-                defs.append(getLinearGradientElement(this.gradientPaints.get(key), 
+                defs.append(getLinearGradientElement(this.gradientPaints.get(key),
                         key.getPaint()));
             }
             for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
@@ -2738,11 +2737,11 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns {@code true} if there are items that need to be written to the
      * DEFS element, and {@code false} otherwise.
-     * 
-     * @return A boolean. 
+     *
+     * @return A boolean.
      */
     private boolean isDefsOutputRequired() {
-        return !(this.gradientPaints.isEmpty() && this.linearGradientPaints.isEmpty() 
+        return !(this.gradientPaints.isEmpty() && this.linearGradientPaints.isEmpty()
                 && this.radialGradientPaints.isEmpty() && this.clipPaths.isEmpty());
     }
 
