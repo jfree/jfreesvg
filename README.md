@@ -41,7 +41,7 @@ To use JFreeSVG with Java 8, you can use the following (note the different artif
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3</version>
     </dependency>
 
 Build
@@ -80,10 +80,11 @@ Change History
 
 Version 5.0.3 (not-yet-released)
 - remove duplicate calls to `getClipPathRef()`
+- update Maven plugin dependencies
 
 Version 5.0.2 (7 November 2021)
-- add support for `TextAttribute.TRACKING`;
-- clarified Javadocs for `SVGHints.KEY_BEGIN_GROUP`.
+- add support for `TextAttribute.TRACKING`
+- clarified Javadocs for `SVGHints.KEY_BEGIN_GROUP`
 
 Version 5.0.1 (4 August 2021)
 - handle cycle methods for `GradientPaint` and `RadialGradientPaint`;
