@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 5.0.2, by David Gilbert, 7 November 2021.
+Version 5.0.3, by David Gilbert, 22 June 2022.
 
-(C)opyright 2013-2021, by David Gilbert.  All rights reserved.
+(C)opyright 2013-2022, by David Gilbert.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
 
@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.2</version>
+        <version>5.0.3</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -78,7 +78,7 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
-Version 5.0.3 (not-yet-released)
+Version 5.0.3 (22 June 2022)
 - remove duplicate calls to `getClipPathRef()`
 - update Maven plugin dependencies
 
@@ -101,16 +101,13 @@ Version 5.0 (12 June 2021)
 - added more JUnit tests;
 - updated JUnit test dependency to version 5.7.2.
 
-
 Version 4.2 (10 January 2021)
 - replace `NumberFormat` with Ryu algorithm for performance gains ([#30](https://github.com/jfree/jfreesvg/pull/30));
 - add winding rule to path data if required ([#25](https://github.com/jfree/jfreesvg/issues/25));
 - migrated to JUnit 5.
 
-
 Version 4.1 (26 March 2020)
 - correction of fix for encoding of images ([#21](https://github.com/jfree/jfreesvg/issues/21)).
-
 
 Version 4.0 (27 February 2020)
 - created a module for JFreeSVG: `org.jfree.svg`;
@@ -120,7 +117,6 @@ Version 4.0 (27 February 2020)
 - fix `drawArc()` and `fillArc()` methods to draw pie arcs;
 - use `java.util.Base64` instead of `javax.xml.bind.DatatypeConverter`.
 
-
 Version 3.4 (10 February 2019)
 - added attribute for font size units override;
 - added automatic module name (`org.jfree.jfreesvg`);
@@ -128,11 +124,9 @@ Version 3.4 (10 February 2019)
 - fixed `drawString()` method for empty string;
 - fixed `drawImage()` method for `null` `ImageOp`.
 
-
 Version 3.3 (7 November 2017)
 - the default `DEFS` key prefix should not begin with a number;
 - transferred demo code to the [JFree-Demos](https://github.com/jfree/jfree-demos) project to streamline the distribution process.
-
 
 Version 3.2 (9 October 2016)
 - added facility to specify `units` for `width` and `height` attributes;
