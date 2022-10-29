@@ -492,15 +492,8 @@ public final class SVGHints {
             hintsClass = Class.forName(className);
             Field f = hintsClass.getDeclaredField(fieldName);
             return (RenderingHints.Key) f.get(null);
-        } catch (ClassNotFoundException e) {
-            return null;
-        } catch (NoSuchFieldException ex) {
-            return null;
-        } catch (SecurityException ex) {
-            return null;
-        } catch (IllegalArgumentException ex) {
-            return null;
-        } catch (IllegalAccessException ex) {
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
+                 IllegalAccessException e) {
             return null;
         }
     }
