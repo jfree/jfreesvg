@@ -32,13 +32,6 @@
 
 package org.jfree.svg;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -56,6 +49,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Some tests for a Graphics2D implementation.  All tests should pass with the
@@ -268,9 +263,9 @@ public class TestSVGGraphics2D {
         Rectangle2D r = new Rectangle2D.Double(0, 0, 1, 1);
         this.g2.setClip(r);
         Shape s = this.g2.getClip();
-        assertFalse(r == s);
+        assertNotSame(r, s);
         Shape s2 = this.g2.getClip();
-        assertFalse(s == s2);
+        assertNotSame(s, s2);
     }
     
     /**
@@ -510,7 +505,7 @@ public class TestSVGGraphics2D {
         GradientPaint gp = new GradientPaint(pt1, Color.RED, pt2, Color.BLUE);
         this.g2.setPaint(gp);
         assertEquals(gp, this.g2.getPaint());
-        assertTrue(gp == this.g2.getPaint());
+        assertSame(gp, this.g2.getPaint());
         pt1.setLocation(7.0, 7.0);
         assertEquals(gp, this.g2.getPaint());
     }
@@ -586,8 +581,8 @@ public class TestSVGGraphics2D {
     public void checkSetBackground() {
         this.g2.setBackground(Color.CYAN);
         assertEquals(Color.CYAN, this.g2.getBackground());
-        assertFalse(Color.CYAN.equals(this.g2.getColor()));
-        assertFalse(Color.CYAN.equals(this.g2.getPaint()));
+        assertNotEquals(Color.CYAN, this.g2.getColor());
+        assertNotEquals(Color.CYAN, this.g2.getPaint());
     }
 
     /**
@@ -598,7 +593,7 @@ public class TestSVGGraphics2D {
     public void checkSetBackgroundNull() {
         this.g2.setBackground(Color.RED);
         this.g2.setBackground(null);
-        assertEquals(null, this.g2.getBackground());
+        assertNull(this.g2.getBackground());
     }
     
     /**
