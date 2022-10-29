@@ -1,8 +1,8 @@
 target
 distribution
-
+.idea
 *.class
-
+**/.DS_Store
 # Package Files #
 *.jar
 *.war
