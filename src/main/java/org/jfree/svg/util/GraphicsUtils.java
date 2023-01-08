@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -151,8 +151,8 @@ public final class GraphicsUtils {
         Hashtable properties = new Hashtable();
         String[] keys = img.getPropertyNames();
         if (keys != null) {
-            for (int i = 0; i < keys.length; i++) {
-                properties.put(keys[i], img.getProperty(keys[i]));
+            for (String key : keys) {
+                properties.put(key, img.getProperty(key));
             }
         }
         BufferedImage result = new BufferedImage(cm, raster, 
