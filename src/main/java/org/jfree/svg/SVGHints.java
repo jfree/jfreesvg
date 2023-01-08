@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -553,9 +553,7 @@ public final class SVGHints {
                             || VALUE_TEXT_RENDERING_PRECISION.equals(val)
                             || VALUE_TEXT_RENDERING_SPEED.equals(val);
                 case 2: // KEY_IMAGE:URL
-                    return val == null || val instanceof String;
                 case 3: // KEY_ELEMENT_ID
-                    return val == null || val instanceof String;    
                 case 4: // KEY_BEGIN_GROUP
                     return val == null || val instanceof String;
                 case 5: // KEY_END_GROUP
