@@ -42,7 +42,7 @@ public class SVGGraphicsDevice extends GraphicsDevice {
 
     private final String id;
     
-    GraphicsConfiguration defaultConfig;
+    private final GraphicsConfiguration defaultConfig;
     
     /**
      * Creates a new instance.
