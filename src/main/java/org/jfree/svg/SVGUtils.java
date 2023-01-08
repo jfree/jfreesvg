@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.function.DoubleFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -140,7 +141,7 @@ public class SVGUtils {
             if (zip) {
                 os = new GZIPOutputStream(os);
             }
-            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
+            OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
             writer = new BufferedWriter(osw);
             writer.write("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
             writer.write(svgElement + "\n");
@@ -170,7 +171,7 @@ public class SVGUtils {
         BufferedWriter writer = null;
         try {
             FileOutputStream fos = new FileOutputStream(file);
-            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
             writer = new BufferedWriter(osw);
             writer.write("<!DOCTYPE html>\n");
             writer.write("<html>\n");
