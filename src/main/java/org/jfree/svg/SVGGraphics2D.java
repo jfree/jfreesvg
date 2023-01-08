@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -553,7 +553,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Sets the double-to-string function that is used when writing coordinates
      * for geometrical shapes in the SVG output.  The default converter 
      * optimises for speed when generating the SVG and should cover normal 
-     * usage. However this method provides the ability to substitute 
+     * usage. However, this method provides the ability to substitute
      * an alternative function (for example, one that favours output size
      * over speed of generation).
      * 
@@ -840,7 +840,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Sets the background color.  This is used by the 
      * {@link #clearRect(int, int, int, int)} method.  The reference 
-     * implementation allows {@code null} for the background color so
+     * implementation allows {@code null} for the background color, so
      * we allow that too (but for that case, the clearRect method will do 
      * nothing).
      * 
@@ -1351,7 +1351,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns a stroke style string based on the current stroke and
      * alpha settings.  Implementation note: the last attribute in the string 
-     * will not have a semi-colon after it.
+     * will not have a semicolon after it.
      * 
      * @return A stroke style string.
      */
@@ -1426,7 +1426,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Returns the alpha value of the current {@code paint}, or {@code 1.0f} if
      * it is not an instance of {@code Color}.
      * 
-     * @return The alpha value (in the range {@code 0.0} to {@code 1.0}. 
+     * @return The alpha value (in the range {@code 0.0} to {@code 1.0}).
      */
     private float getColorAlpha() {
         if (this.paint instanceof Color) {
@@ -2693,9 +2693,9 @@ public final class SVGGraphics2D extends Graphics2D {
         if (viewBox != null) {
             svg.append(" viewBox='").append(viewBox.valueStr(this.geomDoubleConverter)).append('\'');
             if (preserveAspectRatio != null) {
-                svg.append(" preserveAspectRatio='").append(preserveAspectRatio.toString());
+                svg.append(" preserveAspectRatio='").append(preserveAspectRatio);
                 if (meetOrSlice != null) {
-                    svg.append(' ').append(meetOrSlice.toString());
+                    svg.append(' ').append(meetOrSlice);
                 }
                 svg.append('\'');
             }
