@@ -2,7 +2,7 @@
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
  * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -45,15 +45,9 @@ public class ArgsTest {
      */
     @Test
     public void checkRequireFinitePositive() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Args.requireFinitePositive(0.0, "d");
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            Args.requireFinitePositive(Double.NEGATIVE_INFINITY, "d");
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            Args.requireFinitePositive(Double.NaN, "d");
-        });
+        assertThrows(IllegalArgumentException.class, () -> Args.requireFinitePositive(0.0, "d"));
+        assertThrows(IllegalArgumentException.class, () -> Args.requireFinitePositive(Double.NEGATIVE_INFINITY, "d"));
+        assertThrows(IllegalArgumentException.class, () -> Args.requireFinitePositive(Double.NaN, "d"));
     }
 
 }
