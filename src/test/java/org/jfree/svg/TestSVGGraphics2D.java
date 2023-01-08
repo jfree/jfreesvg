@@ -1,8 +1,8 @@
 /* ===================================================
  * JFreeSVG : an SVG library for the Java(tm) platform
  * ===================================================
- * 
- * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+ *
+ * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
  * Project Info:  http://www.jfree.org/jfreesvg/index.html
  * 
@@ -404,12 +404,9 @@ public class TestSVGGraphics2D {
      */
     @Test
     public void checkClipWithNullArgument() {
-        
         // when there is a current clip set, a null pointer exception is expected
         this.g2.setClip(new Rectangle2D.Double(1.0, 2.0, 3.0, 4.0));
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            this.g2.clip(null);
-        });
+        assertThrows(NullPointerException.class, () -> this.g2.clip(null));
         
         this.g2.setClip(null);
         try {
@@ -918,9 +915,9 @@ public class TestSVGGraphics2D {
     @Test
     public void fillOrStrokeRectangleWithNegativeHeightMustNotFail() {
         g2.draw(new Rectangle2D.Double(0, 0, 0, 10));
-        g2.draw(new Rectangle2D.Double(0, 0, -10, 10));
+        g2.draw(new Rectangle2D.Double(0, 0, 10, -10));
         g2.fill(new Rectangle2D.Double(0, 0, 0, 10));
-        g2.fill(new Rectangle2D.Double(0, 0, -10, 10));
+        g2.fill(new Rectangle2D.Double(0, 0, 10, -10));
         assertTrue(true); // won't get here if there's an exception above
     }
 
