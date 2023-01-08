@@ -1,9 +1,9 @@
 JFreeSVG
 ========
 
-Version 5.0.3, by David Gilbert, 22 June 2022.
+Version 5.0.4, by David Gilbert, 8 January 2023.
 
-(C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+(C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
 
@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.3</version>
+        <version>5.0.4</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -77,6 +77,11 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 
 Change History
 --------------
+
+Version 5.0.4 (9 January 2023)
+- minor code transformations
+- unit test fix
+- update Maven and JUnit dependencies
 
 Version 5.0.3 (22 June 2022)
 - remove duplicate calls to `getClipPathRef()`
