@@ -2205,7 +2205,7 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        setArc(x, y, width, height, startAngle, arcAngle);
+        setArc(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN);
         draw(this.arc);
     }
 
@@ -2227,7 +2227,7 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        setArc(x, y, width, height, startAngle, arcAngle);
+        setArc(x, y, width, height, startAngle, arcAngle, Arc2D.PIE);
         fill(this.arc);
     }
 
@@ -2983,15 +2983,15 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
+     * @param arcStyle  the arc style.
      */
     private void setArc(int x, int y, int width, int height, int startAngle, 
-            int arcAngle) {
+            int arcAngle, int arcStyle) {
         if (this.arc == null) {
             this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, Arc2D.PIE);
+                    arcAngle, arcStyle);
         } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
-                    Arc2D.PIE);
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle, arcStyle);
         }        
     }
     
