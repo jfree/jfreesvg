@@ -78,6 +78,9 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
+Version 5.0.5 (not yet released)
+- fixed drawArc() / fillArc()
+
 Version 5.0.4 (9 January 2023)
 - minor code transformations
 - unit test fix
