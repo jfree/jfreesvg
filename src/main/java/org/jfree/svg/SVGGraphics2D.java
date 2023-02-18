@@ -347,10 +347,9 @@ public final class SVGGraphics2D extends Graphics2D {
     private Ellipse2D oval;
  
     /**
-     * An instance that is lazily instantiated in draw/fillArc and then
-     * subsequently reused to avoid creating a lot of garbage.
+     * An instance that is reused in draw/fillArc to avoid creating a lot of garbage.
      */
-    private Arc2D arc;
+    private Arc2D arc = new Arc2D.Double();
  
     /** 
      * If the current paint is an instance of {@link GradientPaint}, this
@@ -2205,7 +2204,7 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        setArc(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN);
+        this.arc.setArc(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN);
         draw(this.arc);
     }
 
@@ -2227,7 +2226,7 @@ public final class SVGGraphics2D extends Graphics2D {
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
             int arcAngle) {
-        setArc(x, y, width, height, startAngle, arcAngle, Arc2D.PIE);
+        this.arc.setArc(x, y, width, height, startAngle, arcAngle, Arc2D.PIE);
         fill(this.arc);
     }
 
@@ -2969,29 +2968,6 @@ public final class SVGGraphics2D extends Graphics2D {
         } else {
             this.roundRect.setRoundRect(x, y, width, height, 
                     arcWidth, arcHeight);
-        }        
-    }
-
-    /**
-     * Sets the attributes of the reusable {@link Arc2D} object that is used by
-     * {@link #drawArc(int, int, int, int, int, int)} and 
-     * {@link #fillArc(int, int, int, int, int, int)} methods.
-     * 
-     * @param x  the x-coordinate.
-     * @param y  the y-coordinate.
-     * @param width  the width.
-     * @param height  the height.
-     * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
-     * @param arcAngle  the angle (anticlockwise) in degrees.
-     * @param arcStyle  the arc style.
-     */
-    private void setArc(int x, int y, int width, int height, int startAngle, 
-            int arcAngle, int arcStyle) {
-        if (this.arc == null) {
-            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
-                    arcAngle, arcStyle);
-        } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, arcStyle);
         }        
     }
     
