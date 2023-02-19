@@ -80,7 +80,7 @@ Change History
 --------------
 
 Version 5.0.5 (19 February 2023)
-- fixed drawArc() / fillArc()
+- fixed `drawArc()` and `fillArc()`
 - update Maven and JUnit dependencies
 
 Version 5.0.4 (9 January 2023)
