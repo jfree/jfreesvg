@@ -349,7 +349,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * An instance that is reused in draw/fillArc to avoid creating a lot of garbage.
      */
-    private Arc2D arc = new Arc2D.Double();
+    private final Arc2D arc = new Arc2D.Double();
  
     /** 
      * If the current paint is an instance of {@link GradientPaint}, this
