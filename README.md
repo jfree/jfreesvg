@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 5.0.4, by David Gilbert, 8 January 2023.
+Version 5.0.5, by David Gilbert, 19 February 2023.
 
 (C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.4</version>
+        <version>5.0.5</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -78,8 +78,9 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
-Version 5.0.5 (not yet released)
+Version 5.0.5 (19 February 2023)
 - fixed drawArc() / fillArc()
+- update Maven and JUnit dependencies
 
 Version 5.0.4 (9 January 2023)
 - minor code transformations
