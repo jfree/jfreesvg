@@ -1085,9 +1085,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
@@ -1105,9 +1105,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1125,9 +1125,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
@@ -1140,9 +1140,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -1181,9 +1181,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1200,9 +1200,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");        
         } else if (s instanceof Path2D) {
@@ -1215,9 +1215,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append('>');
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -2377,8 +2377,8 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append(" xlink:href='");
             this.sb.append(href).append('\'');
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
                 this.sb.append(' ').append(getClipPathRef());
             }
             if (!this.transform.isIdentity()) {
@@ -2399,8 +2399,8 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append(Base64.getEncoder().encodeToString(getPNGBytes(
                     img)));
             this.sb.append('\'');
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
                 this.sb.append(' ').append(getClipPathRef());
             }
             if (!this.transform.isIdentity()) {
