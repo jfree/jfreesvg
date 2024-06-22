@@ -356,7 +356,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * field will contain the reference id that is used in the DEFS element
      * for that linear gradient.
      */
-    private String gradientPaintRef = null;
+    private String gradientPaintRef;
 
     /** 
      * The device configuration (this is lazily instantiated in the 
@@ -404,6 +404,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public SVGGraphics2D(double width, double height, SVGUnits units, 
             StringBuilder sb) {
+        super();
         Args.requireFinitePositive(width, "width");
         Args.requireFinitePositive(height, "height");
         Args.nullNotPermitted(sb, "sb");
@@ -1336,10 +1337,10 @@ public final class SVGGraphics2D extends Graphics2D {
     private String rgbaColorStr(Color c) {
         StringBuilder b = new StringBuilder("rgba(");
         double alphaPercent = c.getAlpha() / 255.0;
-        b.append(c.getRed()).append(",").append(c.getGreen()).append(",")
+        b.append(c.getRed()).append(',').append(c.getGreen()).append(',')
                 .append(c.getBlue());
-        b.append(",").append(transformDP(alphaPercent));
-        b.append(")");
+        b.append(',').append(transformDP(alphaPercent));
+        b.append(')');
         return b.toString();
     }
     
@@ -1405,7 +1406,9 @@ public final class SVGGraphics2D extends Graphics2D {
         if (dashArray != null && dashArray.length != 0) {
             b.append(";stroke-dasharray:");
             for (int i = 0; i < dashArray.length; i++) {
-                if (i != 0) b.append(",");
+                if (i != 0) {
+                    b.append(",");
+                }
                 b.append(dashArray[i]);
             }
         }

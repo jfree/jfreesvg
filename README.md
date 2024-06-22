@@ -79,6 +79,10 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
+Version 5.0.6 (not yet released)
+- minor code transformations suggested by the Datadog Static Analyzer
+- update Maven and JUnit dependencies
+
 Version 5.0.5 (19 February 2023)
 - fixed `drawArc()` and `fillArc()`
 - update Maven and JUnit dependencies
