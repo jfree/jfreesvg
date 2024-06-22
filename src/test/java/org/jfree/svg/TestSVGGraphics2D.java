@@ -32,16 +32,7 @@
 
 package org.jfree.svg;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -933,4 +924,47 @@ class TestSVGGraphics2D {
         assertEquals(new Rectangle(10, 20, 30, 40), g2.getClip().getBounds2D());
     }
 
+    @Test
+    void checkGradientPaintRefGeneration() {
+        if (!(this.g2 instanceof SVGGraphics2D)) return;
+        SVGGraphics2D svg2 = (SVGGraphics2D) this.g2;
+        GradientPaint gp0 = new GradientPaint(1.0f, 2.0f, Color.RED, 3.0f, 4.0f, Color.BLUE);
+        svg2.setPaint(gp0);
+        assertEquals(svg2.defsKeyPrefix + "gp0", svg2.gradientPaintRef);
+        GradientPaint gp1 = new GradientPaint(1.0f, 2.0f, Color.YELLOW, 3.0f, 4.0f, Color.GREEN);
+        svg2.setPaint(gp1);
+        assertEquals(svg2.defsKeyPrefix + "gp1", svg2.gradientPaintRef);
+        svg2.setPaint(gp0);
+        assertEquals(svg2.defsKeyPrefix + "gp0", svg2.gradientPaintRef);
+    }
+
+    @Test
+    void checkLinearGradientPaintRefGeneration() {
+        if (!(this.g2 instanceof SVGGraphics2D)) return;
+        SVGGraphics2D svg2 = (SVGGraphics2D) this.g2;
+        var lgp0 = new LinearGradientPaint(1.0f, 2.0f,3.0f, 4.0f, new float[] { 0.0f, 0.5f, 1.0f }, new Color[] { Color.RED, Color.BLUE, Color.GREEN });
+        svg2.setPaint(lgp0);
+        assertEquals(svg2.defsKeyPrefix + "lgp0", svg2.gradientPaintRef);
+        var lgp1 = new LinearGradientPaint(1.0f, 2.0f,3.0f, 4.0f, new float[] { 0.0f, 0.5f, 1.0f }, new Color[] { Color.YELLOW, Color.CYAN, Color.GRAY });
+        svg2.setPaint(lgp1);
+        assertEquals(svg2.defsKeyPrefix + "lgp1", svg2.gradientPaintRef);
+        svg2.setPaint(lgp0);
+        assertEquals(svg2.defsKeyPrefix + "lgp0", svg2.gradientPaintRef);
+    }
+
+    @Test
+    void checkRadialGradientPaintRefGeneration() {
+        if (!(this.g2 instanceof SVGGraphics2D)) return;
+        SVGGraphics2D svg2 = (SVGGraphics2D) this.g2;
+        var rgp0 = new RadialGradientPaint(1.0f, 2.0f, 3.0f, new float[] { 0.0f, 0.5f, 1.0f },
+                new Color[] { Color.RED, Color.BLUE, Color.GREEN });
+        svg2.setPaint(rgp0);
+        assertEquals(svg2.defsKeyPrefix + "rgp0", svg2.gradientPaintRef);
+        var rgp1 = new RadialGradientPaint(1.0f, 2.0f, 4.0f, new float[] { 0.0f, 0.5f, 1.0f },
+                new Color[] { Color.YELLOW, Color.CYAN, Color.GRAY });
+        svg2.setPaint(rgp1);
+        assertEquals(svg2.defsKeyPrefix + "rgp1", svg2.gradientPaintRef);
+        svg2.setPaint(rgp0);
+        assertEquals(svg2.defsKeyPrefix + "rgp0", svg2.gradientPaintRef);
+    }
 }

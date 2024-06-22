@@ -79,10 +79,10 @@ public class RadialGradientPaintKey {
         if (obj == this) {
             return true;
         }
-        if (! (obj instanceof RadialGradientPaint)) {
+        if (! (obj instanceof RadialGradientPaintKey)) {
             return false;
         }
-        RadialGradientPaint that = (RadialGradientPaint) obj;
+        RadialGradientPaint that = ((RadialGradientPaintKey) obj).paint;
         if (!this.paint.getCenterPoint().equals(that.getCenterPoint())) {
             return false;
         }

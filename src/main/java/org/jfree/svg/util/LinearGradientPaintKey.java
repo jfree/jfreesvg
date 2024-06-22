@@ -81,10 +81,10 @@ public class LinearGradientPaintKey {
         if (obj == this) {
             return true;
         }
-        if (! (obj instanceof LinearGradientPaint)) {
+        if (! (obj instanceof LinearGradientPaintKey)) {
             return false;
         }
-        LinearGradientPaint that = (LinearGradientPaint) obj;
+        LinearGradientPaint that = ((LinearGradientPaintKey) obj).paint;
         if (!this.paint.getStartPoint().equals(that.getStartPoint())) {
             return false;
         }

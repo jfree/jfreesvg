@@ -212,7 +212,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * ensure that the keys are unique when creating more than one SVG element
      * for a single HTML page.
      */
-    private String defsKeyPrefix = "_" + System.nanoTime();
+    String defsKeyPrefix = "_" + System.nanoTime();
     
     /** 
      * A map of all the gradients used, and the corresponding id.  When 
@@ -356,7 +356,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * field will contain the reference id that is used in the DEFS element
      * for that linear gradient.
      */
-    private String gradientPaintRef;
+    String gradientPaintRef;
 
     /** 
      * The device configuration (this is lazily instantiated in the 
@@ -758,38 +758,30 @@ public final class SVGGraphics2D extends Graphics2D {
         } else if (paint instanceof GradientPaint) {
             GradientPaint gp = (GradientPaint) paint;
             GradientPaintKey key = new GradientPaintKey(gp);
-            String ref = this.gradientPaints.get(key);
-            if (ref == null) {
+            this.gradientPaintRef = this.gradientPaints.computeIfAbsent(key, k -> {
                 int count = this.gradientPaints.keySet().size();
                 String id = this.defsKeyPrefix + "gp" + count;
                 this.elementIDs.add(id);
-                this.gradientPaints.put(key, id);
-                this.gradientPaintRef = id;
-            } else {
-                this.gradientPaintRef = ref;
-            }
+                return id;
+            });
         } else if (paint instanceof LinearGradientPaint) {
             LinearGradientPaint lgp = (LinearGradientPaint) paint;
             LinearGradientPaintKey key = new LinearGradientPaintKey(lgp);
-            String ref = this.linearGradientPaints.get(key);
-            if (ref == null) {
+            this.gradientPaintRef = this.linearGradientPaints.computeIfAbsent(key, k -> {
                 int count = this.linearGradientPaints.keySet().size();
                 String id = this.defsKeyPrefix + "lgp" + count;
                 this.elementIDs.add(id);
-                this.linearGradientPaints.put(key, id);
-                this.gradientPaintRef = id;
-            }
+                return id;
+            });
         } else if (paint instanceof RadialGradientPaint) {
             RadialGradientPaint rgp = (RadialGradientPaint) paint;
             RadialGradientPaintKey key = new RadialGradientPaintKey(rgp);
-            String ref = this.radialGradientPaints.get(key);
-            if (ref == null) {
+            this.gradientPaintRef = this.radialGradientPaints.computeIfAbsent(key, k -> {
                 int count = this.radialGradientPaints.keySet().size();
                 String id = this.defsKeyPrefix + "rgp" + count;
                 this.elementIDs.add(id);
-                this.radialGradientPaints.put(key, id);
-                this.gradientPaintRef = id;
-            }
+                return id;
+            });
         }
     }
 
