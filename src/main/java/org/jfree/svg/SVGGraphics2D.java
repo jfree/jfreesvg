@@ -2699,17 +2699,14 @@ public final class SVGGraphics2D extends Graphics2D {
         // only need to write DEFS if there is something to include
         if (isDefsOutputRequired()) {
             StringBuilder defs = new StringBuilder("<defs>");
-            for (GradientPaintKey key : this.gradientPaints.keySet()) {
-                defs.append(getLinearGradientElement(this.gradientPaints.get(key),
-                        key.getPaint()));
+            for (var entry : this.gradientPaints.entrySet()) {
+                defs.append(getLinearGradientElement(entry.getValue(), entry.getKey().getPaint()));
             }
-            for (LinearGradientPaintKey key : this.linearGradientPaints.keySet()) {
-                defs.append(getLinearGradientElement(
-                        this.linearGradientPaints.get(key), key.getPaint()));
+            for (var entry : this.linearGradientPaints.entrySet()) {
+                defs.append(getLinearGradientElement(entry.getValue(), entry.getKey().getPaint()));
             }
-            for (RadialGradientPaintKey key : this.radialGradientPaints.keySet()) {
-                defs.append(getRadialGradientElement(
-                        this.radialGradientPaints.get(key), key.getPaint()));
+             for (var entry : this.radialGradientPaints.entrySet()) {
+                defs.append(getRadialGradientElement(entry.getValue(), entry.getKey().getPaint()));
             }
             for (int i = 0; i < this.clipPaths.size(); i++) {
                 StringBuilder b = new StringBuilder("<clipPath id='")
