@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Graphics2D instance from a BufferedImage (which we can treat as a reference
  * implementation).
  */
-public class TestSVGGraphics2D {
+class TestSVGGraphics2D {
     
     /** 
      * Change this to true to test against a reference Graphics2D 
@@ -85,7 +85,7 @@ public class TestSVGGraphics2D {
      * Checks that the default transform is an identity transform.
      */
     @Test
-    public void checkDefaultTransform() {
+    void checkDefaultTransform() {
         assertEquals(new AffineTransform(), g2.getTransform());
     }
     
@@ -95,7 +95,7 @@ public class TestSVGGraphics2D {
      * should be returning a copy of the actual transform object.
      */
     @Test
-    public void checkGetTransformSafety() {
+    void checkGetTransformSafety() {
         AffineTransform t = g2.getTransform();
         t.rotate(Math.PI);
         assertNotEquals(t, g2.getTransform());
@@ -106,7 +106,7 @@ public class TestSVGGraphics2D {
      * A basic check that setTransform() does indeed update the transform.
      */
     @Test
-    public void setTransform() {
+    void setTransform() {
         AffineTransform t = new AffineTransform(1, 2, 3, 4, 5, 6);
         g2.setTransform(t);
         assertEquals(t, g2.getTransform());
@@ -129,7 +129,7 @@ public class TestSVGGraphics2D {
      * AffineTransform.
      */
     @Test
-    public void checkSetTransformSafety() {
+    void checkSetTransformSafety() {
         AffineTransform t = AffineTransform.getTranslateInstance(1.0, 2.0);
         g2.setTransform(t);
         assertEquals(t, g2.getTransform());
@@ -138,7 +138,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkSetNonInvertibleTransform() {
+    void checkSetNonInvertibleTransform() {
         AffineTransform t = AffineTransform.getScaleInstance(0.0, 0.0);
         g2.setTransform(t);
         assertEquals(t, g2.getTransform());
@@ -159,7 +159,7 @@ public class TestSVGGraphics2D {
      * translation.
      */
     @Test
-    public void checkTransform() {
+    void checkTransform() {
         AffineTransform t = new AffineTransform();
         this.g2.setTransform(t);
         this.g2.translate(30, 30);
@@ -176,7 +176,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkTransformNull() {
+    void checkTransformNull() {
         try {
             this.g2.transform(null);
             fail("Expected a NullPointerException.");
@@ -189,7 +189,7 @@ public class TestSVGGraphics2D {
      * Basic checks for the scale(x, y) method.
      */
     @Test
-    public void scale() {
+    void scale() {
         g2.scale(0.5, 2.0);
         assertEquals(AffineTransform.getScaleInstance(0.5, 2.0), 
                 g2.getTransform());
@@ -203,7 +203,7 @@ public class TestSVGGraphics2D {
      * gives the correct values.
      */
     @Test
-    public void translateFollowedByScale() {
+    void translateFollowedByScale() {
         g2.translate(2, 3);
         assertEquals(AffineTransform.getTranslateInstance(2.0, 3.0), 
                 g2.getTransform());
@@ -217,7 +217,7 @@ public class TestSVGGraphics2D {
      * gives the correct values.
      */    
     @Test
-    public void scaleFollowedByTranslate() {
+    void scaleFollowedByTranslate() {
         g2.scale(2, 2);
         assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
                 g2.getTransform());
@@ -229,7 +229,7 @@ public class TestSVGGraphics2D {
     private static final double EPSILON = 0.000000001;
     
     @Test
-    public void scaleFollowedByRotate() {
+    void scaleFollowedByRotate() {
         g2.scale(2, 2);
         assertEquals(AffineTransform.getScaleInstance(2.0, 2.0), 
                 g2.getTransform());
@@ -244,7 +244,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void rotateFollowedByScale() {
+    void rotateFollowedByScale() {
         g2.rotate(Math.PI);
         assertEquals(AffineTransform.getRotateInstance(Math.PI), 
                 g2.getTransform());
@@ -259,7 +259,7 @@ public class TestSVGGraphics2D {
      * a new object each time.
      */
     @Test
-    public void checkGetClipSafety() {
+    void checkGetClipSafety() {
         Rectangle2D r = new Rectangle2D.Double(0, 0, 1, 1);
         this.g2.setClip(r);
         Shape s = this.g2.getClip();
@@ -272,7 +272,7 @@ public class TestSVGGraphics2D {
      * The default user clip should be {@code null}.
      */
     @Test
-    public void checkDefaultClip() {
+    void checkDefaultClip() {
         assertNull(g2.getClip(), "Default user clip should be null.");
     }
     
@@ -281,7 +281,7 @@ public class TestSVGGraphics2D {
      * the bounds.
      */
     @Test
-    public void checkGetClipBounds() {
+    void checkGetClipBounds() {
         Rectangle2D r = new Rectangle2D.Double(0.25, 0.25, 0.5, 0.5);
         this.g2.setClip(r);
         assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClipBounds());       
@@ -292,7 +292,7 @@ public class TestSVGGraphics2D {
      * {@code null}.
      */
     @Test
-    public void checkGetClipBoundsWhenClipIsNull() {
+    void checkGetClipBoundsWhenClipIsNull() {
         this.g2.setClip(null);
         assertNull(this.g2.getClipBounds());
     }
@@ -302,7 +302,7 @@ public class TestSVGGraphics2D {
      * existing clip region.
      */
     @Test
-    public void checkClip() {
+    void checkClip() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Rectangle2D.Double(0.0, 0.0, 2.0, 2.0));
@@ -315,7 +315,7 @@ public class TestSVGGraphics2D {
      * the clip is empty.
      */
     @Test
-    public void checkNonIntersectingClip() {
+    void checkNonIntersectingClip() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Rectangle2D.Double(5.0, 5.0, 1.0, 1.0));
@@ -327,7 +327,7 @@ public class TestSVGGraphics2D {
      * modified clip.
      */
     @Test
-    public void checkClipAfterScaling() {
+    void checkClipAfterScaling() {
         Rectangle2D r = new Rectangle2D.Double(1, 2, 3, 0.5);
         this.g2.setClip(r);
         assertEquals(r, this.g2.getClip().getBounds2D());
@@ -347,7 +347,7 @@ public class TestSVGGraphics2D {
      * Translating will change the existing clip.
      */
     @Test
-    public void checkClipAfterTranslate() {
+    void checkClipAfterTranslate() {
         Rectangle2D clip = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
         this.g2.setClip(clip);
         assertEquals(clip, this.g2.getClip().getBounds2D());
@@ -357,7 +357,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkSetClipAfterTranslate() {
+    void checkSetClipAfterTranslate() {
         this.g2.translate(1.0, 2.0);
         this.g2.setClip(0, 0, 1, 1);
         assertEquals(new Rectangle(0, 0, 1, 1), this.g2.getClip().getBounds());
@@ -369,7 +369,7 @@ public class TestSVGGraphics2D {
      * Transforming will change the reported clipping shape.
      */
     @Test
-    public void checkClipAfterTransform() {
+    void checkClipAfterTransform() {
         Rectangle2D clip = new Rectangle2D.Double(0, 0, 1, 1);
         this.g2.setClip(clip);
         assertEquals(clip, this.g2.getClip().getBounds2D());
@@ -389,7 +389,7 @@ public class TestSVGGraphics2D {
      * does that make sense?  Matching the behaviour for now.
      */
     @Test
-    public void checkClipWithLine2D() {
+    void checkClipWithLine2D() {
         Rectangle2D r = new Rectangle2D.Double(1.0, 1.0, 3.0, 3.0);
         this.g2.setClip(r);
         this.g2.clip(new Line2D.Double(1.0, 2.0, 3.0, 4.0));
@@ -403,7 +403,7 @@ public class TestSVGGraphics2D {
      * latest API docs (https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6206189).
      */
     @Test
-    public void checkClipWithNullArgument() {
+    void checkClipWithNullArgument() {
         // when there is a current clip set, a null pointer exception is expected
         this.g2.setClip(new Rectangle2D.Double(1.0, 2.0, 3.0, 4.0));
         assertThrows(NullPointerException.class, () -> this.g2.clip(null));
@@ -420,7 +420,7 @@ public class TestSVGGraphics2D {
      * A simple check for a call to clipRect().
      */
     @Test
-    public void checkClipRect() {
+    void checkClipRect() {
         Rectangle2D clip = new Rectangle2D.Double(0, 0, 5, 5);
         this.g2.setClip(clip);
         
@@ -430,7 +430,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkClipRectParams() {
+    void checkClipRectParams() {
         Rectangle2D clip = new Rectangle2D.Double(0, 0, 5, 5);
         this.g2.setClip(clip);
         
@@ -445,7 +445,7 @@ public class TestSVGGraphics2D {
     }
 
     @Test
-    public void checkDrawStringWithNullString() {
+    void checkDrawStringWithNullString() {
         try {
             g2.drawString((String) null, 1, 2);
             fail("There should be a NullPointerException.");
@@ -461,7 +461,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkDrawStringWithEmptyString() {
+    void checkDrawStringWithEmptyString() {
         // this should not cause any exception 
         g2.setRenderingHint(SVGHints.KEY_DRAW_STRING_TYPE, SVGHints.VALUE_DRAW_STRING_TYPE_VECTOR);
         g2.drawString("", 1, 2);
@@ -472,8 +472,8 @@ public class TestSVGGraphics2D {
     /**
      * Some checks for the create() method.
      */
-    @Test 
-    public void checkCreate() {
+    @Test
+    void checkCreate() {
         this.g2.setClip(new Rectangle(1, 2, 3, 4));
         Graphics2D copy = (Graphics2D) g2.create();
         assertEquals(copy.getBackground(), g2.getBackground());
@@ -496,7 +496,7 @@ public class TestSVGGraphics2D {
      * Paint instance.  
      */
     @Test
-    public void checkSetPaintSafety() {
+    void checkSetPaintSafety() {
         Point2D pt1 = new Point2D.Double(1.0, 2.0);
         Point2D pt2 = new Point2D.Double(3.0, 4.0);
         GradientPaint gp = new GradientPaint(pt1, Color.RED, pt2, Color.BLUE);
@@ -512,7 +512,7 @@ public class TestSVGGraphics2D {
      * impact on the current paint (that is, the call is silently ignored).
      */
     @Test
-    public void checkSetPaintNull() {
+    void checkSetPaintNull() {
         this.g2.setPaint(Color.RED);
         // this next call should have no impact
         this.g2.setPaint(null);
@@ -524,7 +524,7 @@ public class TestSVGGraphics2D {
      * background color.
      */
     @Test
-    public void checkSetPaintAlsoUpdatesColorButNotBackground() {
+    void checkSetPaintAlsoUpdatesColorButNotBackground() {
         Color existingBackground = this.g2.getBackground();
         this.g2.setPaint(Color.MAGENTA);
         assertEquals(Color.MAGENTA, this.g2.getPaint());
@@ -537,7 +537,7 @@ public class TestSVGGraphics2D {
      * Color, then the existing color remains unchanged.
      */
     @Test
-    public void checkSetPaintDoesNotUpdateColor() {
+    void checkSetPaintDoesNotUpdateColor() {
         GradientPaint gp = new GradientPaint(1.0f, 2.0f, Color.RED, 
                 3.0f, 4.0f, Color.BLUE);
         this.g2.setColor(Color.MAGENTA);
@@ -553,7 +553,7 @@ public class TestSVGGraphics2D {
      * @see #checkSetPaintAlsoUpdatesColorButNotBackground() 
      */
     @Test
-    public void checkSetColorAlsoUpdatesPaint() {
+    void checkSetColorAlsoUpdatesPaint() {
         this.g2.setColor(Color.MAGENTA);
         assertEquals(Color.MAGENTA, this.g2.getPaint());
         assertEquals(Color.MAGENTA, this.g2.getColor());
@@ -565,7 +565,7 @@ public class TestSVGGraphics2D {
      * setPaint() method.
      */
     @Test
-    public void checkSetColorNull() {
+    void checkSetColorNull() {
         this.g2.setColor(Color.RED);
         this.g2.setColor(null);
         assertEquals(Color.RED, this.g2.getColor());
@@ -575,7 +575,7 @@ public class TestSVGGraphics2D {
      * Setting the background color does not change the color or paint.
      */
     @Test
-    public void checkSetBackground() {
+    void checkSetBackground() {
         this.g2.setBackground(Color.CYAN);
         assertEquals(Color.CYAN, this.g2.getBackground());
         assertNotEquals(Color.CYAN, this.g2.getColor());
@@ -587,7 +587,7 @@ public class TestSVGGraphics2D {
      * allowing null (this is inconsistent with the behaviour of setColor()).
      */
     @Test
-    public void checkSetBackgroundNull() {
+    void checkSetBackgroundNull() {
         this.g2.setBackground(Color.RED);
         this.g2.setBackground(null);
         assertNull(this.g2.getBackground());
@@ -600,7 +600,7 @@ public class TestSVGGraphics2D {
      * is no easy way to test for that.
      */
     @Test
-    public void checkClearRectWithNullBackground() {
+    void checkClearRectWithNullBackground() {
         this.g2.setBackground(null);
         this.g2.clearRect(1, 2, 3, 4);
         //no exceptions and we're good
@@ -611,7 +611,7 @@ public class TestSVGGraphics2D {
      * observed to throw an IllegalArgumentException.
      */
     @Test
-    public void checkSetCompositeNull() {
+    void checkSetCompositeNull() {
         try {
             this.g2.setComposite(null);
             fail("Expected an IllegalArgumentException.");
@@ -621,7 +621,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkSetStrokeNull() {
+    void checkSetStrokeNull() {
         try {
             this.g2.setStroke(null);
             fail("Expected an IllegalArgumentException.");
@@ -634,7 +634,7 @@ public class TestSVGGraphics2D {
      * Basic check of set then get.
      */
     @Test
-    public void checkSetRenderingHint() {
+    void checkSetRenderingHint() {
         this.g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, 
                 RenderingHints.VALUE_STROKE_PURE);
         assertEquals(RenderingHints.VALUE_STROKE_PURE, 
@@ -646,7 +646,7 @@ public class TestSVGGraphics2D {
      * NullPointerException when the key is null.
      */
     @Test
-    public void checkSetRenderingHintWithNullKey() {
+    void checkSetRenderingHintWithNullKey() {
         try {
             this.g2.setRenderingHint(null, "XYZ");
             fail("NullPointerException is expected here.");
@@ -660,7 +660,7 @@ public class TestSVGGraphics2D {
      * and return null in that case.
      */
     @Test
-    public void checkGetRenderingHintWithNullKey() {
+    void checkGetRenderingHintWithNullKey() {
         assertNull(this.g2.getRenderingHint(null));
     }
     
@@ -668,7 +668,7 @@ public class TestSVGGraphics2D {
      * Check setting a hint with a value that doesn't match the key.
      */
     @Test
-    public void checkSetRenderingHintWithInconsistentValue() {
+    void checkSetRenderingHintWithInconsistentValue() {
         try {
             this.g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, 
                     RenderingHints.VALUE_ANTIALIAS_DEFAULT);
@@ -683,7 +683,7 @@ public class TestSVGGraphics2D {
      * changing it will not affect the state of the Graphics2D instance.
      */
     @Test
-    public void checkGetRenderingHintsSafety() {
+    void checkGetRenderingHintsSafety() {
         this.g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_OFF);
         RenderingHints hints = this.g2.getRenderingHints();
@@ -694,7 +694,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkSetRenderingHintsNull() {
+    void checkSetRenderingHintsNull() {
         try {
             this.g2.setRenderingHints(null);
             fail("NullPointerException expected.");
@@ -704,7 +704,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkHit() {
+    void checkHit() {
         Shape shape = new Rectangle2D.Double(0.0, 0.0, 1.0, 1.0);
         Rectangle r = new Rectangle(2, 2, 2, 2);
         assertFalse(this.g2.hit(r, shape, false));
@@ -713,7 +713,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkHitForOutline() {
+    void checkHitForOutline() {
         Shape shape = new Rectangle2D.Double(0.0, 0.0, 3.0, 3.0);
         Rectangle r = new Rectangle(1, 1, 1, 1);
         assertFalse(this.g2.hit(r, shape, true));
@@ -728,7 +728,7 @@ public class TestSVGGraphics2D {
      * to null does not change the current font setting.
      */
     @Test
-    public void checkSetFontNull() {
+    void checkSetFontNull() {
         Font f = new Font("Serif", Font.PLAIN, 8);
         this.g2.setFont(f);
         assertEquals(f, this.g2.getFont());
@@ -737,7 +737,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void checkDefaultStroke() {
+    void checkDefaultStroke() {
         BasicStroke s = (BasicStroke) this.g2.getStroke();
         assertEquals(BasicStroke.CAP_SQUARE, s.getEndCap());
         assertEquals(1.0f, s.getLineWidth(), EPSILON);
@@ -748,7 +748,7 @@ public class TestSVGGraphics2D {
      * Check that a null GlyphVector throws a {@code NullPointerException}.
      */
     @Test
-    public void drawGlyphVectorNull() {
+    void drawGlyphVectorNull() {
         try {
             g2.drawGlyphVector(null, 10, 10);
             fail("Expecting a NullPointerException.");
@@ -761,7 +761,7 @@ public class TestSVGGraphics2D {
      * Check the shear() method.
      */
     @Test
-    public void shear() {
+    void shear() {
         g2.setTransform(new AffineTransform());
         g2.shear(2.0, 3.0);
         assertEquals(new AffineTransform(1, 3, 2, 1, 0, 0), g2.getTransform());
@@ -771,7 +771,7 @@ public class TestSVGGraphics2D {
      * Checks a translate() followed by a shear().
      */
     @Test
-    public void shearFollowingTranslate() {
+    void shearFollowingTranslate() {
         g2.setTransform(new AffineTransform());
         g2.translate(10.0, 20.0);
         g2.shear(2.0, 3.0);
@@ -779,7 +779,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void drawImageWithNullBackground() {
+    void drawImageWithNullBackground() {
         Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(img, 10, 10, null, null);
         assertTrue(true); // won't get here if there's an exception above
@@ -789,14 +789,14 @@ public class TestSVGGraphics2D {
      * https://github.com/jfree/jfreesvg/issues/6
      */
     @Test
-    public void drawImageWithNullTransform() {
+    void drawImageWithNullTransform() {
         Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(img, null, null);
         assertTrue(true); // won't get here if there's an exception above
     }
     
     @Test
-    public void drawImageWithNullImage() {
+    void drawImageWithNullImage() {
         // API docs say method does nothing if img is null
         // still seems to return true
         assertTrue(g2.drawImage(null, 10, 20, null));
@@ -808,7 +808,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void drawImageWithNegativeDimensions() {
+    void drawImageWithNegativeDimensions() {
         Image img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         assertTrue(g2.drawImage(img, 1, 2, -10, 10, null));
         assertTrue(g2.drawImage(img, 1, 2, 10, -10, null)); 
@@ -820,7 +820,7 @@ public class TestSVGGraphics2D {
      * graphics state so clipping can impact other attributes.
      */
     @Test
-    public void checkColorAfterSetClip() {
+    void checkColorAfterSetClip() {
         this.g2.setColor(Color.RED);
         assertEquals(Color.RED, this.g2.getColor());
         this.g2.setClip(0, 0, 10, 10);
@@ -835,7 +835,7 @@ public class TestSVGGraphics2D {
      * See https://github.com/jfree/fxgraphics2d/issues/6
      */
     @Test
-    public void checkFontAfterSetClip() {
+    void checkFontAfterSetClip() {
         this.g2.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
         assertEquals(new Font(Font.DIALOG, Font.BOLD, 12), this.g2.getFont());
         this.g2.setClip(0, 0, 10, 10);
@@ -850,7 +850,7 @@ public class TestSVGGraphics2D {
      * See https://github.com/jfree/fxgraphics2d/issues/6
      */
     @Test
-    public void checkStrokeAfterSetClip() {
+    void checkStrokeAfterSetClip() {
         this.g2.setStroke(new BasicStroke(1.0f));
         assertEquals(new BasicStroke(1.0f), this.g2.getStroke());
         this.g2.setClip(0, 0, 10, 10);
@@ -866,7 +866,7 @@ public class TestSVGGraphics2D {
      * the results of text measurements performed via getFontMetrics().
      */
     @Test
-    public void testGetFontMetrics() {
+    void testGetFontMetrics() {
         Font f = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         FontMetrics fm = this.g2.getFontMetrics(f);
         int w = fm.stringWidth("ABC");
@@ -880,7 +880,7 @@ public class TestSVGGraphics2D {
     }
     
     @Test
-    public void drawImageWithNullImageOp() {
+    void drawImageWithNullImageOp() {
         BufferedImage img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
         g2.drawImage(img, null, 2, 3);
         assertTrue(true); // won't get here if there's an exception above        
@@ -889,8 +889,8 @@ public class TestSVGGraphics2D {
     /**
      * API docs say the method does nothing when called with a null image.
      */
-    @Test 
-    public void drawRenderedImageWithNullImage() {
+    @Test
+    void drawRenderedImageWithNullImage() {
         g2.drawRenderedImage(null, AffineTransform.getTranslateInstance(0, 0));
         assertTrue(true); // won't get here if there's an exception above                
     }
@@ -900,7 +900,7 @@ public class TestSVGGraphics2D {
      * should not throw an exception.
      */
     @Test
-    public void fillOrStrokeRectangleWithNegativeWidthMustNotFail() {
+    void fillOrStrokeRectangleWithNegativeWidthMustNotFail() {
         g2.draw(new Rectangle2D.Double(0, 0, 0, 10));
         g2.draw(new Rectangle2D.Double(0, 0, -10, 10));
         g2.fill(new Rectangle2D.Double(0, 0, 0, 10));
@@ -913,7 +913,7 @@ public class TestSVGGraphics2D {
      * should not throw an exception.
      */
     @Test
-    public void fillOrStrokeRectangleWithNegativeHeightMustNotFail() {
+    void fillOrStrokeRectangleWithNegativeHeightMustNotFail() {
         g2.draw(new Rectangle2D.Double(0, 0, 0, 10));
         g2.draw(new Rectangle2D.Double(0, 0, 10, -10));
         g2.fill(new Rectangle2D.Double(0, 0, 0, 10));
@@ -922,7 +922,7 @@ public class TestSVGGraphics2D {
     }
 
     @Test
-    public void checkClipAfterCreate() {
+    void checkClipAfterCreate() {
         this.g2.setClip(10, 20, 30, 40);
         assertEquals(new Rectangle(10, 20, 30, 40), g2.getClip().getBounds2D());
 
