@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.5</version>
+        <version>5.0.6</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -79,7 +79,7 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
-Version 5.0.6 (22 June 2024)
+Version 5.0.6 (23 June 2024)
 - fix issue with `LinearGradientPaint` and `RadialGradientPaint` reference generation
 - minor code transformations suggested by the Datadog Static Analyzer and SonarLint
 - update Maven and JUnit dependencies
