@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 5.0.5, by David Gilbert, 19 February 2023.
+Version 5.0.6, by David Gilbert, 23 June 2024.
 
 (C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
@@ -61,7 +61,7 @@ Testing
 - the compositing rules in `AlphaComposite` are not implemented
 - font metrics are approximated
 
-![jfreesvg](https://user-images.githubusercontent.com/1835893/219960830-95e7f6ac-686d-48a3-813b-3da585a892da.svg)
+![jfreesvg](https://github.com/jfree/jfreesvg/assets/1835893/d7d6f741-8005-49c5-bc4c-fff112a33cef)
 
 
 License
