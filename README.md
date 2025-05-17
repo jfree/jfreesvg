@@ -1,7 +1,7 @@
 JFreeSVG
 ========
 
-Version 5.0.6, by David Gilbert, 23 June 2024.
+Version 5.0.7, by David Gilbert, 17 May 2025.
 
 (C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
@@ -31,7 +31,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.6</version>
+        <version>5.0.7</version>
     </dependency>
 
 JFreeSVG is a modular library with the module name `org.jfree.svg`.
@@ -78,6 +78,10 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 
 Change History
 --------------
+
+Version 5.0.7 (17 May 2025)
+- migrate publishing flow
+- update Maven and JUnit dependencies
 
 Version 5.0.6 (23 June 2024)
 - fix issue with `LinearGradientPaint` and `RadialGradientPaint` reference generation
