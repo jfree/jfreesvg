@@ -92,7 +92,7 @@ public final class ImageElement {
         StringBuilder sb = new StringBuilder();
         sb.append("ImageElement[");
         sb.append(this.href).append(", ").append(this.image);
-        sb.append("]");
+        sb.append(']');
         return sb.toString();
     }
  

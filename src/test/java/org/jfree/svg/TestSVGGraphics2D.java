@@ -926,7 +926,9 @@ class TestSVGGraphics2D {
 
     @Test
     void checkGradientPaintRefGeneration() {
-        if (!(this.g2 instanceof SVGGraphics2D)) return;
+        if (!(this.g2 instanceof SVGGraphics2D)) {
+            return;
+        }
         SVGGraphics2D svg2 = (SVGGraphics2D) this.g2;
         GradientPaint gp0 = new GradientPaint(1.0f, 2.0f, Color.RED, 3.0f, 4.0f, Color.BLUE);
         svg2.setPaint(gp0);

@@ -51,6 +51,7 @@ public class SVGGraphicsDevice extends GraphicsDevice {
      * @param defaultConfig  the default configuration.
      */
     public SVGGraphicsDevice(String id, GraphicsConfiguration defaultConfig) {
+        super();
         this.id = id;
         this.defaultConfig = defaultConfig;
     }
