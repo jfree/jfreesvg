@@ -3,20 +3,19 @@ JFreeSVG
 
 Version 3.4.3, 11 June 2022.
 
-(C)opyright 2013-2022, by David Gilbert.  All rights reserved.
+(C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/jfreesvg)
-
+[![Maven Central](https://img.shields.io/maven-central/v/org.jfree/jfreesvg)](https://central.sonatype.com/artifact/org.jfree/jfreesvg/versions) [![javadoc](https://javadoc.io/badge2/org.jfree/jfreesvg/javadoc.svg)](https://javadoc.io/doc/org.jfree/jfreesvg)
 
 Overview
 --------
 **JFreeSVG** is a graphics library for the Java(tm) platform that allows you to generate content in SVG format using the standard Java2D drawing API (`Graphics2D`).  JFreeSVG is light-weight, fast, and has no dependencies other than the Java runtime (1.8 or later).  
 
-![Sample from JFreeChart](http://www.jfree.org/jfreesvg/javadoc/doc-files/SVGTimeSeriesChartDemo1.svg)
+![Sample from JFreeChart](https://www.jfree.org/jfreesvg/javadoc/doc-files/SVGTimeSeriesChartDemo1.svg)
 
 The home page for the project is:
 
-http://www.jfree.org/jfreesvg/
+https://www.jfree.org/jfreesvg/
 
 
 Getting Started
@@ -45,7 +44,7 @@ This is a maintenance version of the library for developers that still require J
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>org.jfree.svg</artifactId>
-        <version>5.0.2</version>
+        <version>5.0.7</version>
     </dependency>
 
 Build
@@ -54,6 +53,9 @@ You can build `JFreeSVG` from sources using Maven:
 
     mvn clean verify
 
+To generate the Javadocs:
+
+    mvn clean compile javadoc:javadoc
 
 License
 -------
@@ -66,7 +68,6 @@ JFreeSVG is free software under the terms of the GNU General Public License vers
 If you prefer not to be bound by the terms of the GPLv3, you can obtain an alternative license by sponsoring the JFree project:
 
 - https://github.com/sponsors/jfree
-
 
 Change History
 --------------
@@ -86,7 +87,6 @@ Version 3.4.1 (1 May 2021)
 - correction of fix for encoding of images ([#21](https://github.com/jfree/jfreesvg/issues/21)).
 - use `java.util.Base64` instead of `javax.xml.bind.DatatypeConverter`.
 
-
 Version 3.4 (10 February 2019)
 - added attribute for font size units override;
 - added automatic module name (`org.jfree.jfreesvg`);
@@ -94,11 +94,9 @@ Version 3.4 (10 February 2019)
 - fixed `drawString()` method for empty string;
 - fixed `drawImage()` method for `null` `ImageOp`.
 
-
 Version 3.3 (7 November 2017)
 - the default `DEFS` key prefix should not begin with a number;
 - transferred demo code to the [JFree-Demos](https://github.com/jfree/jfree-demos) project to streamline the distribution process.
-
 
 Version 3.2 (9 October 2016)
 - added facility to specify `units` for `width` and `height` attributes;
@@ -203,12 +201,3 @@ Version 1.1 (4 September 2013)
 
 Version 1.0 (31 July 2013)
 - Initial public release.
-
-
-Contact / Questions
--------------------
-If you have any questions or feedback about JFreeSVG, please post in the forum:
-
-http://www.jfree.org/forum/viewforum.php?f=32
-
-...or send an e-mail to david.gilbert@object-refinery.com.
