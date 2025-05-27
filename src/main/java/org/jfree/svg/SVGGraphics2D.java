@@ -1990,7 +1990,7 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Clips to the intersection of the current clipping region and the
      * specified shape. 
-     * 
+     * <p>
      * According to the Oracle API specification, this method will accept a 
      * {@code null} argument, however there is a bug report (opened in 2004
      * and fixed in 2021) that describes the passing of {@code null} as 
