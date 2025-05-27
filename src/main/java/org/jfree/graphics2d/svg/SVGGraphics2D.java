@@ -26,7 +26,7 @@
  * commercial license can be purchased.  For details, please see visit the
  * JFreeSVG home page:
  *
- * http://www.jfree.org/jfreesvg
+ * https://www.jfree.org/jfreesvg
  */
 
 package org.jfree.graphics2d.svg;
@@ -221,29 +221,29 @@ public final class SVGGraphics2D extends Graphics2D {
     private final StringBuilder sb;
 
     /**
-     * A prefix for the keys used in the DEFS element.  This can be used to 
+     * A prefix for the keys used in the DEFS element.  This can be used to
      * ensure that the keys are unique when creating more than one SVG element
      * for a single HTML page.
      */
     private String defsKeyPrefix = "";
 
     /**
-     * A map of all the gradients used, and the corresponding id.  When 
+     * A map of all the gradients used, and the corresponding id.  When
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
      */
     private Map<GradientPaintKey, String> gradientPaints = new HashMap<>();
 
     /**
-     * A map of all the linear gradients used, and the corresponding id.  When 
-     * generating the SVG file, all the linear gradient paints used must be 
+     * A map of all the linear gradients used, and the corresponding id.  When
+     * generating the SVG file, all the linear gradient paints used must be
      * defined in the defs element.
      */
     private Map<LinearGradientPaintKey, String> linearGradientPaints = new HashMap<>();
 
     /**
-     * A map of all the radial gradients used, and the corresponding id.  When 
-     * generating the SVG file, all the radial gradient paints used must be 
+     * A map of all the radial gradients used, and the corresponding id.  When
+     * generating the SVG file, all the radial gradient paints used must be
      * defined in the defs element.
      */
     private Map<RadialGradientPaintKey, String> radialGradientPaints = new HashMap<>();
@@ -256,14 +256,14 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * The filename prefix for images that are referenced rather than
-     * embedded but don't have an {@code href} supplied via the 
+     * embedded but don't have an {@code href} supplied via the
      * {@link SVGHints#KEY_IMAGE_HREF} hint.
      */
     private String filePrefix;
 
     /**
      * The filename suffix for images that are referenced rather than
-     * embedded but don't have an {@code href} supplied via the 
+     * embedded but don't have an {@code href} supplied via the
      * {@link SVGHints#KEY_IMAGE_HREF} hint.
      */
     private String fileSuffix;
@@ -2213,16 +2213,16 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Clears the specified rectangle by filling it with the current 
+     * Clears the specified rectangle by filling it with the current
      * background color.  If the background color is {@code null}, this
      * method will do nothing.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
-     * 
-     * @see #getBackground() 
+     *
+     * @see #getBackground()
      */
     @Override
     public void clearRect(int x, int y, int width, int height) {
@@ -2234,22 +2234,22 @@ public final class SVGGraphics2D extends Graphics2D {
         fillRect(x, y, width, height);
         setPaint(saved);
     }
-    
+
     /**
-     * Draws a rectangle with rounded corners using the current 
+     * Draws a rectangle with rounded corners using the current
      * {@code paint} and {@code stroke}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
-     * 
-     * @see #fillRoundRect(int, int, int, int, int, int) 
+     *
+     * @see #fillRoundRect(int, int, int, int, int, int)
      */
     @Override
-    public void drawRoundRect(int x, int y, int width, int height, 
+    public void drawRoundRect(int x, int y, int width, int height,
             int arcWidth, int arcHeight) {
         setRoundRect(x, y, width, height, arcWidth, arcHeight);
         draw(this.roundRect);
@@ -2257,18 +2257,18 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Fills a rectangle with rounded corners using the current {@code paint}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
      * @param arcWidth  the arc-width.
      * @param arcHeight  the arc-height.
-     * 
-     * @see #drawRoundRect(int, int, int, int, int, int) 
+     *
+     * @see #drawRoundRect(int, int, int, int, int, int)
      */
     @Override
-    public void fillRoundRect(int x, int y, int width, int height, 
+    public void fillRoundRect(int x, int y, int width, int height,
             int arcWidth, int arcHeight) {
         setRoundRect(x, y, width, height, arcWidth, arcHeight);
         fill(this.roundRect);
@@ -2277,13 +2277,13 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Draws an oval framed by the rectangle {@code (x, y, width, height)}
      * using the current {@code paint} and {@code stroke}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
-     * 
-     * @see #fillOval(int, int, int, int) 
+     *
+     * @see #fillOval(int, int, int, int)
      */
     @Override
     public void drawOval(int x, int y, int width, int height) {
@@ -2293,13 +2293,13 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Fills an oval framed by the rectangle {@code (x, y, width, height)}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
-     * 
-     * @see #drawOval(int, int, int, int) 
+     *
+     * @see #drawOval(int, int, int, int)
      */
     @Override
     public void fillOval(int x, int y, int width, int height) {
@@ -2308,19 +2308,19 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an arc contained within the rectangle 
+     * Draws an arc contained within the rectangle
      * {@code (x, y, width, height)}, starting at {@code startAngle}
-     * and continuing through {@code arcAngle} degrees using 
+     * and continuing through {@code arcAngle} degrees using
      * the current {@code paint} and {@code stroke}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
-     * 
-     * @see #fillArc(int, int, int, int, int, int) 
+     *
+     * @see #fillArc(int, int, int, int, int, int)
      */
     @Override
     public void drawArc(int x, int y, int width, int height, int startAngle, 
@@ -2330,19 +2330,19 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Fills an arc contained within the rectangle 
+     * Fills an arc contained within the rectangle
      * {@code (x, y, width, height)}, starting at {@code startAngle}
-     * and continuing through {@code arcAngle} degrees, using 
+     * and continuing through {@code arcAngle} degrees, using
      * the current {@code paint}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
-     * 
-     * @see #drawArc(int, int, int, int, int, int) 
+     *
+     * @see #drawArc(int, int, int, int, int, int)
      */
     @Override
     public void fillArc(int x, int y, int width, int height, int startAngle, 
@@ -2352,58 +2352,58 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws the specified multi-segment line using the current 
+     * Draws the specified multi-segment line using the current
      * {@code paint} and {@code stroke}.
-     * 
+     *
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polyline.
      */
     @Override
     public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints,
                 false);
         draw(p);
     }
 
     /**
-     * Draws the specified polygon using the current {@code paint} and 
+     * Draws the specified polygon using the current {@code paint} and
      * {@code stroke}.
-     * 
+     *
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
-     * 
+     *
      * @see #fillPolygon(int[], int[], int)      */
     @Override
     public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints,
                 true);
         draw(p);
     }
 
     /**
      * Fills the specified polygon using the current {@code paint}.
-     * 
+     *
      * @param xPoints  the x-points.
      * @param yPoints  the y-points.
      * @param nPoints  the number of points to use for the polygon.
-     * 
-     * @see #drawPolygon(int[], int[], int) 
+     *
+     * @see #drawPolygon(int[], int[], int)
      */
     @Override
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints, 
+        GeneralPath p = GraphicsUtils.createPolygon(xPoints, yPoints, nPoints,
                 true);
         fill(p);
     }
 
     /**
      * Returns the bytes representing a PNG format image.
-     * 
+     *
      * @param img  the image to encode ({@code null} not permitted).
-     * 
-     * @return The bytes representing a PNG format image. 
+     *
+     * @return The bytes representing a PNG format image.
      */
     private byte[] getPNGBytes(Image img) {
         Args.nullNotPermitted(img, "img");
@@ -2411,7 +2411,7 @@ public final class SVGGraphics2D extends Graphics2D {
         if (img instanceof RenderedImage) {
             ri = (RenderedImage) img;
         } else {
-            BufferedImage bi = new BufferedImage(img.getWidth(null), 
+            BufferedImage bi = new BufferedImage(img.getWidth(null),
                     img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = bi.createGraphics();
             g2.drawImage(img, 0, 0, null);
@@ -2506,7 +2506,7 @@ public final class SVGGraphics2D extends Graphics2D {
             if (href == null) {
                 href = this.filePrefix + count + this.fileSuffix;
             } else {
-                // KEY_IMAGE_HREF value is for a single use...
+                // KEY_IMAGE_HREF value is for a single use, so clear it...
                 this.hints.put(SVGHints.KEY_IMAGE_HREF, null);
             }
             ImageElement imageElement = new ImageElement(href, img);
@@ -2534,19 +2534,19 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws an image at the location {@code (x, y)}.  Note that the 
+     * Draws an image at the location {@code (x, y)}.  Note that the
      * {@code observer} is ignored.
-     * 
+     *
      * @param img  the image ({@code null} permitted...draws nothing).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
-     * 
-     * @return {@code true} if there is no more drawing to be done. 
+     *
+     * @return {@code true} if there is no more drawing to be done.
      */
     @Override
-    public boolean drawImage(Image img, int x, int y, Color bgcolor, 
+    public boolean drawImage(Image img, int x, int y, Color bgcolor,
             ImageObserver observer) {
         if (img == null) {
             return true;
@@ -2564,9 +2564,9 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Draws an image to the rectangle {@code (x, y, w, h)} (scaling it if
-     * required), first filling the background with the specified color.  Note 
+     * required), first filling the background with the specified color.  Note
      * that the {@code observer} is ignored.
-     * 
+     *
      * @param img  the image.
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -2574,11 +2574,11 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param h  the height.
      * @param bgcolor  the background color ({@code null} permitted).
      * @param observer  ignored.
-     * 
-     * @return {@code true} if the image is drawn.      
+     *
+     * @return {@code true} if the image is drawn.
      */
     @Override
-    public boolean drawImage(Image img, int x, int y, int w, int h, 
+    public boolean drawImage(Image img, int x, int y, int w, int h,
             Color bgcolor, ImageObserver observer) {
         this.sb.append("<g");
         appendOptionalElementIDFromHint(this.sb);
@@ -2593,10 +2593,10 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws part of an image (defined by the source rectangle 
+     * Draws part of an image (defined by the source rectangle
      * {@code (sx1, sy1, sx2, sy2)}) into the destination rectangle
      * {@code (dx1, dy1, dx2, dy2)}.  Note that the {@code observer} is ignored.
-     * 
+     *
      * @param img  the image.
      * @param dx1  the x-coordinate for the top left of the destination.
      * @param dy1  the y-coordinate for the top left of the destination.
@@ -2777,8 +2777,8 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns the SVG element that has been generated by calls to this
-     * {@code Graphics2D} implementation, giving it the specified {@code id}.  
-     * If {@code id} is {@code null}, the element will have no {@code id} 
+     * {@code Graphics2D} implementation, giving it the specified {@code id}.
+     * If {@code id} is {@code null}, the element will have no {@code id}
      * attribute.  This method also allows for a {@code viewBox} to be defined,
      * along with the settings that handle scaling.
      *
@@ -2786,7 +2786,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param includeDimensions  include the width and height attributes?
      * @param viewBox  the view box specification (if {@code null} then no
      *     {@code viewBox} attribute will be defined).
-     * @param preserveAspectRatio  the value of the {@code preserveAspectRatio} 
+     * @param preserveAspectRatio  the value of the {@code preserveAspectRatio}
      *     attribute (if {@code null} then not attribute will be defined).
      * @param meetOrSlice  the value of the meetOrSlice attribute.
      *
@@ -2953,7 +2953,7 @@ public final class SVGGraphics2D extends Graphics2D {
      *
      * @return The SVG element.
      */
-    private String getLinearGradientElement(String id, 
+    private String getLinearGradientElement(String id,
             LinearGradientPaint paint) {
         StringBuilder b = new StringBuilder("<linearGradient id='").append(id)
                 .append('\'');
@@ -2964,7 +2964,7 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append(" x2='").append(geomDP(p2.getX())).append('\'');
         b.append(" y2='").append(geomDP(p2.getY())).append('\'');
         if (!paint.getCycleMethod().equals(CycleMethod.NO_CYCLE)) {
-            String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT) 
+            String sm = paint.getCycleMethod().equals(CycleMethod.REFLECT)
                     ? "reflect" : "repeat";
             b.append(" spreadMethod='").append(sm).append('\'');
         }
@@ -2988,11 +2988,11 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns an element to represent a radial gradient.  All the radial
      * gradients that are used get written to the DEFS element in the SVG.
-     * 
+     *
      * @param id  the reference id.
      * @param rgp  the radial gradient.
-     * 
-     * @return The SVG element. 
+     *
+     * @return The SVG element.
      */
     private String getRadialGradientElement(String id, RadialGradientPaint rgp) {
         StringBuilder b = new StringBuilder("<radialGradient id='").append(id)
@@ -3024,7 +3024,7 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns a clip path reference for the current user clip.  This is 
+     * Returns a clip path reference for the current user clip.  This is
      * written out on all SVG elements that draw or fill shapes or text.
      *
      * @return A clip path reference.
@@ -3077,9 +3077,9 @@ public final class SVGGraphics2D extends Graphics2D {
             this.roundRect = new RoundRectangle2D.Double(x, y, width, height,
                     arcWidth, arcHeight);
         } else {
-            this.roundRect.setRoundRect(x, y, width, height, 
+            this.roundRect.setRoundRect(x, y, width, height,
                     arcWidth, arcHeight);
-        }        
+        }
     }
 
     /**
@@ -3106,10 +3106,10 @@ public final class SVGGraphics2D extends Graphics2D {
     }
     
     /**
-     * Sets the attributes of the reusable {@link Ellipse2D} object that is 
+     * Sets the attributes of the reusable {@link Ellipse2D} object that is
      * used by the {@link #drawOval(int, int, int, int)} and
      * {@link #fillOval(int, int, int, int)} methods.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
