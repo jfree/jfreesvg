@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
+
     <modelVersion>4.0.0</modelVersion>
- 
+
     <groupId>org.jfree</groupId>
     <artifactId>jfreesvg</artifactId>
-    <version>3.4.4-SNAPSHOT</version>
+    <version>3.4.4</version>
     <packaging>jar</packaging>
 
     <name>JFreeSVG</name>
     <url>https://www.jfree.org/jfreesvg</url>
     <description>A fast, lightweight Java library for creating SVG output.</description>
-  
+
     <licenses>
         <license>
             <name>GNU General Public License (GPL)</name>
@@ -37,7 +37,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
- 
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -70,7 +70,7 @@
                     <source>8</source>
                     <target>8</target>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <encoding>${project.build.sourceEncoding}</encoding>               
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -116,7 +116,7 @@
     </distributionManagement>
 
     <profiles>
-        <profile> 
+        <profile>
             <id>release</id>
             <build>
                 <plugins>
