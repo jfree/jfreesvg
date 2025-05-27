@@ -4,7 +4,7 @@
  * 
  * (C)opyright 2013-2022, by David Gilbert.  All rights reserved.
  *
- * Project Info:  http://www.jfree.org/jfreesvg/index.html
+ * Project Info:  https://www.jfree.org/jfreesvg/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * commercial license can be purchased.  For details, please see visit the
  * JFreeSVG home page:
  * 
- * http://www.jfree.org/jfreesvg
+ * https://www.jfree.org/jfreesvg
  */
 
 package org.jfree.graphics2d.svg;
@@ -116,7 +116,7 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * String svgElement = g2.getSVGElement();}</pre>
  * <p>
  * For the content generation step, you can make use of third party libraries,
- * such as <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> and
+ * such as <a href="https://www.jfree.org/jfreechart/">JFreeChart</a> and
  * <a href="http://www.object-refinery.com/orsoncharts/">Orson Charts</a>, that 
  * render output using standard Java2D API calls.
  * </p>
@@ -2809,7 +2809,7 @@ public final class SVGGraphics2D extends Graphics2D {
         String unitStr = this.units != null ? this.units.toString() : "";
         svg.append(" xmlns='http://www.w3.org/2000/svg'")
            .append(" xmlns:xlink='http://www.w3.org/1999/xlink'")
-           .append(" xmlns:jfreesvg='http://www.jfree.org/jfreesvg/svg'");
+           .append(" xmlns:jfreesvg='https://www.jfree.org/jfreesvg/svg'");
         if (includeDimensions) {
             svg.append(" width='").append(this.width).append(unitStr)
                .append("' height='").append(this.height).append(unitStr)
