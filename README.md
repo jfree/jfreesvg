@@ -5,7 +5,7 @@ Version 5.0.7, by David Gilbert, 17 May 2025.
 
 (C)opyright 2013-present, by David Gilbert.  All rights reserved.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jfree/org.jfree.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jfree/org.jfree.svg)](https://central.sonatype.com/artifact/org.jfree/org.jfree.svg/versions) [![javadoc](https://javadoc.io/badge2/org.jfree/org.jfree.svg/javadoc.svg)](https://javadoc.io/doc/org.jfree/org.jfree.svg)
 
 Overview
 --------
