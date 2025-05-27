@@ -61,8 +61,7 @@ Testing
 - the compositing rules in `AlphaComposite` are not implemented
 - font metrics are approximated
 
-![jfreesvg](https://github.com/jfree/jfreesvg/assets/1835893/d7d6f741-8005-49c5-bc4c-fff112a33cef)
-
+![jfreesvg](https://github.com/user-attachments/assets/4e748fa5-a0b3-4a73-a01a-f73b0c9da984)
 
 License
 -------
