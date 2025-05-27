@@ -36,7 +36,7 @@ JFreeSVG is published to the Central Repository.  You can include it in your pro
     <dependency>
         <groupId>org.jfree</groupId>
         <artifactId>jfreesvg</artifactId>
-        <version>3.4.3</version>
+        <version>3.4.4</version>
     </dependency>
 
 This is a maintenance version of the library for developers that still require Java 8 support.  If you are using Java 11 or later, then you should use the modular version of JFreeSVG (which has a different artifact ID and version number):
