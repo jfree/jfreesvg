@@ -90,6 +90,17 @@
                 <artifactId>maven-install-plugin</artifactId>
                 <version>3.1.4</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <configuration>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <linksource>true</linksource>
+                    <source>8</source>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -112,11 +123,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.11.2</version>
-                        <configuration>
-                            <docfilessubdirs>true</docfilessubdirs>
-                            <linksource>true</linksource>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadoc</id>
