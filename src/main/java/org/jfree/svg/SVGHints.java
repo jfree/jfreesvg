@@ -4,7 +4,7 @@
  * 
  * (C)opyright 2013-present, by David Gilbert.  All rights reserved.
  *
- * Project Info:  http://www.jfree.org/jfreesvg/index.html
+ * Project Info:  https://www.jfree.org/jfreesvg/index.html
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * commercial license can be purchased.  For details, please see visit the
  * JFreeSVG home page:
  * 
- * http://www.jfree.org/jfreesvg
+ * https://www.jfree.org/jfreesvg
  */
 
 package org.jfree.svg;
@@ -474,8 +474,8 @@ public final class SVGHints {
      * behaviour of {@link SVGHints#KEY_BEGIN_GROUP} and 
      * {@link SVGHints#KEY_END_GROUP}.
      * 
-     * <p>The JFreeChart library can be found at <a href="http://www.jfree.org/jfreechart/">
-     * http://www.jfree.org/jfreechart/</a>.
+     * <p>The JFreeChart library can be found at <a href="https://www.jfree.org/jfreechart/">
+     * https://www.jfree.org/jfreechart/</a>.
      * 
      * @return A boolean.
      * 

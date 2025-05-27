@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>JFreeSVG</name>
-    <url>http://www.jfree.org/jfreesvg</url>
+    <url>https://www.jfree.org/jfreesvg</url>
     <description>A fast, lightweight Java library for creating SVG output.</description>
   
     <licenses>
