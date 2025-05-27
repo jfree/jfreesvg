@@ -129,24 +129,24 @@ import org.jfree.graphics2d.RadialGradientPaintKey;
  * Some additional notes:
  * <ul>
  * <li>Images are supported, but for methods with an {@code ImageObserver}
- * parameter note that the observer is ignored completely.  In any case, using 
- * images that are not fully loaded already would not be a good idea in the 
+ * parameter note that the observer is ignored completely.  In any case, using
+ * images that are not fully loaded already would not be a good idea in the
  * context of generating SVG data/files;</li>
- * 
- * <li>the {@link #getFontMetrics(java.awt.Font)} and 
- * {@link #getFontRenderContext()} methods return values that come from an 
- * internal {@code BufferedImage}, this is a short-cut and we don't know 
- * if there are any negative consequences (if you know of any, please let us 
+ *
+ * <li>the {@link #getFontMetrics(java.awt.Font)} and
+ * {@link #getFontRenderContext()} methods return values that come from an
+ * internal {@code BufferedImage}, this is a short-cut and we don't know
+ * if there are any negative consequences (if you know of any, please let us
  * know and we'll add the info here or find a way to fix it);</li>
- * 
+ *
  * <li>there are settings to control the number of decimal places used to
  * write the coordinates for geometrical elements (default 2dp) and transform
  * matrices (default 6dp).  These defaults may change in a future release.</li>
- * 
+ *
  * <li>when an HTML page contains multiple SVG elements, the items within
- * the DEFS element for each SVG element must have IDs that are unique across 
+ * the DEFS element for each SVG element must have IDs that are unique across
  * <em>all</em> SVG elements in the page.  We autopopulate the
- * {@code defsKeyPrefix} attribute to help ensure that unique IDs are 
+ * {@code defsKeyPrefix} attribute to help ensure that unique IDs are
  * generated.</li>
  * </ul>
  *
@@ -167,21 +167,21 @@ public final class SVGGraphics2D extends Graphics2D {
      * unit information is written in the SVG output.
      */
     private final SVGUnits units;
-    
-    /** 
+
+    /**
      * The shape rendering property to set for the SVG element.  Permitted
      * values are "auto", "crispEdges", "geometricPrecision" and
      * "optimizeSpeed".
      */
     private String shapeRendering = "auto";
-    
+
     /**
-     * The text rendering property for the SVG element.  Permitted values 
-     * are "auto", "optimizeSpeed", "optimizeLegibility" and 
+     * The text rendering property for the SVG element.  Permitted values
+     * are "auto", "optimizeSpeed", "optimizeLegibility" and
      * "geometricPrecision".
      */
     private String textRendering = "auto";
-    
+
     /** The font size units. */
     private SVGUnits fontSizeUnits = SVGUnits.PX;
 
@@ -196,11 +196,11 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * The number of decimal places to use when writing the matrix values
-     * for transformations. 
+     * for transformations.
      */
     private int transformDP;
-    
-    /** 
+
+    /**
      * The number of decimal places to use when writing the matrix values
      * for transformations.
      */
@@ -216,7 +216,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * The decimal formatter for coordinates of geometrical shapes.
      */
     private DecimalFormat geometryFormat;
-    
+
     /** The buffer that accumulates the SVG output. */
     private final StringBuilder sb;
 
@@ -316,7 +316,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /** Maps font family names to alternates (or leaves them unchanged). */
     private FontMapper fontMapper;
-        
+
     /** The background color, used by clearRect(). */
     private Color background = Color.BLACK;
 
@@ -367,7 +367,7 @@ public final class SVGGraphics2D extends Graphics2D {
     private String gradientPaintRef = null;
 
     /**
-     * The device configuration (this is lazily instantiated in the 
+     * The device configuration (this is lazily instantiated in the
      * getDeviceConfiguration() method).
      */
     private GraphicsConfiguration deviceConfiguration;
@@ -406,7 +406,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
      * @param sb  the string builder ({@code null} not permitted).
-     * 
+     *
      * @since 2.0
      */
     public SVGGraphics2D(int width, int height, StringBuilder sb) {
@@ -415,19 +415,19 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Creates a new instance with the specified width and height that will
-     * populate the supplied StringBuilder instance.  This constructor is 
+     * populate the supplied StringBuilder instance.  This constructor is
      * used by the {@link #create()} method, but won't normally be called
      * directly by user code.
-     * 
+     *
      * @param width  the width of the SVG element.
      * @param height  the height of the SVG element.
-     * @param units  the units for the width and height above ({@code null} 
+     * @param units  the units for the width and height above ({@code null}
      *     permitted).
      * @param sb  the string builder ({@code null} not permitted).
-     * 
+     *
      * @since 3.2
      */
-    public SVGGraphics2D(int width, int height, SVGUnits units, 
+    public SVGGraphics2D(int width, int height, SVGUnits units,
             StringBuilder sb) {
         super();
         this.width = width;
@@ -444,7 +444,7 @@ public final class SVGGraphics2D extends Graphics2D {
         this.fontMapper = new StandardFontMapper();
         this.zeroStrokeWidth = 0.1;
         this.sb = sb;
-        this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING, 
+        this.hints = new RenderingHints(SVGHints.KEY_IMAGE_HANDLING,
                 SVGHints.VALUE_IMAGE_HANDLING_EMBED);
         // force the formatters to use a '.' for the decimal point
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
@@ -456,10 +456,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Creates a new instance that is a child of the supplied parent.
-     * 
+     *
      * @param parent  the parent ({@code null} not permitted).
      */
-    private SVGGraphics2D(SVGGraphics2D parent) {
+    private SVGGraphics2D(final SVGGraphics2D parent) {
         this(parent.width, parent.height, parent.units, parent.sb);
         this.shapeRendering = parent.shapeRendering;
         this.textRendering = parent.textRendering;
@@ -478,36 +478,36 @@ public final class SVGGraphics2D extends Graphics2D {
         this.imageElements = parent.imageElements;
         this.zeroStrokeWidth = parent.zeroStrokeWidth;
     }
-    
+
     /**
      * Returns the width for the SVG element, specified in the constructor.
-     * This value will be written to the SVG element returned by the 
+     * This value will be written to the SVG element returned by the
      * {@link #getSVGElement()} method.
-     * 
-     * @return The width for the SVG element. 
+     *
+     * @return The width for the SVG element.
      */
     public int getWidth() {
         return this.width;
     }
-    
+
     /**
      * Returns the height for the SVG element, specified in the constructor.
-     * This value will be written to the SVG element returned by the 
+     * This value will be written to the SVG element returned by the
      * {@link #getSVGElement()} method.
-     * 
-     * @return The height for the SVG element. 
+     *
+     * @return The height for the SVG element.
      */
     public int getHeight() {
         return this.height;
     }
-    
+
     /**
-     * Returns the units for the width and height of the SVG element's 
-     * viewport, as specified in the constructor.  The default value is 
+     * Returns the units for the width and height of the SVG element's
+     * viewport, as specified in the constructor.  The default value is
      * {@code null}).
-     * 
+     *
      * @return The units (possibly {@code null}).
-     * 
+     *
      * @since 3.2
      */
     public SVGUnits getUnits() {
@@ -515,113 +515,113 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the value of the 'shape-rendering' property that will be 
+     * Returns the value of the 'shape-rendering' property that will be
      * written to the SVG element.  The default value is "auto".
-     * 
+     *
      * @return The shape rendering property.
-     * 
+     *
      * @since 2.0
      */
     public String getShapeRendering() {
         return this.shapeRendering;
     }
-    
+
     /**
      * Sets the value of the 'shape-rendering' property that will be written to
-     * the SVG element.  Permitted values are "auto", "crispEdges", 
+     * the SVG element.  Permitted values are "auto", "crispEdges",
      * "geometricPrecision", "inherit" and "optimizeSpeed".
-     * 
+     *
      * @param value  the new value.
-     * 
+     *
      * @since 2.0
      */
     public void setShapeRendering(String value) {
-        if (!value.equals("auto") && !value.equals("crispEdges") 
-                && !value.equals("geometricPrecision") 
+        if (!value.equals("auto") && !value.equals("crispEdges")
+                && !value.equals("geometricPrecision")
                 && !value.equals("optimizeSpeed")) {
             throw new IllegalArgumentException("Unrecognised value: " + value);
         }
         this.shapeRendering = value;
     }
-    
+
     /**
-     * Returns the value of the 'text-rendering' property that will be 
+     * Returns the value of the 'text-rendering' property that will be
      * written to the SVG element.  The default value is "auto".
-     * 
+     *
      * @return The text rendering property.
-     * 
+     *
      * @since 2.0
      */
     public String getTextRendering() {
         return this.textRendering;
     }
-    
+
     /**
      * Sets the value of the 'text-rendering' property that will be written to
-     * the SVG element.  Permitted values are "auto", "optimizeSpeed", 
+     * the SVG element.  Permitted values are "auto", "optimizeSpeed",
      * "optimizeLegibility" and "geometricPrecision".
-     * 
+     *
      * @param value  the new value.
-     * 
+     *
      * @since 2.0
      */
     public void setTextRendering(String value) {
-        if (!value.equals("auto") && !value.equals("optimizeSpeed") 
-                && !value.equals("optimizeLegibility") 
+        if (!value.equals("auto") && !value.equals("optimizeSpeed")
+                && !value.equals("optimizeLegibility")
                 && !value.equals("geometricPrecision")) {
             throw new IllegalArgumentException("Unrecognised value: " + value);
         }
         this.textRendering = value;
     }
-    
+
     /**
      * Returns the flag that controls whether or not this object will observe
      * the {@code KEY_STROKE_CONTROL} rendering hint.  The default value is
      * {@code true}.
-     * 
+     *
      * @return A boolean.
-     * 
-     * @see #setCheckStrokeControlHint(boolean) 
+     *
+     * @see #setCheckStrokeControlHint(boolean)
      * @since 2.0
      */
     public boolean getCheckStrokeControlHint() {
         return this.checkStrokeControlHint;
     }
-    
+
     /**
      * Sets the flag that controls whether or not this object will observe
-     * the {@code KEY_STROKE_CONTROL} rendering hint.  When enabled (the 
+     * the {@code KEY_STROKE_CONTROL} rendering hint.  When enabled (the
      * default), a hint to normalise strokes will write a {@code stroke-style}
-     * attribute with the value {@code crispEdges}. 
-     * 
+     * attribute with the value {@code crispEdges}.
+     *
      * @param check  the new flag value.
-     * 
-     * @see #getCheckStrokeControlHint() 
+     *
+     * @see #getCheckStrokeControlHint()
      * @since 2.0
      */
     public void setCheckStrokeControlHint(boolean check) {
         this.checkStrokeControlHint = check;
     }
-    
+
     /**
      * Returns the prefix used for all keys in the DEFS element.  The default
      * value is {@code "_"+ String.valueOf(System.nanoTime())}.
-     * 
+     *
      * @return The prefix string (never {@code null}).
-     * 
+     *
      * @since 1.9
      */
     public String getDefsKeyPrefix() {
         return this.defsKeyPrefix;
     }
-    
+
     /**
      * Sets the prefix that will be used for all keys in the DEFS element.
-     * If required, this must be set immediately after construction (before any 
+     * If required, this must be set immediately after construction (before any
      * content generation methods have been called).
-     * 
+     *
      * @param prefix  the prefix ({@code null} not permitted).
-     * 
+     *
      * @since 1.9
      */
     public void setDefsKeyPrefix(String prefix) {
@@ -634,12 +634,12 @@ public final class SVGGraphics2D extends Graphics2D {
      * matrices in the SVG output.  The default value is 6.
      * <p>
      * Note that there is a separate attribute to control the number of decimal
-     * places for geometrical elements in the output (see 
+     * places for geometrical elements in the output (see
      * {@link #getGeometryDP()}).
-     * 
+     *
      * @return The number of decimal places.
-     * 
-     * @see #setTransformDP(int) 
+     *
+     * @see #setTransformDP(int)
      */
     public int getTransformDP() {
         return this.transformDP;
@@ -649,16 +649,16 @@ public final class SVGGraphics2D extends Graphics2D {
      * Sets the number of decimal places used to write the transformation
      * matrices in the SVG output.  Values in the range 1 to 10 will be used
      * to configure a formatter to that number of decimal places, for all other
-     * values we revert to the normal {@code String} conversion of 
+     * values we revert to the normal {@code String} conversion of
      * {@code double} primitives (approximately 16 decimals places).
      * <p>
      * Note that there is a separate attribute to control the number of decimal
-     * places for geometrical elements in the output (see 
+     * places for geometrical elements in the output (see
      * {@link #setGeometryDP(int)}).
-     * 
+     *
      * @param dp  the number of decimal places (normally 1 to 10).
-     * 
-     * @see #getTransformDP() 
+     *
+     * @see #getTransformDP()
      */
     public void setTransformDP(int dp) {
         this.transformDP = dp;
@@ -668,36 +668,36 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('.');
-        this.transformFormat = new DecimalFormat("0." 
+        this.transformFormat = new DecimalFormat("0."
                 + "##########".substring(0, dp), dfs);
     }
-    
+
     /**
      * Returns the number of decimal places used to write the coordinates
      * of geometrical shapes.  The default value is 2.
      * <p>
      * Note that there is a separate attribute to control the number of decimal
-     * places for transform matrices in the output (see 
+     * places for transform matrices in the output (see
      * {@link #getTransformDP()}).
-     * 
+     *
      * @return The number of decimal places.
      */
     public int getGeometryDP() {
-        return this.geometryDP;    
+        return this.geometryDP;
     }
-    
+
     /**
      * Sets the number of decimal places used to write the coordinates of
-     * geometrical shapes in the SVG output.  Values in the range 1 to 10 will 
-     * be used to configure a formatter to that number of decimal places, for 
-     * all other values we revert to the normal String conversion of double 
+     * geometrical shapes in the SVG output.  Values in the range 1 to 10 will
+     * be used to configure a formatter to that number of decimal places, for
+     * all other values we revert to the normal String conversion of double
      * primitives (approximately 16 decimals places).
      * <p>
      * Note that there is a separate attribute to control the number of decimal
-     * places for transform matrices in the output (see 
+     * places for transform matrices in the output (see
      * {@link #setTransformDP(int)}).
-     * 
-     * @param dp  the number of decimal places (normally 1 to 10). 
+     *
+     * @param dp  the number of decimal places (normally 1 to 10).
      */
     public void setGeometryDP(int dp) {
         this.geometryDP = dp;
@@ -707,28 +707,28 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         DecimalFormatSymbols dfs = new DecimalFormatSymbols();
         dfs.setDecimalSeparator('.');
-        this.geometryFormat = new DecimalFormat("0." 
+        this.geometryFormat = new DecimalFormat("0."
                 + "##########".substring(0, dp), dfs);
     }
-    
+
     /**
      * Returns the prefix used to generate a filename for an image that is
      * referenced from, rather than embedded in, the SVG element.
-     * 
+     *
      * @return The file prefix (never {@code null}).
-     * 
+     *
      * @since 1.5
      */
     public String getFilePrefix() {
         return this.filePrefix;
     }
-    
+
     /**
      * Sets the prefix used to generate a filename for any image that is
      * referenced from the SVG element.
-     * 
+     *
      * @param prefix  the new prefix ({@code null} not permitted).
-     * 
+     *
      * @since 1.5
      */
     public void setFilePrefix(String prefix) {
@@ -739,51 +739,51 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the suffix used to generate a filename for an image that is
      * referenced from, rather than embedded in, the SVG element.
-     * 
+     *
      * @return The file suffix (never {@code null}).
-     * 
+     *
      * @since 1.5
      */
     public String getFileSuffix() {
         return this.fileSuffix;
     }
-    
+
     /**
      * Sets the suffix used to generate a filename for any image that is
      * referenced from the SVG element.
-     * 
+     *
      * @param suffix  the new prefix ({@code null} not permitted).
-     * 
+     *
      * @since 1.5
      */
     public void setFileSuffix(String suffix) {
         Args.nullNotPermitted(suffix, "suffix");
         this.fileSuffix = suffix;
     }
-    
+
     /**
      * Returns the width to use for the SVG stroke when the AWT stroke
-     * specified has a zero width (the default value is {@code 0.1}).  In 
-     * the Java specification for {@code BasicStroke} it states "If width 
-     * is set to 0.0f, the stroke is rendered as the thinnest possible 
-     * line for the target device and the antialias hint setting."  We don't 
+     * specified has a zero width (the default value is {@code 0.1}).  In
+     * the Java specification for {@code BasicStroke} it states "If width
+     * is set to 0.0f, the stroke is rendered as the thinnest possible
+     * line for the target device and the antialias hint setting."  We don't
      * have a means to implement that accurately since we must specify a fixed
      * width.
-     * 
+     *
      * @return The width.
-     * 
+     *
      * @since 1.9
      */
     public double getZeroStrokeWidth() {
         return this.zeroStrokeWidth;
     }
-    
+
     /**
      * Sets the width to use for the SVG stroke when the current AWT stroke
      * has a width of 0.0.
-     * 
+     *
      * @param width  the new width (must be 0 or greater).
-     * 
+     *
      * @since 1.9
      */
     public void setZeroStrokeWidth(double width) {
@@ -792,11 +792,11 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         this.zeroStrokeWidth = width;
     }
- 
+
     /**
      * Returns the device configuration associated with this
      * {@code Graphics2D}.
-     * 
+     *
      * @return The graphics configuration.
      */
     @Override
@@ -812,9 +812,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * Creates a new graphics object that is a copy of this graphics object
      * (except that it has not accumulated the drawing operations).  Not sure
      * yet when or why this would be useful when creating SVG output.  Note
-     * that the {@code fontMapper} object ({@link #getFontMapper()}) is shared 
+     * that the {@code fontMapper} object ({@link #getFontMapper()}) is shared
      * between the existing instance and the new one.
-     * 
+     *
      * @return A new graphics object.
      */
     @Override
@@ -835,28 +835,28 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the paint used to draw or fill shapes (or text).  The default 
+     * Returns the paint used to draw or fill shapes (or text).  The default
      * value is {@link Color#BLACK}.
-     * 
-     * @return The paint (never {@code null}). 
-     * 
-     * @see #setPaint(java.awt.Paint) 
+     *
+     * @return The paint (never {@code null}).
+     *
+     * @see #setPaint(java.awt.Paint)
      */
     @Override
     public Paint getPaint() {
         return this.paint;
     }
-    
+
     /**
-     * Sets the paint used to draw or fill shapes (or text).  If 
+     * Sets the paint used to draw or fill shapes (or text).  If
      * {@code paint} is an instance of {@code Color}, this method will
-     * also update the current color attribute (see {@link #getColor()}). If 
-     * you pass {@code null} to this method, it does nothing (in 
+     * also update the current color attribute (see {@link #getColor()}). If
+     * you pass {@code null} to this method, it does nothing (in
      * accordance with the JDK specification).
-     * 
+     *
      * @param paint  the paint ({@code null} is permitted but ignored).
-     * 
-     * @see #getPaint() 
+     *
+     * @see #getPaint()
      */
     @Override
     public void setPaint(Paint paint) {
@@ -908,10 +908,10 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the foreground color.  This method exists for backwards
      * compatibility in AWT, you should use the {@link #getPaint()} method.
-     * 
+     *
      * @return The foreground color (never {@code null}).
-     * 
-     * @see #getPaint() 
+     *
+     * @see #getPaint()
      */
     @Override
     public Color getColor() {
@@ -919,13 +919,13 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the foreground color.  This method exists for backwards 
-     * compatibility in AWT, you should use the 
+     * Sets the foreground color.  This method exists for backwards
+     * compatibility in AWT, you should use the
      * {@link #setPaint(java.awt.Paint)} method.
-     * 
-     * @param c  the color ({@code null} permitted but ignored). 
-     * 
-     * @see #setPaint(java.awt.Paint) 
+     *
+     * @param c  the color ({@code null} permitted but ignored).
+     *
+     * @see #setPaint(java.awt.Paint)
      */
     @Override
     public void setColor(Color c) {
@@ -939,10 +939,10 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns the background color.  The default value is {@link Color#BLACK}.
      * This is used by the {@link #clearRect(int, int, int, int)} method.
-     * 
-     * @return The background color (possibly {@code null}). 
-     * 
-     * @see #setBackground(java.awt.Color) 
+     *
+     * @return The background color (possibly {@code null}).
+     *
+     * @see #setBackground(java.awt.Color)
      */
     @Override
     public Color getBackground() {
@@ -950,15 +950,15 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the background color.  This is used by the 
-     * {@link #clearRect(int, int, int, int)} method.  The reference 
-     * implementation allows {@code null} for the background color so
-     * we allow that too (but for that case, the clearRect method will do 
+     * Sets the background color.  This is used by the
+     * {@link #clearRect(int, int, int, int)} method.  The reference
+     * implementation allows {@code null} for the background color, so
+     * we allow that too (but for that case, the clearRect method will do
      * nothing).
-     * 
+     *
      * @param color  the color ({@code null} permitted).
-     * 
-     * @see #getBackground() 
+     *
+     * @see #getBackground()
      */
     @Override
     public void setBackground(Color color) {
@@ -967,22 +967,22 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns the current composite.
-     * 
+     *
      * @return The current composite (never {@code null}).
-     * 
-     * @see #setComposite(java.awt.Composite) 
+     *
+     * @see #setComposite(java.awt.Composite)
      */
     @Override
     public Composite getComposite() {
         return this.composite;
     }
-    
+
     /**
      * Sets the composite (only {@code AlphaComposite} is handled).
-     * 
+     *
      * @param comp  the composite ({@code null} not permitted).
-     * 
-     * @see #getComposite() 
+     *
+     * @see #getComposite()
      */
     @Override
     public void setComposite(Composite comp) {
@@ -993,11 +993,11 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the current stroke (used when drawing shapes). 
-     * 
-     * @return The current stroke (never {@code null}). 
-     * 
-     * @see #setStroke(java.awt.Stroke) 
+     * Returns the current stroke (used when drawing shapes).
+     *
+     * @return The current stroke (never {@code null}).
+     *
+     * @see #setStroke(java.awt.Stroke)
      */
     @Override
     public Stroke getStroke() {
@@ -1006,10 +1006,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the stroke that will be used to draw shapes.
-     * 
+     *
      * @param s  the stroke ({@code null} not permitted).
-     * 
-     * @see #getStroke() 
+     *
+     * @see #getStroke()
      */
     @Override
     public void setStroke(Stroke s) {
@@ -1038,7 +1038,7 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Sets the value for a hint.  See the {@link SVGHints} class for 
+     * Sets the value for a hint.  See the {@link SVGHints} class for
      * information about the hints that can be used with this implementation.
      *
      * @param hintKey  the hint key ({@code null} not permitted).
@@ -1070,7 +1070,7 @@ public final class SVGGraphics2D extends Graphics2D {
                       continue;
                    }
                    if (otherKeysAndValues == null) {
-                      otherKeysAndValues = new ArrayList<Entry>();
+                      otherKeysAndValues = new ArrayList<>();
                    }
                    otherKeysAndValues.add(e);
                 }
@@ -1078,7 +1078,7 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("<g");
             if (groupId != null) {
                 if (this.elementIDs.contains(groupId)) {
-                    throw new IllegalArgumentException("The group id (" 
+                    throw new IllegalArgumentException("The group id ("
                             + groupId + ") is not unique.");
                 } else {
                     this.sb.append(" id='").append(groupId).append('\'');
@@ -1102,7 +1102,7 @@ public final class SVGGraphics2D extends Graphics2D {
         } else if (SVGHints.isElementTitleKey(hintKey) && (hintValue != null)) {
             this.sb.append("<title>");
             this.sb.append(SVGUtils.escapeForXML(String.valueOf(hintValue)));
-            this.sb.append("</title>");     
+            this.sb.append("</title>");
         } else {
             this.hints.put(hintKey, hintValue);
         }
@@ -1111,10 +1111,10 @@ public final class SVGGraphics2D extends Graphics2D {
     /**
      * Returns a copy of the rendering hints.  Modifying the returned copy
      * will have no impact on the state of this {@code Graphics2D} instance.
-     * 
+     *
      * @return The rendering hints (never {@code null}).
-     * 
-     * @see #setRenderingHints(java.util.Map) 
+     *
+     * @see #setRenderingHints(java.util.Map)
      */
     @Override
     public RenderingHints getRenderingHints() {
@@ -1123,10 +1123,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the rendering hints to the specified collection.
-     * 
+     *
      * @param hints  the new set of hints ({@code null} not permitted).
-     * 
-     * @see #getRenderingHints() 
+     *
+     * @see #getRenderingHints()
      */
     @Override
     public void setRenderingHints(Map<?, ?> hints) {
@@ -1136,7 +1136,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Adds all the supplied rendering hints.
-     * 
+     *
      * @param hints  the hints ({@code null} not permitted).
      */
     @Override
@@ -1145,17 +1145,17 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * A utility method that appends an optional element id if one is 
+     * A utility method that appends an optional element id if one is
      * specified via the rendering hints.
-     * 
-     * @param sb  the string builder ({@code null} not permitted). 
+     *
+     * @param sb  the string builder ({@code null} not permitted).
      */
     private void appendOptionalElementIDFromHint(StringBuilder sb) {
         String elementID = (String) this.hints.get(SVGHints.KEY_ELEMENT_ID);
         if (elementID != null) {
             this.hints.put(SVGHints.KEY_ELEMENT_ID, null); // clear it
             if (this.elementIDs.contains(elementID)) {
-                throw new IllegalStateException("The element id " 
+                throw new IllegalStateException("The element id "
                         + elementID + " is already used.");
             } else {
                 this.elementIDs.add(elementID);
@@ -1163,17 +1163,17 @@ public final class SVGGraphics2D extends Graphics2D {
             sb.append(" id='").append(elementID).append('\'');
         }
     }
-    
+
     /**
-     * Draws the specified shape with the current {@code paint} and 
-     * {@code stroke}.  There is direct handling for {@code Line2D}, 
-     * {@code Rectangle2D}, {@code Ellipse2D} and {@code Path2D}.  All other 
-     * shapes are mapped to a {@code GeneralPath} and then drawn (effectively 
+     * Draws the specified shape with the current {@code paint} and
+     * {@code stroke}.  There is direct handling for {@code Line2D},
+     * {@code Rectangle2D}, {@code Ellipse2D} and {@code Path2D}.  All other
+     * shapes are mapped to a {@code GeneralPath} and then drawn (effectively
      * as {@code Path2D} objects).
-     * 
+     *
      * @param s  the shape ({@code null} not permitted).
-     * 
-     * @see #fill(java.awt.Shape) 
+     *
+     * @see #fill(java.awt.Shape)
      */
     @Override
     public void draw(Shape s) {
@@ -1197,9 +1197,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Rectangle2D) {
@@ -1217,9 +1217,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1237,11 +1237,11 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
-            this.sb.append("/>");        
+            this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g");
@@ -1252,9 +1252,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append(">");
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -1266,13 +1266,13 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Fills the specified shape with the current {@code paint}.  There is
-     * direct handling for {@code Rectangle2D}, {@code Ellipse2D} and 
-     * {@code Path2D}.  All other shapes are mapped to a {@code GeneralPath} 
+     * direct handling for {@code Rectangle2D}, {@code Ellipse2D} and
+     * {@code Path2D}.  All other shapes are mapped to a {@code GeneralPath}
      * and then filled.
-     * 
-     * @param s  the shape ({@code null} not permitted). 
-     * 
-     * @see #draw(java.awt.Shape) 
+     *
+     * @param s  the shape ({@code null} not permitted).
+     *
+     * @see #draw(java.awt.Shape)
      */
     @Override
     public void fill(Shape s) {
@@ -1293,9 +1293,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append("/>");
         } else if (s instanceof Ellipse2D) {
@@ -1312,11 +1312,11 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
-            this.sb.append("/>");        
+            this.sb.append("/>");
         } else if (s instanceof Path2D) {
             Path2D path = (Path2D) s;
             this.sb.append("<g");
@@ -1327,9 +1327,9 @@ public final class SVGGraphics2D extends Graphics2D {
             	this.sb.append(" transform='").append(getSVGTransform(
             		this.transform)).append('\'');
             }
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
-                this.sb.append(' ').append(clip);
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
+                this.sb.append(' ').append(clipPathRef);
             }
             this.sb.append('>');
             this.sb.append("<path ").append(getSVGPathData(path)).append("/>");
@@ -1338,13 +1338,13 @@ public final class SVGGraphics2D extends Graphics2D {
             fill(new GeneralPath(s));  // handled as a Path2D next time through
         }
     }
-    
+
     /**
      * Creates an SVG path string for the supplied Java2D path.
-     * 
+     *
      * @param path  the path ({@code null} not permitted).
-     * 
-     * @return An SVG path string. 
+     *
+     * @return An SVG path string.
      */
     private String getSVGPathData(Path2D path) {
         StringBuilder b = new StringBuilder();
@@ -1386,7 +1386,7 @@ public final class SVGGraphics2D extends Graphics2D {
                 break;
             }
             iterator.next();
-        }  
+        }
         return b.append('\'').toString();
     }
 
@@ -1394,7 +1394,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * Returns the current alpha (transparency) in the range 0.0 to 1.0.
      * If the current composite is an {@link AlphaComposite} we read the alpha
      * value from there, otherwise this method returns 1.0.
-     * 
+     *
      * @return The current alpha (transparency) in the range 0.0 to 1.0.
      */
     private float getAlpha() {
@@ -1410,26 +1410,26 @@ public final class SVGGraphics2D extends Graphics2D {
      * Returns an SVG color string based on the current paint.  To handle
      * {@code GradientPaint} we rely on the {@code setPaint()} method
      * having set the {@code gradientPaintRef} attribute.
-     * 
-     * @return An SVG color string. 
+     *
+     * @return An SVG color string.
      */
     private String svgColorStr() {
         String result = "black;";
         if (this.paint instanceof Color) {
             return rgbColorStr((Color) this.paint);
-        } else if (this.paint instanceof GradientPaint 
+        } else if (this.paint instanceof GradientPaint
                 || this.paint instanceof LinearGradientPaint
                 || this.paint instanceof RadialGradientPaint) {
             return "url(#" + this.gradientPaintRef + ")";
         }
         return result;
     }
-    
+
     /**
      * Returns the SVG RGB color string for the specified color.
-     * 
+     *
      * @param c  the color ({@code null} not permitted).
-     * 
+     *
      * @return The SVG RGB color string.
      */
     private String rgbColorStr(Color c) {
@@ -1438,32 +1438,32 @@ public final class SVGGraphics2D extends Graphics2D {
                 .append(c.getBlue()).append(")");
         return b.toString();
     }
-    
+
     /**
      * Returns a string representing the specified color in RGBA format.
-     * 
+     *
      * @param c  the color ({@code null} not permitted).
-     * 
+     *
      * @return The SVG RGBA color string.
      */
     private String rgbaColorStr(Color c) {
         StringBuilder b = new StringBuilder("rgba(");
         double alphaPercent = c.getAlpha() / 255.0;
-        b.append(c.getRed()).append(",").append(c.getGreen()).append(",")
+        b.append(c.getRed()).append(',').append(c.getGreen()).append(',')
                 .append(c.getBlue());
-        b.append(",").append(transformDP(alphaPercent));
-        b.append(")");
+        b.append(',').append(transformDP(alphaPercent));
+        b.append(')');
         return b.toString();
     }
-    
+
     private static final String DEFAULT_STROKE_CAP = "butt";
     private static final String DEFAULT_STROKE_JOIN = "miter";
     private static final float DEFAULT_MITER_LIMIT = 4.0f;
-    
+
     /**
      * Returns a stroke style string based on the current stroke and
      * alpha settings.
-     * 
+     *
      * @return A stroke style string.
      */
     private String strokeStyle() {
@@ -1485,7 +1485,7 @@ public final class SVGGraphics2D extends Graphics2D {
                     break;
                 case BasicStroke.CAP_BUTT:
                 default:
-                    // already set to "butt"    
+                    // already set to "butt"
             }
             switch (bs.getLineJoin()) {
                 case BasicStroke.JOIN_BEVEL:
@@ -1534,25 +1534,25 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         return b.toString();
     }
-    
+
     /**
      * Returns the alpha value of the current {@code paint}, or {@code 1.0f} if
      * it is not an instance of {@code Color}.
-     * 
-     * @return The alpha value (in the range {@code 0.0} to {@code 1.0}. 
+     *
+     * @return The alpha value (in the range {@code 0.0} to {@code 1.0}).
      */
     private float getColorAlpha() {
         if (this.paint instanceof Color) {
             Color c = (Color) this.paint;
-            return c.getAlpha() / 255.0f; 
-        } 
+            return c.getAlpha() / 255.0f;
+        }
         return 1f;
     }
-    
+
     /**
      * Returns a fill style string based on the current paint and
      * alpha settings.
-     * 
+     *
      * @return A fill style string.
      */
     private String getSVGFillStyle() {
@@ -1567,10 +1567,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns the current font used for drawing text.
-     * 
+     *
      * @return The current font (never {@code null}).
-     * 
-     * @see #setFont(java.awt.Font) 
+     *
+     * @see #setFont(java.awt.Font)
      */
     @Override
     public Font getFont() {
@@ -1579,10 +1579,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the font to be used for drawing text.
-     * 
+     *
      * @param font  the font ({@code null} is permitted but ignored).
-     * 
-     * @see #getFont() 
+     *
+     * @see #getFont()
      */
     @Override
     public void setFont(Font font) {
@@ -1591,62 +1591,62 @@ public final class SVGGraphics2D extends Graphics2D {
         }
         this.font = font;
     }
-    
+
     /**
      * Returns the font mapper (an object that optionally maps font family
-     * names to alternates).  The default mapper will convert Java logical 
+     * names to alternates).  The default mapper will convert Java logical
      * font names to the equivalent SVG generic font name, and leave all other
      * font names unchanged.
-     * 
+     *
      * @return The font mapper (never {@code null}).
-     * 
-     * @see #setFontMapper(org.jfree.graphics2d.svg.FontMapper) 
+     *
+     * @see #setFontMapper(org.jfree.graphics2d.svg.FontMapper)
      * @since 1.5
      */
     public FontMapper getFontMapper() {
         return this.fontMapper;
     }
-    
+
     /**
      * Sets the font mapper.
-     * 
+     *
      * @param mapper  the font mapper ({@code null} not permitted).
-     * 
+     *
      * @since 1.5
      */
     public void setFontMapper(FontMapper mapper) {
         Args.nullNotPermitted(mapper, "mapper");
         this.fontMapper = mapper;
     }
-    
-    /** 
+
+    /**
      * Returns the font size units.  The default value is {@code SVGUnits.PX}.
-     * 
-     * @return The font size units. 
-     * 
+     *
+     * @return The font size units.
+     *
      * @since 3.4
      */
     public SVGUnits getFontSizeUnits() {
         return this.fontSizeUnits;
     }
-    
+
     /**
-     * Sets the font size units.  In general, if this method is used it should 
-     * be called immediately after the {@code SVGGraphics2D} instance is 
+     * Sets the font size units.  In general, if this method is used it should
+     * be called immediately after the {@code SVGGraphics2D} instance is
      * created and before any content is generated.
-     * 
+     *
      * @param fontSizeUnits  the font size units ({@code null} not permitted).
-     * 
+     *
      * @since 3.4
      */
     public void setFontSizeUnits(SVGUnits fontSizeUnits) {
         Args.nullNotPermitted(fontSizeUnits, "fontSizeUnits");
         this.fontSizeUnits = fontSizeUnits;
     }
-    
+
     /**
      * Returns a string containing font style info.
-     * 
+     *
      * @return A string containing font style info.
      */
     private String getSVGFontStyle() {
@@ -1675,27 +1675,27 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns the font metrics for the specified font.
-     * 
+     *
      * @param f  the font.
-     * 
-     * @return The font metrics. 
+     *
+     * @return The font metrics.
      */
     @Override
     public FontMetrics getFontMetrics(Font f) {
         if (this.fmImage == null) {
-            this.fmImage = new BufferedImage(10, 10, 
+            this.fmImage = new BufferedImage(10, 10,
                     BufferedImage.TYPE_INT_RGB);
             this.fmImageG2D = this.fmImage.createGraphics();
             this.fmImageG2D.setRenderingHint(
-                    RenderingHints.KEY_FRACTIONALMETRICS, 
+                    RenderingHints.KEY_FRACTIONALMETRICS,
                     RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         }
         return this.fmImageG2D.getFontMetrics(f);
     }
-    
+
     /**
      * Returns the font render context.
-     * 
+     *
      * @return The font render context (never {@code null}).
      */
     @Override
@@ -1707,14 +1707,14 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws a string at {@code (x, y)}.  The start of the text at the
      * baseline level will be aligned with the {@code (x, y)} point.
      * <br><br>
-     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING} 
-     * hint when drawing strings (this is completely optional though). 
-     * 
+     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING}
+     * hint when drawing strings (this is completely optional though).
+     *
      * @param str  the string ({@code null} not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
-     * 
-     * @see #drawString(java.lang.String, float, float) 
+     *
+     * @see #drawString(java.lang.String, float, float)
      */
     @Override
     public void drawString(String str, int x, int y) {
@@ -1725,9 +1725,9 @@ public final class SVGGraphics2D extends Graphics2D {
      * Draws a string at {@code (x, y)}. The start of the text at the
      * baseline level will be aligned with the {@code (x, y)} point.
      * <br><br>
-     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING} 
-     * hint when drawing strings (this is completely optional though). 
-     * 
+     * Note that you can make use of the {@link SVGHints#KEY_TEXT_RENDERING}
+     * hint when drawing strings (this is completely optional though).
+     *
      * @param str  the string ({@code null} not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1761,52 +1761,52 @@ public final class SVGGraphics2D extends Graphics2D {
             }
             String clipStr = getClipPathRef();
             if (!clipStr.isEmpty()) {
-                this.sb.append(' ').append(getClipPathRef());
+                this.sb.append(' ').append(clipStr);
             }
             this.sb.append(">");
             this.sb.append(SVGUtils.escapeForXML(str)).append("</text>");
             this.sb.append("</g>");
         } else {
-            AttributedString as = new AttributedString(str, 
+            AttributedString as = new AttributedString(str,
                     this.font.getAttributes());
             drawString(as.getIterator(), x, y);
         }
     }
 
     /**
-     * Draws a string of attributed characters at {@code (x, y)}.  The 
-     * call is delegated to 
-     * {@link #drawString(AttributedCharacterIterator, float, float)}. 
-     * 
+     * Draws a string of attributed characters at {@code (x, y)}.  The
+     * call is delegated to
+     * {@link #drawString(AttributedCharacterIterator, float, float)}.
+     *
      * @param iterator  an iterator for the characters.
      * @param x  the x-coordinate.
      * @param y  the x-coordinate.
      */
     @Override
     public void drawString(AttributedCharacterIterator iterator, int x, int y) {
-        drawString(iterator, (float) x, (float) y); 
+        drawString(iterator, (float) x, (float) y);
     }
 
     /**
-     * Draws a string of attributed characters at {@code (x, y)}. 
-     * 
-     * @param iterator  an iterator over the characters ({@code null} not 
+     * Draws a string of attributed characters at {@code (x, y)}.
+     *
+     * @param iterator  an iterator over the characters ({@code null} not
      *     permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      */
     @Override
-    public void drawString(AttributedCharacterIterator iterator, float x, 
+    public void drawString(AttributedCharacterIterator iterator, float x,
             float y) {
         Set<Attribute> s = iterator.getAllAttributeKeys();
         if (!s.isEmpty()) {
-            TextLayout layout = new TextLayout(iterator, 
+            TextLayout layout = new TextLayout(iterator,
                     getFontRenderContext());
             layout.draw(this, x, y);
         } else {
             StringBuilder strb = new StringBuilder();
             iterator.first();
-            for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex(); 
+            for (int i = iterator.getBeginIndex(); i < iterator.getEndIndex();
                     i++) {
                 strb.append(iterator.current());
                 iterator.next();
@@ -1817,7 +1817,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Draws the specified glyph vector at the location {@code (x, y)}.
-     * 
+     *
      * @param g  the glyph vector ({@code null} not permitted).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1828,13 +1828,13 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies the translation {@code (tx, ty)}.  This call is delegated 
+     * Applies the translation {@code (tx, ty)}.  This call is delegated
      * to {@link #translate(double, double)}.
-     * 
+     *
      * @param tx  the x-translation.
      * @param ty  the y-translation.
-     * 
-     * @see #translate(double, double) 
+     *
+     * @see #translate(double, double)
      */
     @Override
     public void translate(int tx, int ty) {
@@ -1843,7 +1843,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Applies the translation {@code (tx, ty)}.
-     * 
+     *
      * @param tx  the x-translation.
      * @param ty  the y-translation.
      */
@@ -1856,8 +1856,8 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Applies a rotation (anti-clockwise) about {@code (0, 0)}.
-     * 
-     * @param theta  the rotation angle (in radians). 
+     *
+     * @param theta  the rotation angle (in radians).
      */
     @Override
     public void rotate(double theta) {
@@ -1868,7 +1868,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Applies a rotation (anti-clockwise) about {@code (x, y)}.
-     * 
+     *
      * @param theta  the rotation angle (in radians).
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
@@ -1882,7 +1882,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Applies a scale transformation.
-     * 
+     *
      * @param sx  the x-scaling factor.
      * @param sy  the y-scaling factor.
      */
@@ -1894,13 +1894,13 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Applies a shear transformation. This is equivalent to the following 
+     * Applies a shear transformation. This is equivalent to the following
      * call to the {@code transform} method:
      * <br><br>
      * <ul><li>
      * {@code transform(AffineTransform.getShearInstance(shx, shy));}
      * </ul>
-     * 
+     *
      * @param shx  the x-shear factor.
      * @param shy  the y-shear factor.
      */
@@ -1911,8 +1911,8 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Applies this transform to the existing transform by concatenating it.
-     * 
-     * @param t  the transform ({@code null} not permitted). 
+     *
+     * @param t  the transform ({@code null} not permitted).
      */
     @Override
     public void transform(AffineTransform t) {
@@ -1923,10 +1923,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns a copy of the current transform.
-     * 
+     *
      * @return A copy of the current transform (never {@code null}).
-     * 
-     * @see #setTransform(java.awt.geom.AffineTransform) 
+     *
+     * @see #setTransform(java.awt.geom.AffineTransform)
      */
     @Override
     public AffineTransform getTransform() {
@@ -1935,11 +1935,11 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the transform.
-     * 
+     *
      * @param t  the new transform ({@code null} permitted, resets to the
      *     identity transform).
-     * 
-     * @see #getTransform() 
+     *
+     * @see #getTransform()
      */
     @Override
     public void setTransform(AffineTransform t) {
@@ -1953,14 +1953,14 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns {@code true} if the rectangle (in device space) intersects
-     * with the shape (the interior, if {@code onStroke} is {@code false}, 
+     * with the shape (the interior, if {@code onStroke} is {@code false},
      * otherwise the stroked outline of the shape).
-     * 
+     *
      * @param rect  a rectangle (in device space).
      * @param s the shape.
      * @param onStroke  test the stroked outline only?
-     * 
-     * @return A boolean. 
+     *
+     * @return A boolean.
      */
     @Override
     public boolean hit(Rectangle rect, Shape s, boolean onStroke) {
@@ -1990,7 +1990,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Does nothing in this {@code SVGGraphics2D} implementation.
-     * 
+     *
      * @param c  ignored
      */
     @Override
@@ -2000,10 +2000,10 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Returns the bounds of the user clipping region.
-     * 
-     * @return The clip bounds (possibly {@code null}). 
-     * 
-     * @see #getClip() 
+     *
+     * @return The clip bounds (possibly {@code null}).
+     *
+     * @see #getClip()
      */
     @Override
     public Rectangle getClipBounds() {
@@ -2014,11 +2014,11 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Returns the user clipping region.  The initial default value is 
+     * Returns the user clipping region.  The initial default value is
      * {@code null}.
-     * 
+     *
      * @return The user clipping region (possibly {@code null}).
-     * 
+     *
      * @see #setClip(java.awt.Shape)
      */
     @Override
@@ -2037,9 +2037,9 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the user clipping region.
-     * 
+     *
      * @param shape  the new user clipping region ({@code null} permitted).
-     * 
+     *
      * @see #getClip()
      */
     @Override
@@ -2048,12 +2048,12 @@ public final class SVGGraphics2D extends Graphics2D {
         this.clip = this.transform.createTransformedShape(shape);
         this.clipRef = null;
     }
-    
+
     /**
-     * Registers the clip so that we can later write out all the clip 
+     * Registers the clip so that we can later write out all the clip
      * definitions in the DEFS element.
-     * 
-     * @param clip  the clip (ignored if {@code null}) 
+     *
+     * @param clip  the clip (ignored if {@code null})
      */
     private String registerClip(Shape clip) {
         if (clip == null) {
@@ -2080,7 +2080,7 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String transformDP(double d) {
         if (this.transformFormat != null) {
-            return transformFormat.format(d);            
+            return transformFormat.format(d);
         } else {
             return String.valueOf(d);
         }
@@ -2096,12 +2096,12 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     private String geomDP(double d) {
         if (this.geometryFormat != null) {
-            return geometryFormat.format(d);            
+            return geometryFormat.format(d);
         } else {
             return String.valueOf(d);
         }
     }
-    
+
     private String getSVGTransform(AffineTransform t) {
         StringBuilder b = new StringBuilder("matrix(");
         b.append(transformDP(t.getScaleX())).append(",");
@@ -2115,16 +2115,16 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Clips to the intersection of the current clipping region and the
-     * specified shape. 
-     * 
-     * According to the Oracle API specification, this method will accept a 
+     * specified shape.
+     * <p>
+     * According to the Oracle API specification, this method will accept a
      * {@code null} argument, however there is a bug report (opened in 2004
      * and fixed in 2021) that describes the passing of {@code null} as
      * "not recommended":
      * <p>
      * <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6206189">
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6206189</a>
-     * 
+     *
      * @param s  the clip shape ({@code null} not recommended).
      */
     @Override
@@ -2149,9 +2149,9 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Clips to the intersection of the current clipping region and the 
+     * Clips to the intersection of the current clipping region and the
      * specified rectangle.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
@@ -2165,13 +2165,13 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the user clipping region to the specified rectangle.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
      * @param height  the height.
-     * 
-     * @see #getClip() 
+     *
+     * @see #getClip()
      */
     @Override
     public void setClip(int x, int y, int width, int height) {
@@ -2180,9 +2180,9 @@ public final class SVGGraphics2D extends Graphics2D {
     }
 
     /**
-     * Draws a line from {@code (x1, y1)} to {@code (x2, y2)} using 
+     * Draws a line from {@code (x1, y1)} to {@code (x2, y2)} using
      * the current {@code paint} and {@code stroke}.
-     * 
+     *
      * @param x1  the x-coordinate of the start point.
      * @param y1  the y-coordinate of the start point.
      * @param x2  the x-coordinate of the end point.
@@ -2200,7 +2200,7 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Fills the specified rectangle with the current {@code paint}.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the rectangle width.
@@ -2323,7 +2323,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @see #fillArc(int, int, int, int, int, int)
      */
     @Override
-    public void drawArc(int x, int y, int width, int height, int startAngle, 
+    public void drawArc(int x, int y, int width, int height, int startAngle,
             int arcAngle) {
         setArc(x, y, width, height, startAngle, arcAngle);
         draw(this.arc);
@@ -2345,7 +2345,7 @@ public final class SVGGraphics2D extends Graphics2D {
      * @see #drawArc(int, int, int, int, int, int)
      */
     @Override
-    public void fillArc(int x, int y, int width, int height, int startAngle, 
+    public void fillArc(int x, int y, int width, int height, int startAngle,
             int arcAngle) {
         setArc(x, y, width, height, startAngle, arcAngle);
         fill(this.arc);
@@ -2475,8 +2475,8 @@ public final class SVGGraphics2D extends Graphics2D {
         if (img == null) {
             return true;
         }
-        // the rendering hints control whether the image is embedded or
-        // referenced...
+        // the rendering hints control whether the image is embedded
+        // (the default) or referenced...
         Object hint = getRenderingHint(SVGHints.KEY_IMAGE_HANDLING);
         if (SVGHints.VALUE_IMAGE_HANDLING_EMBED.equals(hint)) {
             this.sb.append("<image");
@@ -2516,8 +2516,8 @@ public final class SVGGraphics2D extends Graphics2D {
             appendOptionalElementIDFromHint(this.sb);
             this.sb.append(" xlink:href='");
             this.sb.append(href).append('\'');
-            String clip = getClipPathRef();
-            if (!clip.isEmpty()) {
+            String clipPathRef = getClipPathRef();
+            if (!clipPathRef.isEmpty()) {
                 this.sb.append(' ').append(getClipPathRef());
             }
             if (!this.transform.isIdentity()) {
@@ -2794,7 +2794,7 @@ public final class SVGGraphics2D extends Graphics2D {
      *
      * @since 3.2
      */
-    public String getSVGElement(String id, boolean includeDimensions, 
+    public String getSVGElement(String id, boolean includeDimensions,
             ViewBox viewBox, PreserveAspectRatio preserveAspectRatio,
             MeetOrSlice meetOrSlice) {
         StringBuilder svg = new StringBuilder("<svg");
@@ -3005,7 +3005,7 @@ public final class SVGGraphics2D extends Graphics2D {
         b.append(" r='").append(geomDP(radius)).append('\'');
         b.append(" fx='").append(geomDP(focus.getX())).append('\'');
         b.append(" fy='").append(geomDP(focus.getY())).append("'>");
-        
+
         Color[] colors = rgp.getColors();
         float[] fractions = rgp.getFractions();
         for (int i = 0; i < colors.length; i++) {
@@ -3084,9 +3084,9 @@ public final class SVGGraphics2D extends Graphics2D {
 
     /**
      * Sets the attributes of the reusable {@link Arc2D} object that is used by
-     * {@link #drawArc(int, int, int, int, int, int)} and 
+     * {@link #drawArc(int, int, int, int, int, int)} and
      * {@link #fillArc(int, int, int, int, int, int)} methods.
-     * 
+     *
      * @param x  the x-coordinate.
      * @param y  the y-coordinate.
      * @param width  the width.
@@ -3094,17 +3094,17 @@ public final class SVGGraphics2D extends Graphics2D {
      * @param startAngle  the start angle in degrees, 0 = 3 o'clock.
      * @param arcAngle  the angle (anticlockwise) in degrees.
      */
-    private void setArc(int x, int y, int width, int height, int startAngle, 
+    private void setArc(int x, int y, int width, int height, int startAngle,
             int arcAngle) {
         if (this.arc == null) {
-            this.arc = new Arc2D.Double(x, y, width, height, startAngle, 
+            this.arc = new Arc2D.Double(x, y, width, height, startAngle,
                     arcAngle, Arc2D.PIE);
         } else {
-            this.arc.setArc(x, y, width, height, startAngle, arcAngle, 
+            this.arc.setArc(x, y, width, height, startAngle, arcAngle,
                     Arc2D.PIE);
-        }        
+        }
     }
-    
+
     /**
      * Sets the attributes of the reusable {@link Ellipse2D} object that is
      * used by the {@link #drawOval(int, int, int, int)} and
