@@ -235,30 +235,27 @@ public final class SVGGraphics2D extends Graphics2D {
      * generating the SVG file, all the gradient paints used must be defined
      * in the defs element.
      */
-    private Map<GradientPaintKey, String> gradientPaints 
-            = new HashMap<GradientPaintKey, String>();
+    private Map<GradientPaintKey, String> gradientPaints = new HashMap<>();
     
     /** 
      * A map of all the linear gradients used, and the corresponding id.  When 
      * generating the SVG file, all the linear gradient paints used must be 
      * defined in the defs element.
      */
-    private Map<LinearGradientPaintKey, String> linearGradientPaints 
-            = new HashMap<LinearGradientPaintKey, String>();
+    private Map<LinearGradientPaintKey, String> linearGradientPaints = new HashMap<>();
     
     /** 
      * A map of all the radial gradients used, and the corresponding id.  When 
      * generating the SVG file, all the radial gradient paints used must be 
      * defined in the defs element.
      */
-    private Map<RadialGradientPaintKey, String> radialGradientPaints
-            = new HashMap<RadialGradientPaintKey, String>();
+    private Map<RadialGradientPaintKey, String> radialGradientPaints = new HashMap<>();
     
     /**
      * A list of the registered clip regions.  These will be written to the
      * DEFS element.
      */
-    private List<String> clipPaths = new ArrayList<String>();
+    private List<String> clipPaths = new ArrayList<>();
     
     /** 
      * The filename prefix for images that are referenced rather than
@@ -435,14 +432,15 @@ public final class SVGGraphics2D extends Graphics2D {
      */
     public SVGGraphics2D(int width, int height, SVGUnits units, 
             StringBuilder sb) {
+        super();
         this.width = width;
         this.height = height;
         this.units = units;
         this.shapeRendering = "auto";
         this.textRendering = "auto";
-        this.defsKeyPrefix = "_" + String.valueOf(System.nanoTime());
+        this.defsKeyPrefix = "_" + System.nanoTime();
         this.clip = null;
-        this.imageElements = new ArrayList<ImageElement>();
+        this.imageElements = new ArrayList<>();
         this.filePrefix = "image-";
         this.fileSuffix = ".png";
         this.font = new Font("SansSerif", Font.PLAIN, 12);
@@ -456,7 +454,7 @@ public final class SVGGraphics2D extends Graphics2D {
         dfs.setDecimalSeparator('.');
         this.transformFormat = new DecimalFormat("0.######", dfs);
         this.geometryFormat = new DecimalFormat("0.##", dfs);
-        this.elementIDs = new HashSet<String>();
+        this.elementIDs = new HashSet<>();
     }
 
     /**
