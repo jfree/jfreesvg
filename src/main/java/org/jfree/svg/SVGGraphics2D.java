@@ -994,9 +994,10 @@ public final class SVGGraphics2D extends Graphics2D {
                     this.sb.append("<a href='").append(link).append('\'');
                     for (final Entry<?, ?> entry : hintValueMap.entrySet()) {
                         if (!entry.getKey().equals(href)) {
-                            this.sb.append(' ').append(entry.getKey()).append("='");
-                            this.sb..append(SVGUtils.escapeForXML(String.valueOf(entry.getValue()))).append('\'');
+                            continue;
 			}
+                        this.sb.append(' ').append(entry.getKey()).append("='");
+                        this.sb..append(SVGUtils.escapeForXML(String.valueOf(entry.getValue()))).append('\'');
                     }
                     this.sb.append('>');
 		}
