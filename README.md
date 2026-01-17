@@ -79,7 +79,7 @@ Change History
 --------------
 
 Version 5.0.8 (not yet released)
-- add a mechanism for anchors (PR#63)
+- add a mechanism for anchors ([#63](https://github.com/jfree/jfreesvg/pull/63))
 
 Version 5.0.7 (17 May 2025)
 - migrate publishing flow
