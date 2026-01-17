@@ -78,6 +78,9 @@ If you prefer not to be bound by the terms of the GPLv3, you can obtain an alter
 Change History
 --------------
 
+Version 5.0.8 (not yet released)
+- add a mechanism for anchors (PR#63)
+
 Version 5.0.7 (17 May 2025)
 - migrate publishing flow
 - update Maven and JUnit dependencies

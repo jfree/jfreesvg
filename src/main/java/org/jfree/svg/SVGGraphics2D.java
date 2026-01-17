@@ -997,7 +997,7 @@ public final class SVGGraphics2D extends Graphics2D {
                             continue;
 			}
                         this.sb.append(' ').append(entry.getKey()).append("='");
-                        this.sb..append(SVGUtils.escapeForXML(String.valueOf(entry.getValue()))).append('\'');
+                        this.sb.append(SVGUtils.escapeForXML(String.valueOf(entry.getValue()))).append('\'');
                     }
                     this.sb.append('>');
 		}
