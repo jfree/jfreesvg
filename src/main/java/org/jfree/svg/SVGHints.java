@@ -186,6 +186,33 @@ public final class SVGHints {
      */
     public static final SVGHints.Key KEY_ELEMENT_TITLE = new SVGHints.Key(6);
 
+    	/**
+	 * Hint key that informs the {@code SVGGraphics2D} that the caller would like to
+	 * begin a new anchor element ({@code <a href='...'>}). The hint value is
+	 * either:
+	 * <ul>
+	 * <li>a {@code URL} that will be used as the value of the {@code href}
+	 * attribute for the anchor; or</li>
+	 * <li>a {@code Map} instance containing arbitrary attribute values for the
+	 * anchor. At least the key {@code href} has to be part of the map. If it is
+	 * not, the anchor won't be opened.</li>
+	 * </ul>
+	 * After opening the new anchor the hint is cleared and it is the caller's
+	 * responsibility to close the anchor later using
+	 * {@link SVGHints#KEY_END_ANCHOR}. Anchors can't be nested.
+	 * 
+	 * @since 5.8
+	 */
+	public static final SVGHints.Key KEY_BEGIN_ANCHOR = new SVGHints.Key(8);
+
+	/**
+	 * Hint key that informs the {@code SVGGraphics2D} that the caller would like to
+	 * close a previously opened anchor element. The hint value is ignored.
+	 * 
+	 * @since 5.8
+	 */
+	public static final SVGHints.Key KEY_END_ANCHOR = new SVGHints.Key(9);
+
     /**
      * The key for the hint that controls whether strings are rendered as
      * characters or vector graphics (implemented using {@code TextLayout}).  

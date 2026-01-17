@@ -983,6 +983,27 @@ public final class SVGGraphics2D extends Graphics2D {
             this.sb.append("<title>");
             this.sb.append(SVGUtils.escapeForXML(String.valueOf(hintValue)));
             this.sb.append("</title>");
+        } else if (SVGHints.KEY_BEGIN_ANCHOR.equals(hintKey) && hintValue != null) {
+            if (hintValue instanceof URL) {
+                this.sb.append("<a href='").append(hintValue.toString()).append("'>");
+            } else if (hintValue instanceof Map) {
+                final String href = "href";
+                Map<?, ?> hintValueMap = (Map<?, ?>) hintValue;
+                String link = hintValueMap.get(href) != null ? hintValueMap.get(href).toString() : null;
+                if (link != null) {
+                    this.sb.append("<a href='").append(link).append('\'');
+                    for (final Entry<?, ?> entry : hintValueMap.entrySet()) {
+                        if (!entry.getKey().equals(href)) {
+                            continue;
+			}
+                        this.sb.append(' ').append(entry.getKey()).append("='");
+                        this.sb..append(SVGUtils.escapeForXML(String.valueOf(entry.getValue()))).append('\'');
+                    }
+                    this.sb.append('>');
+		}
+	    }
+	} else if (SVGHints.KEY_END_ANCHOR.equals(hintKey)) {
+	    this.sb.append("</a>");
         } else {
             this.hints.put(hintKey, hintValue);
         }
